@@ -1,0 +1,31 @@
+.login-page { display: grid; min-height: 100vh; grid-template-columns: 1.15fr .85fr; }
+.login-aside { display: flex; flex-direction: column; justify-content: space-between; padding: 42px clamp(40px, 7vw, 110px); background: radial-gradient(circle at 80% 25%, #1d6fa9 0, transparent 36%), linear-gradient(135deg, #071f3a, #104f86); color: #fff; }
+.login-brand { display: flex; align-items: center; gap: 10px; color: #fff; }
+.login-brand > i { display: grid; place-items: center; width: 39px; height: 39px; border-radius: 50%; background: #e5bd61; color: #0b3159; }
+.login-brand b, .login-brand small { display: block; }
+.login-brand b { font-size: .87rem; }
+.login-brand small { margin-top: 3px; color: #bed2e4; font-size: .68rem; }
+.login-aside h1 { margin: 0; font-size: clamp(2.3rem, 4vw, 4rem); line-height: 1.12; letter-spacing: -.04em; }
+.login-aside h1 em { color: #edc56a; font-style: normal; }
+.login-aside > div > p:not(.eyebrow) { max-width: 500px; color: #d1e1ef; line-height: 1.65; }
+.login-aside .eyebrow { color: #edc56a; }
+.login-aside footer { color: #b9ccdd; font-size: .74rem; }
+.login-form { display: grid; place-items: center; padding: 30px; background: #f5f8fb; }
+.form-card { width: min(100%, 400px); }
+.back { display: inline-block; margin-bottom: 45px; color: #6a8096; font-size: .8rem; }
+.form-card h2 { margin: 0; font-size: 1.8rem; letter-spacing: -.035em; }
+.form-card > p { line-height: 1.55; font-size: .87rem; }
+.form-card label { display: block; margin: 28px 0 8px; font-size: .84rem; font-weight: 720; }
+.form-card p-select { display: block; width: 100%; }
+.role-note { display: flex; gap: 9px; margin: 14px 0 22px; padding: 12px; border-radius: 9px; background: #e8f2fb; color: #54708c; font-size: .77rem; line-height: 1.45; }
+.role-note i { color: #2472b2; }
+.form-card .p-button { width: 100%; }
+
+@media (max-width: 760px) {
+  .login-page { grid-template-columns: 1fr; }
+  .login-aside { min-height: 265px; padding: 28px; }
+  .login-aside footer { display: none; }
+  .login-aside h1 { font-size: 2.1rem; }
+  .login-form { padding: 40px 25px; }
+  .back { margin-bottom: 30px; }
+}

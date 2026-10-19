@@ -1,0 +1,26 @@
+# NV-09 — Quan tri van hanh
+
+UC: 84-99  
+Actors: operations officer, system administrator  
+Status: specified; admin screen baseline mocked; operations controls pending.
+
+## Scope
+
+Service/job/error monitoring, backup/restore, incident alerts, data consistency, cache, maintenance mode, AI model operations, password/2FA policy and access history.
+
+## Acceptance criteria
+
+- Destructive operations require confirmation, permission and audit record.
+- Maintenance mode displays a controlled public/internal state and preserves admin access.
+- Backup/restore shows version, checksum, operator and result.
+- Security policy changes affect new sessions and are logged.
+
+## Test mapping
+
+`operations.service.spec.ts` (planned).
+
+## Changelog
+
+| Date | By | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Initial per-business MDC created | 84-99 |

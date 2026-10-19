@@ -1,0 +1,87 @@
+@import 'primeicons/primeicons.css';
+
+:root {
+  --mof-navy: #0b2d52;
+  --mof-navy-deep: #071e38;
+  --mof-blue: #1769aa;
+  --mof-blue-soft: #e9f2fb;
+  --mof-gold: #c8993f;
+  --mof-ink: #172b4d;
+  --mof-muted: #62748a;
+  --mof-line: #dce5ef;
+  --mof-surface: #ffffff;
+  --mof-canvas: #f4f7fb;
+  --mof-radius: 14px;
+  --mof-shadow: 0 12px 32px rgb(22 45 73 / 8%);
+  --mof-fast: 140ms;
+  --mof-medium: 220ms;
+  font-family: 'Segoe UI Variable', 'Segoe UI', Arial, sans-serif;
+  color: var(--mof-ink);
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; margin: 0; background: var(--mof-canvas); }
+body { min-width: 320px; }
+a { color: inherit; text-decoration: none; }
+button, a, .p-component { -webkit-tap-highlight-color: transparent; }
+.route-stage { min-height: 100vh; animation: page-enter var(--mof-medium) ease both; }
+.content-width { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+.eyebrow { margin: 0 0 .6rem; color: var(--mof-blue); font-size: .78rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.muted { color: var(--mof-muted); }
+.surface-card { border: 1px solid var(--mof-line); border-radius: var(--mof-radius); background: var(--mof-surface); box-shadow: 0 3px 14px rgb(22 45 73 / 4%); }
+.p-button { min-height: 40px; padding-inline: 15px; border-radius: 10px; font-size: .82rem; font-weight: 700; transition: transform var(--mof-fast) ease, box-shadow var(--mof-fast) ease, background var(--mof-fast) ease; }
+.p-button:not(:disabled):active { transform: translateY(1px) scale(.985); }
+.p-button:not(:disabled):hover { box-shadow: 0 6px 16px rgb(11 45 82 / 15%); }
+.p-inputtext, .p-select, .p-textarea { border-radius: 10px; transition: border-color var(--mof-fast), box-shadow var(--mof-fast); }
+.p-toast { width: min(390px, calc(100vw - 28px)); }
+.p-toast-message { border-radius: 14px !important; box-shadow: var(--mof-shadow); backdrop-filter: blur(10px); }
+.p-dialog { border-radius: 18px; overflow: hidden; }
+.p-tag { font-weight: 650; }
+@keyframes page-enter { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (max-width: 700px) { .content-width { width: min(100% - 28px, 1180px); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; scroll-behavior: auto !important; } }
+
+/* Portal visual refinement: use the original MOF photography asset as the hero atmosphere. */
+.hero { background-image: url('/assets/portal-hero-bg.png') !important; background-position: center center !important; background-size: cover !important; }
+.hero-grid { grid-template-columns: minmax(0, 1fr) !important; }
+.hero-copy { max-width: 720px; padding-block: 74px; }
+.hero-visual { display: none !important; }
+.hero-glow { display: none !important; }
+/* Header CTA is deliberately compact and navy; keep PrimeNG theme tokens from turning it green. */
+body .portal-header .header-actions .p-button,
+body .portal-header .header-actions button.p-button { min-width: 132px; min-height: 42px; padding: 0 16px !important; border: 0 !important; border-radius: 9px !important; background: #0956b8 !important; color: #fff !important; box-shadow: 0 5px 12px rgb(9 86 184 / 20%) !important; font-size: .82rem !important; font-weight: 700 !important; }
+body .portal-header .header-actions .p-button:hover,
+body .portal-header .header-actions button.p-button:hover { background: #064796 !important; transform: translateY(-1px); }
+body .portal-header .header-actions .p-button .p-button-icon { font-size: .78rem; }
+@media (min-width: 1200px) { body .portal-header .header-actions .p-button, body .portal-header .header-actions button.p-button { min-width: 142px; min-height: 44px; } }
+@media (max-width: 700px) { .hero { background-position: 64% center !important; } .hero-copy { padding-block: 45px; } }
+
+/* Large-screen scale: the reference layout is intentionally airy and readable at 1440–2K widths. */
+@media (min-width: 1200px) {
+  .content-width { width: min(1800px, calc(100% - 96px)); }
+  .header-row { min-height: 68px; padding-inline: 26px; }
+  .brand img { width: 42px; height: 42px; }
+  .brand strong { font-size: 1.02rem; }
+  .brand small { font-size: .66rem; }
+  .portal-header nav a { font-size: .8rem; }
+  .header-actions .p-button { min-height: 42px; padding-inline: 18px; font-size: .8rem; }
+  .hero-grid { min-height: 585px; }
+  .hero-copy { max-width: 760px; padding-block: 72px; }
+  .hero h1 { font-size: clamp(3rem, 4vw, 4.55rem); font-weight: 700; }
+  .hero-copy > p:not(.eyebrow) { max-width: 760px; font-size: 1.2rem; }
+  .connection-pill { padding: 9px 15px; font-size: .72rem; }
+  .search-box { max-width: 790px; min-height: 58px; padding-left: 19px; border-radius: 17px; }
+  .search-box input { font-size: .92rem; }
+  .search-box .p-button { width: 44px; height: 44px; min-height: 44px; }
+  .quick-links { font-size: .88rem; }
+  .quick-links a { padding: 10px 16px; }
+  .section { padding-block: 72px; }
+  .section-heading h2, .split-section h2, .callout h2 { font-size: 2.25rem; }
+  .section-heading .eyebrow, .split-section .eyebrow { font-size: .86rem; }
+  .topic-grid { gap: 20px; }
+  .topic-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .topic-card { min-height: 142px; padding: 20px 17px; display: block; }
+  .topic-card h3 { font-size: 1.05rem; }
+  .topic-card p, .topic-card small { font-size: .82rem; }
+  .topic-icon { width: 44px; height: 44px; margin-bottom: 13px; }
+}

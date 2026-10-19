@@ -1,0 +1,26 @@
+# NV-11 — Tuong tac nguoi dung
+
+UC: 114-126  
+Actors: public user, internal officer  
+Status: specified; basic toast/session interactions mocked.
+
+## Scope
+
+Public timeline, rating, clarification, personal notices, language/help, question history, answer PDF, system feedback and internal notices/login history.
+
+## Acceptance criteria
+
+- Timeline only exposes events allowed to the actor.
+- Rating/clarification is linked to a published answer and cannot alter official content.
+- Personal notifications can be read/archived without exposing another user's data.
+- PDF export carries dossier code and generated timestamp.
+
+## Test mapping
+
+`notification.service.spec.ts` (planned).
+
+## Changelog
+
+| Date | By | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Initial per-business MDC created | 114-126 |

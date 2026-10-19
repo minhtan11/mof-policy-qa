@@ -1,0 +1,33 @@
+<main class="login-page">
+  <section class="login-aside">
+    <a routerLink="/portal" class="login-brand">
+      <i class="pi pi-building-columns"></i>
+      <span>
+        <b>BỘ TÀI CHÍNH</b>
+        <small>Cổng Hỏi đáp chính sách tài chính</small>
+      </span>
+    </a>
+
+    <div>
+      <p class="eyebrow">Không gian nghiệp vụ</p>
+      <h1>Xử lý chính xác.<br /><em>Phối hợp thông suốt.</em></h1>
+      <p>Hệ thống dành cho cán bộ tiếp nhận, chuyên viên, lãnh đạo, điều phối và quản trị viên.</p>
+    </div>
+
+    <footer><i class="pi pi-shield"></i> Phiên bản mockup · Dữ liệu chỉ lưu trên trình duyệt</footer>
+  </section>
+
+  <section class="login-form">
+    <div class="form-card">
+      <a routerLink="/portal" class="back"><i class="pi pi-arrow-left"></i> Về cổng công khai</a>
+      <p class="eyebrow">Đăng nhập nghiệp vụ</p>
+      <h2>Chọn vai trò để trải nghiệm</h2>
+      <p class="muted">Trong triển khai thực tế, màn hình này sẽ kết nối SSO/IAM hoặc VNeID của Bộ.</p>
+
+      <label for="role">Vai trò mô phỏng</label>
+      <p-select inputId="role" [options]="roles" [(ngModel)]="selectedRole" optionLabel="label" optionValue="value" placeholder="Chọn vai trò" appendTo="body" />
+      <div class="role-note"><i class="pi pi-info-circle"></i><span>Chọn vai trò để hệ thống hiển thị đúng phạm vi chức năng và dữ liệu.</span></div>
+      <p-button label="Vào không gian làm việc" icon="pi pi-arrow-right" iconPos="right" [loading]="loading()" (onClick)="login()" [disabled]="!selectedRole" />
+    </div>
+  </section>
+</main>

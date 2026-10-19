@@ -1,0 +1,28 @@
+# NV-12 — Phan he thong minh
+
+UC: 127-134  
+Actors: system, specialist, coordinator  
+Status: specified; advisory mock services pending.
+
+## Scope
+
+Classification, routing, sentiment, legal suggestions, summarization, OCR, duplicate/spam detection and translation.
+
+## Acceptance criteria
+
+- AI suggestions are visibly marked advisory and require human confirmation.
+- Low confidence produces a review queue, never silent routing.
+- OCR/translation preserves original content and records model/version.
+- Personal data is minimized before external model calls.
+
+## Test mapping
+
+`intelligence.service.spec.ts` (planned).
+
+## Changelog
+
+- 2026-10-20 | Codex | Bổ sung màn hình dossier hiển thị gợi ý AI, chấp nhận/từ chối thủ công; AI vẫn là advisory mock | UC 127-134 | mocked; chưa integrated provider
+
+| Date | By | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Initial per-business MDC created | 127-134 |

@@ -1,0 +1,101 @@
+# Router, màn hình và tài khoản mock theo role
+
+## 1. Mục đích
+
+Tài liệu này là bản đồ điều hướng của mockup Angular `MOF-PolicyQA`. Dùng tài liệu để biết người dùng nào vào cổng nào, màn hình phục vụ nghiệp vụ gì và dùng tài khoản nào để kiểm thử. Router trong source là nguồn thực thi; khi thay đổi route hoặc quyền phải cập nhật file này cùng lúc.
+
+## 2. Mô hình cổng
+
+| Cổng | Prefix | Đối tượng | Guard | Mục đích |
+|---|---|---|---|---|
+| Cổng công khai | `/portal/...` | Người dân, doanh nghiệp | Không bắt buộc | Tra cứu, gửi câu hỏi và xem câu trả lời công khai |
+| Cổng nghiệp vụ | `/workspace/...` | Cán bộ tiếp nhận, chuyên viên, lãnh đạo, điều phối | `internalGuard` | Tiếp nhận, phân công, xử lý, phê duyệt hồ sơ |
+| Quản trị hệ thống | `/admin/...` | Quản trị hệ thống | `adminGuard` | Người dùng, danh mục, workflow, văn bản, AI, báo cáo |
+
+## 3. Danh sách router và màn hình
+
+| Router | Màn hình | Vai trò | Mục đích / thao tác chính |
+|---|---|---|---|
+| `/` | Redirect | Tất cả | Chuyển về `/portal` |
+| `/portal` | Trang chủ công khai | Khách, public | Tìm kiếm nhanh, xem lĩnh vực, câu hỏi mới, thông báo, thống kê |
+| `/portal/login` | Đăng nhập công dân/doanh nghiệp | Public | Đăng nhập mock hoặc tiếp tục không đăng nhập để gửi câu hỏi |
+| `/portal/login/vneid` | Đăng nhập VNeID | Public | Mô phỏng QR/redirect VNeID; bản production sẽ thay bằng adapter VNeID thật |
+| `/portal/hoi-dap` | Gửi câu hỏi | Public | Chọn lĩnh vực, nhập nội dung, thông tin liên hệ, tạo mã hồ sơ |
+| `/portal/tra-cuu` | Tra cứu công khai | Public | Tìm theo mã hồ sơ/từ khóa, xem hồ sơ đã công khai |
+| `/workspace/login` | Đăng nhập nghiệp vụ | Cán bộ nội bộ | Chọn role mock; production sẽ kết nối SSO/IAM của Bộ |
+| `/workspace` | Tổng quan công việc | Cán bộ nội bộ | Xem KPI, hàng đợi hồ sơ, biểu đồ SLA, mở chi tiết hồ sơ |
+| `/workspace/ho-so/:id` | Chi tiết và xử lý hồ sơ | Reception, specialist, leader, coordinator | Xem câu hỏi, soạn trả lời, lưu nháp, AI advisory, chuyển bước workflow |
+| `/admin` | Quản trị tập trung | System admin | Tabs: người dùng, danh mục, workflow, văn bản pháp luật, AI, báo cáo |
+| `**` | Fallback | Tất cả | Route không tồn tại chuyển về `/portal` |
+
+## 4. Tài khoản mock theo role
+
+Nguồn dữ liệu: `src/app/core/mock-api/demo-data.ts`, hằng `USERS`. Đây là tài khoản mô phỏng, không phải tài khoản thật.
+
+| Role | Tài khoản mock | Đơn vị | Cổng sau đăng nhập | Phạm vi kiểm thử |
+|---|---|---|---|---|
+| `public` | Nguyễn Minh Anh · `minhanh@example.vn` | Công ty CP An Phát | `/portal/hoi-dap` | Gửi câu hỏi, tra cứu, xem trạng thái của người dùng công khai |
+| `reception` | Trần Thu Hà · `ha.tt@moj.gov.vn` | Văn phòng Bộ | `/workspace` | Tiếp nhận, phân loại, chuyển hồ sơ |
+| `specialist` | Lê Quốc Hưng · `hung.lq@moj.gov.vn` | Vụ Chính sách thuế | `/workspace` | Nghiên cứu, soạn dự thảo, gắn căn cứ, trình phê duyệt |
+| `leader` | Phạm Đức Long · `long.pd@moj.gov.vn` | Vụ Chính sách thuế | `/workspace` | Xem hồ sơ chờ duyệt, phê duyệt và công khai |
+| `coordinator` | Đỗ Bích Ngọc · `ngoc.db@moj.gov.vn` | Tổ điều phối | `/workspace` | Theo dõi hàng đợi, điều phối và xem tiến độ |
+| `system-admin` | Quản trị hệ thống · `admin@moj.gov.vn` | Trung tâm CNTT | `/admin` | Quản trị tài khoản, danh mục, workflow, văn bản, AI, báo cáo |
+
+### Cách đăng nhập mock
+
+- Public: tại `/portal/login`, email/mật khẩu hiện chỉ mô phỏng; nhập giá trị bất kỳ rồi đăng nhập. Nút VNeID mở `/portal/login/vneid` và trạng thái xác thực là mock.
+- Internal: tại `/workspace/login`, chọn role trong dropdown rồi bấm “Vào không gian làm việc”. Không cần mật khẩu trong mock.
+- Admin: chọn role `system-admin` ở `/workspace/login`, sau đó hệ thống chuyển tới `/admin`.
+- Session được lưu trong `localStorage` với key `mof-policy-qa.session.v1`; nút đăng xuất xóa session.
+
+## 5. Luồng theo role
+
+### Người dân / doanh nghiệp (`public`)
+
+`/portal` → tìm kiếm hoặc chọn lĩnh vực → `/portal/tra-cuu` để xem thông tin công khai.
+
+`/portal` → “Đăng nhập” → `/portal/login/vneid` hoặc `/portal/login` → `/portal/hoi-dap` → nhập câu hỏi → nhận mã `CSTC-...` → `/portal/tra-cuu` theo dõi kết quả.
+
+### Cán bộ tiếp nhận (`reception`)
+
+`/workspace/login?required=reception` → `/workspace` → xem hồ sơ mới → mở `/workspace/ho-so/:id` → nhận xử lý, phân loại và chuyển chuyên viên.
+
+### Chuyên viên (`specialist`)
+
+`/workspace` → mở hồ sơ được phân công → đọc nội dung/căn cứ → chạy AI advisory nếu cần → soạn trả lời → lưu dự thảo → “Trình phê duyệt” → trạng thái `waiting-approval`.
+
+### Lãnh đạo (`leader`)
+
+`/workspace` → mở hồ sơ chờ duyệt → kiểm tra timeline, dự thảo và căn cứ → “Phê duyệt & công khai” → trạng thái `published`.
+
+### Điều phối (`coordinator`)
+
+`/workspace` → theo dõi hàng đợi, SLA và tiến độ → mở hồ sơ → kiểm tra người phụ trách/trạng thái. Các thao tác vượt quyền phải được nối permission matrix trước khi triển khai thật.
+
+### Quản trị hệ thống (`system-admin`)
+
+`/workspace/login` → chọn quản trị hệ thống → `/admin` → chọn tab:
+
+1. Người dùng: xem danh sách cán bộ.
+2. Danh mục: bật/tắt/thêm danh mục.
+3. Workflow: tạo nháp và kích hoạt phiên bản.
+4. Văn bản: tìm kiếm và tạo văn bản nháp.
+5. AI: chạy gợi ý, xác nhận gợi ý.
+6. Báo cáo: sinh báo cáo tổng hợp.
+
+## 6. Quy tắc guard
+
+- Không có session nội bộ: truy cập `/workspace` hoặc `/workspace/ho-so/:id` chuyển về `/workspace/login`.
+- Có session public nhưng không phải cán bộ: vẫn bị chặn khỏi workspace.
+- Role nội bộ không phải `system-admin`: truy cập `/admin` chuyển về `/workspace/login?required=system-admin`.
+- Route guard hiện là mock phía client; production bắt buộc kiểm tra quyền lại ở API/backend.
+
+## 7. Traceability và cập nhật
+
+Router/màn hình liên kết với các nhóm MDC: đăng nhập `01`, người dùng `03`, phân quyền `04`, workflow `05`, gửi câu hỏi `10`, quy trình trả lời `14`, tra cứu công khai `15`, báo cáo `17`. Mọi thay đổi router, role, redirect, guard hoặc trạng thái đăng nhập phải cập nhật tài liệu này, file MDC nghiệp vụ tương ứng và test liên quan.
+
+## Changelog
+
+| Ngày | Người cập nhật | Thay đổi | Phạm vi |
+|---|---|---|---|
+| 2026-10-20 | Codex | Tạo bản đồ router, màn hình, luồng role và danh sách tài khoản mock | Router toàn hệ thống; UC 1-8, 18-40, 100-113, 142-175, 188-203 |

@@ -1,0 +1,638 @@
+---
+description: Đặc tả tổng hợp nghiệp vụ và phạm vi mockup Hệ thống Hỏi-Đáp Chính sách Tài chính Bộ Tài chính
+alwaysApply: false
+---
+
+# ĐẶC TẢ TỔNG HỢP HỆ THỐNG HỎI-ĐÁP CHÍNH SÁCH TÀI CHÍNH
+
+## 0. Thông tin tài liệu
+
+- Tên dự án: **Nâng cấp, mở rộng Hệ thống Hỏi-Đáp Chính sách Tài chính tự động Bộ Tài chính**.
+- Chủ đầu tư/đơn vị sử dụng chính: Cục Công nghệ thông tin và Chuyển đổi số – Bộ Tài chính cùng các đơn vị nghiệp vụ thuộc Bộ.
+- Mục đích của file: giúp đội BA/UI/UX/Frontend hiểu phần mềm phục vụ ai, giải quyết việc gì, có các phân hệ và màn hình nào trước khi dựng source mockup.
+- Nguồn tổng hợp:
+  - `usecase BTC.docx`: danh mục 203 use case, quy trình và mô tả use case chi tiết.
+  - `HSDXKT_He_thong_Hoi_Dap_CSTC_Tong_hop.docx`: hiện trạng, mục tiêu, giải pháp nghiệp vụ/kỹ thuật, AI, tích hợp, chuyển đổi dữ liệu, ATTT và quy trình đề xuất.
+  - `Đề xuất giao diện chức năng.docx`: 21 nhóm màn hình trọng tâm và các bước thao tác.
+  - Cổng hiện tại: https://portal.mof.gov.vn/hoidapcstc/ (đối chiếu ngày 19/10/2026).
+- Quy mô được nêu trong hồ sơ: **203 use case, 17 nhóm chức năng, 06 quy trình nghiệp vụ chính, 08 tác nhân**, khoảng 60.000 câu hỏi–trả lời và 15.000 tệp đính kèm cần chuyển đổi.
+- Quy ước mức độ:
+  - **Bắt buộc**: có trong danh mục 203 use case/yêu cầu người sử dụng.
+  - **Đề xuất triển khai**: giải pháp trong HSDXKT, cần chốt ở giai đoạn phân tích thiết kế.
+  - **Tương lai/ngoài phạm vi hiện tại**: ý tưởng phát triển sau gói thầu.
+  - **Cần xác nhận**: tài liệu có mâu thuẫn, thiếu quy tắc hoặc chưa chốt tham số.
+
+## 1. Tóm tắt dễ hiểu: phần mềm này phục vụ việc gì?
+
+Đây là nền tảng số hóa trọn vòng đời hỏi–đáp chính sách tài chính giữa người dân/doanh nghiệp và Bộ Tài chính. Hệ thống mới không chỉ thay giao diện của chuyên mục hỏi đáp hiện tại mà còn thay cách tiếp nhận, phân loại, giao việc, phối hợp, phê duyệt, ký số, xuất bản, theo dõi hạn và báo cáo ở phía nội bộ.
+
+Hệ thống giải quyết 05 vấn đề chính:
+
+1. **Giúp người dân tự tìm câu trả lời nhanh hơn** bằng tìm kiếm theo từ khóa và ngữ nghĩa, câu hỏi tương tự và văn bản pháp luật liên quan.
+2. **Nếu chưa có câu trả lời phù hợp, hỗ trợ gửi câu hỏi đúng nơi**; cấp mã hồ sơ, dự kiến ngày trả lời và cho phép theo dõi tiến độ.
+3. **Số hóa quy trình xử lý nội bộ** từ tiếp nhận → phân loại → giao chuyên viên → phối hợp → soạn trả lời → phê duyệt/ký số → xuất bản → lưu trữ.
+4. **Hỗ trợ cán bộ bằng AI có kiểm soát**: phân loại, định tuyến, phát hiện trùng/rác, tóm tắt, OCR, tìm kiếm và gợi ý căn cứ pháp luật. AI không tự phát hành câu trả lời chính thức.
+5. **Giúp lãnh đạo và quản trị vận hành đo lường được** khối lượng, SLA, chất lượng trả lời, mức hài lòng, hiệu suất đơn vị/chuyên viên và nhuận bút.
+
+### 1.1. Khác biệt so với cổng hiện tại
+
+Cổng hiện tại chủ yếu cho phép đọc danh sách hỏi–đáp, tìm kiếm, gửi câu hỏi qua form và góp ý. Hệ thống mục tiêu bổ sung tài khoản VNeID, hồ sơ cá nhân, mã hồ sơ và timeline, quy trình nội bộ có SLA, AI, kho văn bản pháp luật có hiệu lực/phiên bản, ký số, phân quyền theo phạm vi dữ liệu, dashboard và quản trị vận hành.
+
+### 1.2. Phạm vi không bao gồm
+
+- Không phải hệ thống thực hiện dịch vụ công trực tuyến hay giải quyết thủ tục hành chính.
+- Không thực hiện nộp hồ sơ thủ tục, thanh toán phí/lệ phí hoặc trả kết quả dịch vụ công.
+- AI không được tự tạo rồi tự gửi câu trả lời pháp lý cho người dân trong phạm vi gói thầu.
+- “Trợ lý soạn thảo tự sinh bản nháp” và “chatbot tổng hợp trả lời tức thời” chỉ là định hướng giai đoạn sau, không phải phạm vi bắt buộc hiện tại.
+
+## 2. Nhóm người dùng và trách nhiệm
+
+| Vai trò | Mục tiêu và trách nhiệm chính | Phạm vi dữ liệu |
+|---|---|---|
+| Người dân/Doanh nghiệp | Tìm kiếm, gửi câu hỏi, bổ sung/làm rõ, theo dõi, nhận câu trả lời, đánh giá | Dữ liệu công khai và hồ sơ của chính mình |
+| Quản trị hệ thống | Tài khoản, đơn vị, quyền, quy trình, danh mục, tích hợp, vận hành | Toàn hệ thống theo quyền quản trị |
+| Cán bộ điều phối cấp Bộ/Cán bộ biên tập | Tiếp nhận, phân loại, chuyển/điều chuyển, từ chối, gộp trùng, rà soát, xuất bản, đôn đốc | Toàn bộ hồ sơ cần điều phối |
+| Cán bộ điều phối đơn vị/đầu mối ĐVNV | Tiếp nhận hồ sơ của đơn vị, trả lại sai thẩm quyền, phân công chuyên viên, theo dõi hạn | Hồ sơ thuộc đơn vị và đơn vị trực thuộc được cấp |
+| Chuyên viên/Chuyên gia trả lời | Nghiên cứu, tra cứu pháp luật, soạn dự thảo, xin phối hợp, làm rõ, trình duyệt | Hồ sơ được giao/được mời phối hợp |
+| Lãnh đạo đơn vị | Duyệt hoặc trả sửa, duyệt gia hạn, ký số công văn, xem báo cáo | Hồ sơ và báo cáo của đơn vị |
+| Đơn vị/cơ quan phối hợp | Nhận yêu cầu phối hợp và gửi ý kiến trong hạn | Phần hồ sơ được mời phối hợp |
+| Kế toán | Tổng hợp và xử lý danh sách chi trả nhuận bút | Dữ liệu nhuận bút và tài khoản ngân hàng theo quyền riêng |
+| Hệ thống/Phân hệ thông minh | Cấp mã, tính hạn, gửi thông báo, gợi ý AI, lập chỉ mục, thống kê | Xử lý tự động theo quy tắc, không phải người phê duyệt |
+
+Lưu ý: tài liệu gọi cùng một vai trò bằng nhiều tên. Khi dựng UI nên chuẩn hóa nhãn: “Điều phối cấp Bộ”, “Điều phối đơn vị”, “Chuyên viên”, “Lãnh đạo đơn vị”, “Quản trị hệ thống”.
+
+## 3. Cấu trúc sản phẩm đề xuất cho mockup
+
+Sản phẩm nên được nhìn như 03 cổng giao diện dùng chung một nền tảng nghiệp vụ:
+
+### 3.1. Cổng công khai – Người dân/Doanh nghiệp
+
+- Trang chủ/tìm kiếm hỏi–đáp.
+- Danh sách và chi tiết câu hỏi–trả lời công khai.
+- Tra cứu văn bản pháp luật.
+- Đăng nhập VNeID.
+- Quy trình gửi câu hỏi nhiều bước.
+- Câu hỏi của tôi, chi tiết hồ sơ, timeline, bổ sung/làm rõ.
+- Thông báo cá nhân, lịch sử tra cứu, nội dung đã lưu.
+- Đánh giá, góp ý, báo lỗi nội dung.
+
+### 3.2. Cổng nội bộ – Điều phối, chuyên viên, lãnh đạo, kế toán
+
+- Dashboard theo vai trò.
+- Hộp việc/danh sách câu hỏi và cảnh báo SLA.
+- Chi tiết hồ sơ 360° và lịch sử xử lý.
+- Phân loại, định tuyến, phân công, điều chuyển, gộp trùng.
+- Không gian soạn câu trả lời, tra cứu pháp luật và thư viện mẫu.
+- Xin/phản hồi ý kiến phối hợp.
+- Trình duyệt, bình luận, so sánh phiên bản, ký số, phát hành, xuất bản/thu hồi.
+- Báo cáo và nghiệp vụ nhuận bút.
+
+### 3.3. Cổng quản trị – Quản trị hệ thống và vận hành
+
+- Tổ chức/đơn vị và đầu mối.
+- Người dùng, nhóm quyền, permission, phạm vi dữ liệu.
+- Trình thiết kế/cấu hình workflow và SLA.
+- Danh mục dùng chung, mẫu câu trả lời và mẫu thông báo.
+- Tích hợp VNeID, Email, SMS, API key, webhook, storage.
+- Đồng bộ/quản lý văn bản pháp luật.
+- Vận hành, jobs, cache, sao lưu/khôi phục, maintenance, nhật ký.
+- Quản lý mô hình AI, chỉ mục, huấn luyện và đánh giá mô hình.
+
+## 4. Hành trình nghiệp vụ tổng thể
+
+### 4.1. Luồng chuẩn 08 bước
+
+1. **Tìm kiếm:** người dùng tìm trong kho hỏi–đáp công khai; hệ thống tìm theo từ khóa + ngữ nghĩa và gợi ý nội dung liên quan.
+2. **Gửi câu hỏi:** người dùng nhập thông tin, lĩnh vực, nội dung, tệp; đồng ý xử lý dữ liệu; hệ thống quét hợp lệ/mã độc, cấp mã và gửi xác nhận.
+3. **Tiếp nhận/phân loại:** AI gợi ý lĩnh vực, đơn vị, trùng lặp và mức độ bức xúc; cán bộ điều phối xác nhận hoặc hệ thống tự định tuyến khi đủ độ tin cậy.
+4. **Đơn vị tiếp nhận/phân công:** đầu mối đơn vị nhận, trả lại nếu sai thẩm quyền hoặc giao chuyên viên.
+5. **Soạn trả lời:** chuyên viên nghiên cứu, xem tóm tắt/OCR, tra cứu văn bản, dùng mẫu, xin phối hợp hoặc yêu cầu người hỏi làm rõ.
+6. **Phê duyệt/ký số:** lãnh đạo xem câu hỏi và dự thảo song song, phê duyệt hoặc trả sửa; ký số công văn nếu áp dụng.
+7. **Rà soát/xuất bản:** điều phối cấp Bộ rà soát hình thức và dữ liệu cá nhân, phát hành câu trả lời/công văn, công khai theo quyền; gửi thông báo và mời đánh giá.
+8. **Lưu trữ/báo cáo:** đóng hồ sơ, giữ toàn bộ phiên bản và audit log; tổng hợp báo cáo, KPI và nhuận bút.
+
+### 4.2. SLA đề xuất trong hồ sơ
+
+- Bước tiếp nhận/phân loại: tối đa 01 ngày làm việc.
+- Đơn vị tiếp nhận và phân công: tối đa 01 ngày làm việc.
+- Soạn + phê duyệt: tổng tối đa 07 ngày làm việc.
+- Rà soát/xuất bản: tối đa 01 ngày làm việc.
+- Tổng luồng chuẩn: không quá 10 ngày làm việc.
+- Phối hợp đơn vị khác: góp ý tối đa 03 ngày làm việc, nằm trong hạn soạn/phê duyệt.
+- Chờ người hỏi bổ sung: tối đa 05 ngày làm việc và đề xuất không tính vào SLA; hết hạn có thể đóng hồ sơ.
+- Gia hạn: đề xuất tối đa 01 lần, không quá 05 ngày làm việc, cần lãnh đạo phê duyệt.
+- Nhắc hạn tự động: tại 50%, 80% và khi quá hạn; các mốc là tham số cấu hình.
+- Chỉnh sửa/thu hồi sau xuất bản: đề xuất tối đa 03 ngày làm việc từ khi phát hiện.
+- Rà soát câu trả lời khi văn bản thay đổi: đề xuất tối đa 10 ngày làm việc từ khi gắn cờ.
+
+### 4.3. Bộ trạng thái cần có cho mockup
+
+Danh mục trạng thái chính thức chưa được tài liệu chốt. Bộ trạng thái UI tối thiểu nên mô phỏng:
+
+`Nháp` → `Đã gửi` → `Chờ tiếp nhận` → `Đã tiếp nhận` → `Chờ đơn vị tiếp nhận` → `Đã phân công` → `Đang xử lý` → `Chờ bổ sung`/`Đang chờ phối hợp` → `Chờ phê duyệt` → `Bị trả sửa` → `Đã phê duyệt` → `Chờ phát hành` → `Đã xuất bản/Đã trả lời` → `Đã đóng`.
+
+Nhánh ngoại lệ: `Không tiếp nhận`, `Trả lại/Điều chuyển`, `Đã gộp`, `Đã hủy`, `Đã thu hồi`, `Quá hạn`, `Đang gia hạn`, `Đang rà soát hiệu lực`.
+
+Mỗi lần chuyển trạng thái phải lưu người thực hiện, thời điểm, đơn vị, lý do/ghi chú, trạng thái trước/sau và tài liệu liên quan.
+
+## 5. Phạm vi chức năng đầy đủ theo 17 nhóm/203 use case
+
+### I. Quản lý đăng nhập – UC 1–8
+
+- Nội bộ: đăng nhập, đăng xuất, quên/khôi phục và đổi mật khẩu định kỳ, tự động khóa, cập nhật hồ sơ, kích hoạt 2FA.
+- Bên ngoài: đăng nhập qua VNeID/SSO; tạo hoặc liên kết hồ sơ người dùng từ dữ liệu định danh được phép chia sẻ.
+- Quản lý phiên, hết hạn phiên và nhật ký đăng nhập.
+
+### II. Quản lý tổ chức – đơn vị – UC 9–17
+
+- Thêm, sửa, xem, khóa/ngưng hoạt động, xóa đơn vị.
+- Cây tổ chức/phòng ban/đơn vị trực thuộc.
+- Cấu hình đầu mối tiếp nhận và quan hệ lĩnh vực–đơn vị.
+- Import/export Excel, tìm kiếm nâng cao.
+
+### III. Quản lý người dùng – UC 18–30
+
+- Tạo/sửa/xem/khóa/mở/reset tài khoản cán bộ; gán tổ chức/phòng ban.
+- Tìm kiếm và xuất danh sách người dùng nội bộ; xem lịch sử tác động.
+- Quản lý thông tin tài khoản ngân hàng phục vụ nhuận bút với quyền xem riêng và mã hóa.
+- Xem/tìm người dùng ngoài hệ thống đã định danh.
+
+### IV. Quản lý phân quyền – UC 31–40
+
+- CRUD nhóm quyền/role và danh sách permission.
+- Gán chức năng cho role; gán/thu hồi role của người dùng.
+- Phân quyền theo phạm vi dữ liệu: toàn Bộ, đơn vị, đơn vị con, hồ sơ được giao.
+- Ma trận quyền và chức năng kiểm tra “quyền thực tế” của một cán bộ.
+
+### V. Quản lý quy trình – UC 41–51
+
+- Khởi tạo/sao chép/xóa bản nháp workflow.
+- Thiết lập bước, điều kiện chuyển, vai trò, SLA và thông báo từng bước.
+- Xem/quản lý luồng xử lý câu hỏi.
+- Phiên bản hóa và kích hoạt workflow; thay đổi quy trình không phải sửa code.
+
+### VI. Cấu hình tích hợp – UC 52–59
+
+- Cấu hình VNeID, Email, SMS, nơi lưu trữ.
+- Quản lý API key, webhook.
+- Kiểm tra trạng thái kết nối và xem log tích hợp.
+
+### VII. Quản trị danh mục – UC 60–74
+
+- Lĩnh vực hỏi đáp, mức ưu tiên, trạng thái hồ sơ, loại hình tổ chức, hình thức tiếp nhận, nhóm câu hỏi, tags, mẫu câu trả lời, địa bàn hành chính, tài liệu minh chứng.
+- Import/export Excel, sắp thứ tự hiển thị, cấu hình theo đơn vị.
+- Xem lịch sử sửa đổi danh mục.
+
+### VIII. Quản lý văn bản pháp luật – UC 75–83
+
+- Đồng bộ API và đồng bộ định kỳ từ CSDL văn bản pháp quy ngành tài chính.
+- Bóc tách/lập chỉ mục tới Chương–Điều–Khoản–Điểm; lưu hiệu lực, phiên bản và quan hệ sửa đổi/thay thế/hướng dẫn.
+- Bổ sung thủ công, phát hiện/hợp nhất trùng lặp.
+- Người dùng tra cứu, lưu bookmark, tải và in văn bản.
+- Cảnh báo câu trả lời công khai đang dẫn văn bản hết hiệu lực hoặc bị sửa đổi.
+
+### IX. Quản trị vận hành – UC 84–99
+
+- Giám sát máy chủ, lỗi, jobs và trạng thái dịch vụ.
+- Backup thủ công/chính sách backup tự động/restore.
+- Cảnh báo sự cố, kiểm tra nhất quán dữ liệu, xóa cache, maintenance mode.
+- Huấn luyện/nâng cấp mô hình AI.
+- Chính sách mật khẩu, 2FA, xác thực khi đổi thông tin, khóa/mở khóa và hết hạn mật khẩu.
+- Lịch sử truy cập hệ thống.
+
+### X. Gửi câu hỏi – UC 100–113
+
+- Nhập tiêu đề/nội dung, chọn lĩnh vực/đơn vị, đính kèm minh chứng.
+- Xác nhận gửi, xem trước, lưu nháp, sửa khi chưa tiếp nhận, hủy, chọn mức khẩn cấp.
+- AI gợi ý câu hỏi tương tự; lấy dữ liệu VNeID; quét lỗi/từ cấm.
+- Cấp mã hồ sơ duy nhất và thông báo gửi thành công kèm hạn dự kiến.
+
+### XI. Tương tác người dùng – UC 114–126
+
+- Bên ngoài: timeline tiến độ, đánh giá câu trả lời, hỏi thêm/làm rõ, thông báo cá nhân, đổi ngôn ngữ, tải HDSD, lịch sử câu hỏi, tải PDF câu trả lời, góp ý hệ thống.
+- Nội bộ: thông báo cá nhân, HDSD, báo lỗi hệ thống, lịch sử đăng nhập.
+
+### XII. Xử lý của Phân hệ thông minh – UC 127–134
+
+- Tự phân loại lĩnh vực; định tuyến đơn vị; phân tích mức độ bức xúc.
+- Gợi ý văn bản pháp luật liên quan.
+- Tóm tắt câu hỏi dài, OCR ảnh, phát hiện trùng/rác, dịch tự động.
+
+### XIII. Xử lý dữ liệu và tối ưu hóa backend – UC 135–141
+
+- Đồng bộ dữ liệu tìm kiếm, làm sạch dữ liệu định kỳ, mã hóa thông tin cá nhân.
+- Auto-tagging, thống kê nội dung tra cứu, quét virus tệp.
+- Theo dõi và tối ưu truy vấn tìm kiếm chậm.
+
+### XIV. Quy trình trả lời câu hỏi – UC 142–161
+
+- Lọc/tiếp nhận câu mới, xem hồ sơ, phân công, trả lại/từ chối, gộp trùng.
+- Soạn trả lời, gắn căn cứ pháp luật, xin/phản hồi phối hợp, trình lãnh đạo.
+- Phê duyệt/trả sửa, soạn và đính kèm công văn, ký số, phát hành, xuất bản, thu hồi.
+- Gia hạn SLA, nhắc việc, đóng/lưu trữ hồ sơ.
+
+### XV. Tra cứu cho người dân/doanh nghiệp – UC 162–175
+
+- Tìm câu hỏi công khai bằng từ khóa/ngữ nghĩa; bộ lọc nâng cao; autocomplete.
+- Tra tiến độ bằng mã hồ sơ và thông tin xác thực.
+- Lịch sử tra cứu, lưu bộ lọc, đăng ký thông báo theo từ khóa.
+- Xem chi tiết, in/kết xuất hàng loạt, đánh giá hữu ích, xem câu tương tự, báo lỗi nội dung, xóa lịch sử.
+
+### XVI. Tra cứu cho cán bộ/chuyên viên – UC 176–187
+
+- Tìm kiếm hồ sơ toàn cục; lọc SLA, người xử lý/phòng ban, tags; ghim hồ sơ.
+- Xem chéo lịch sử hỏi đáp của người gửi trong phạm vi được phép.
+- Tìm văn bản pháp luật, thư viện câu trả lời mẫu, nội dung tệp đính kèm.
+- So sánh phiên bản câu trả lời; xem audit log và lịch sử thông báo hồ sơ.
+
+### XVII. Báo cáo – thống kê – UC 188–203
+
+16 báo cáo bắt buộc:
+
+1. Tổng hợp tình hình tiếp nhận và xử lý.
+2. Tiến độ theo đơn vị.
+3. Tỷ lệ đúng hạn/quá hạn.
+4. Phân loại theo lĩnh vực chính sách.
+5. Danh sách chưa trả lời.
+6. Câu hỏi quá hạn.
+7. Lịch sử luân chuyển.
+8. Câu hỏi bị trả lại/yêu cầu chỉnh sửa.
+9. Câu hỏi phức tạp và gia hạn.
+10. Câu hỏi đã trả lời và xuất bản.
+11. Chất lượng câu trả lời.
+12. Tra cứu hỏi–đáp theo từ khóa.
+13. Nguồn/kênh tiếp nhận.
+14. Người dùng gửi câu hỏi nhiều lần.
+15. Thống kê chuyên viên trả lời.
+16. Thanh toán nhuận bút.
+
+Tất cả báo cáo phải giới hạn dữ liệu theo quyền, hỗ trợ lọc, sắp xếp, drill-down và xuất Excel/PDF; mục tiêu kết xuất không quá 01 phút.
+
+## 6. Danh mục 21 màn hình trọng tâm để dựng mockup
+
+### 6.1. Người dân/Doanh nghiệp – 06 màn hình
+
+#### PUB-01. Đăng nhập VNeID
+
+- CTA đăng nhập VNeID; chuyển sang SSO Bộ Công an/SSO Bộ Tài chính.
+- Hỗ trợ tài khoản/mật khẩu hoặc QR tùy dịch vụ VNeID.
+- Sau đăng nhập hiển thị họ tên, điện thoại, email và nhãn xác thực.
+- Khi dùng dữ liệu VNeID để điền form phải có bước xin đồng ý; trường nào khóa/sửa phụ thuộc mức tài khoản.
+- Trạng thái cần mock: chưa đăng nhập, đang chuyển SSO, lỗi/hủy, đăng nhập thành công, thiếu thông tin liên hệ.
+
+#### PUB-02. Gửi câu hỏi
+
+- Có thể thiết kế wizard: (1) Người gửi → (2) Nội dung → (3) Gợi ý tương tự → (4) Xác nhận.
+- Cá nhân: họ tên, điện thoại, email và địa chỉ nếu khách hàng vẫn giữ trường hiện tại.
+- Doanh nghiệp/hộ kinh doanh/cơ quan: tên tổ chức, mã số thuế, họ tên người gửi, điện thoại, email.
+- Câu hỏi: lĩnh vực, đơn vị tiếp nhận, tiêu đề tối đa dự kiến 200 ký tự, nội dung rich text, mức khẩn, tệp đính kèm.
+- Hành động: lưu nháp, xem trước, quay lại/tiếp theo, hủy, gửi.
+- Validation: trường bắt buộc, chọn lĩnh vực trước đơn vị, từ cấm, định dạng/dung lượng tệp, virus, chống gửi lặp.
+
+#### PUB-03. Gợi ý câu hỏi tương tự
+
+- Tự chạy sau khi có đủ tiêu đề/nội dung.
+- Hiển thị khoảng 3 kết quả phù hợp nhất: tiêu đề, trích đoạn, lĩnh vực, ngày trả lời, độ phù hợp, trạng thái hiệu lực nếu có.
+- Cho xem nhanh toàn bộ câu trả lời và căn cứ pháp luật.
+- CTA rõ: “Đã tìm được câu trả lời/Hủy gửi” hoặc “Vẫn tiếp tục gửi”.
+- Không hiển thị kết quả dưới ngưỡng tin cậy.
+
+#### PUB-04. Xác nhận và gửi
+
+- Bản xem trước đầy đủ thông tin, nội dung và tệp.
+- Checkbox cam kết thông tin chính xác/trung thực và checkbox đồng ý xử lý dữ liệu cá nhân (không chọn sẵn).
+- Loading và khóa nút để chống submit hai lần.
+- Thành công: mã hồ sơ, ngày gửi, ngày dự kiến trả lời, nút sao chép mã, đặt câu khác, tra cứu hồ sơ, về trang chủ.
+- Thông báo đồng thời trong app và email/SMS theo cấu hình.
+
+#### PUB-05. Theo dõi hồ sơ/Câu hỏi của tôi
+
+- Bảng/card: mã hồ sơ, tiêu đề, ngày gửi, đơn vị tiếp nhận, trạng thái, hạn dự kiến/cảnh báo.
+- Lọc thời gian, lĩnh vực, trạng thái; tìm theo tiêu đề.
+- Chi tiết có timeline: bước đã qua, đang xử lý, chưa tới; không lộ tên cá nhân nội bộ nếu chưa được phép.
+- Luồng tra cứu không đăng nhập: mã hồ sơ + thông tin xác thực/CAPTCHA theo quy tắc được chốt.
+
+#### PUB-06. Xem câu trả lời
+
+- Toàn văn câu hỏi, tệp, quá trình xử lý được phép công khai, câu trả lời chính thức và tài liệu pháp lý.
+- Tải PDF/in, mở văn bản nguồn, xem trạng thái hiệu lực.
+- Đánh giá 1–5 sao, mức hữu ích, góp ý khác.
+- Hỏi thêm/bổ sung làm rõ kèm tệp; hiển thị lịch sử trao đổi.
+
+### 6.2. Cán bộ quản lý và điều phối – 06 màn hình
+
+#### OPS-01. Tổng quan điều phối
+
+- KPI tiếp nhận/chờ xử lý/đúng hạn/sắp hạn/quá hạn.
+- Tiến độ theo đơn vị và danh sách tồn đọng.
+- Lọc theo thời gian, đơn vị, lĩnh vực; click KPI/đơn vị để drill-down; xuất Excel/PDF.
+
+#### OPS-02. Danh sách câu hỏi
+
+- Tab/hàng đợi: mới, chờ tiếp nhận, đã định tuyến, cần điều phối, sắp hạn, quá hạn, bị trả lại.
+- Cột: mã, tiêu đề, người/kênh gửi, lĩnh vực AI, đơn vị đề xuất, độ tin cậy, nhãn bức xúc/trùng, SLA, người giữ hồ sơ.
+- Chọn nhiều để tiếp nhận hàng loạt; bộ lọc nâng cao; tìm kiếm tách nhóm hồ sơ/văn bản/người dùng.
+
+#### OPS-03. Chi tiết hồ sơ 360°
+
+- Thông tin người gửi, toàn văn câu hỏi, tệp và kết quả quét/OCR.
+- Timeline luân chuyển; SLA; lịch sử thông báo và nút gửi lại.
+- Câu hỏi trước đây của cùng người gửi trong phạm vi quyền; ứng viên trùng lặp.
+- Audit log chỉ đọc.
+
+#### OPS-04. Phân loại và phân công
+
+- Lĩnh vực/đơn vị do AI gợi ý kèm độ tin cậy và lý do/ngữ cảnh.
+- Cho cán bộ xác nhận, sửa, chuyển điều phối thủ công.
+- Khi phân công hiển thị chuyên viên, số hồ sơ đang xử lý, trạng thái tải công việc; cho ghi chú và xác nhận.
+
+#### OPS-05. Điều phối hồ sơ
+
+- Chuyển đơn vị khác, trả lại/từ chối kèm lý do bắt buộc và nơi hướng dẫn.
+- Gộp câu hỏi trùng; phân biệt trùng câu đã có đáp án và trùng hồ sơ đang xử lý.
+- Hiển thị ảnh hưởng trước khi thao tác và lưu lịch sử/khả năng truy vết.
+
+#### OPS-06. Theo dõi hạn xử lý
+
+- Danh sách sắp hạn/quá hạn theo đơn vị và chuyên viên.
+- Tiến độ SLA dạng badge/progress; số ngày còn lại/quá hạn.
+- Gửi nhắc đôn đốc; đề nghị/phê duyệt gia hạn; lý do và hạn mới.
+
+### 6.3. Chuyên viên trả lời – 06 màn hình
+
+#### EXP-01. Hồ sơ được giao
+
+- Danh sách việc của tôi; đúng hạn/sắp hạn/quá hạn; tag nghiệp vụ.
+- Ghim/gỡ ghim; sắp theo ưu tiên, hạn, ngày giao.
+
+#### EXP-02. Xử lý hồ sơ
+
+- Câu hỏi và tệp; tóm tắt AI 3–4 dòng với nhãn “do hệ thống tạo” và nút xem bản gốc.
+- OCR hiển thị ảnh gốc cạnh văn bản nhận diện; sao chép/chỉnh sửa kết quả.
+- Tìm sâu trong nội dung tệp đính kèm.
+- Hành động nghiệp vụ: yêu cầu làm rõ, xin phối hợp, trả lại, bắt đầu soạn.
+
+#### EXP-03. Tra cứu văn bản pháp luật
+
+- Tìm theo số hiệu, trích yếu, từ khóa/ngữ nghĩa, cơ quan, loại, lĩnh vực, tình trạng hiệu lực, thời điểm.
+- Kết quả xuống tới Điều/Khoản/Điểm, tô sáng đoạn phù hợp, hiển thị nguồn và quan hệ sửa đổi/hướng dẫn.
+- Xem nhanh, bookmark, tải/in, chọn làm căn cứ trả lời.
+
+#### EXP-04. Soạn câu trả lời
+
+- Editor rich text; tự lưu dự kiến mỗi 30 giây; trạng thái đã lưu.
+- Chèn mẫu trả lời đã duyệt; xem tần suất sử dụng.
+- Panel AI gợi ý văn bản và câu trả lời mẫu; cán bộ quyết định “Gắn/Bỏ”.
+- Danh sách căn cứ pháp lý có số hiệu, Điều/Khoản, hiệu lực và link nguồn.
+- Quản lý phiên bản, xem trước, lưu nháp, trình duyệt.
+
+#### EXP-05. Xin ý kiến phối hợp
+
+- Chọn một/nhiều đơn vị, nội dung yêu cầu, thời hạn, tệp.
+- Tạo sub-task; theo dõi đã gửi/đã xem/đã phản hồi/quá hạn.
+- Đơn vị phối hợp có màn hình phản hồi; ý kiến trả về được ghép vào hồ sơ để chuyên viên chủ trì tổng hợp.
+
+#### EXP-06. Trình duyệt
+
+- Chuyên viên chọn lãnh đạo, nhập ý kiến trình và gửi; sau gửi khóa sửa theo quy tắc.
+- Lãnh đạo xem câu hỏi và dự thảo song song, bình luận theo đoạn.
+- Hành động: phê duyệt, ký số, yêu cầu sửa; lý do trả sửa bắt buộc.
+- Lịch sử phiên bản và chế độ so sánh diff: nội dung xóa/thêm được đánh màu.
+
+### 6.4. Dashboard – 03 màn hình
+
+#### DASH-01. Dashboard lãnh đạo
+
+- KPI theo trạng thái, lĩnh vực, đơn vị và thời gian.
+- Biểu đồ phân bổ lĩnh vực; drill-down tới danh sách hồ sơ.
+- Bộ lọc dùng chung, xuất Excel/PDF.
+
+#### DASH-02. Dashboard thời hạn xử lý
+
+- Tỷ lệ đúng hạn/quá hạn theo kỳ và lĩnh vực.
+- Danh sách quá hạn theo số ngày, nguyên nhân, đơn vị/chuyên viên phụ trách.
+- Cảnh báo và drill-down.
+
+#### DASH-03. Dashboard hiệu suất và chất lượng
+
+- Số tiếp nhận/đã xử lý/đúng hạn của từng chuyên viên.
+- Điểm đánh giá, góp ý người dân theo chuyên viên/đơn vị.
+- Lọc phòng ban, thời gian; sắp hạng; click xem hồ sơ chi tiết; xuất báo cáo.
+
+## 7. Quy tắc nghiệp vụ quan trọng
+
+### 7.1. Gửi và quản lý câu hỏi
+
+- Mã hồ sơ phải duy nhất; HSDXKT đề xuất định dạng chính thức `HD-[Năm]-[Số thứ tự]`.
+- Chỉ cho sửa/hủy khi hồ sơ chưa được tiếp nhận, trừ quy trình bổ sung/làm rõ.
+- Tệp phải được kiểm tra loại, kích thước, mã độc; kết quả OCR/tóm tắt không thay thế bản gốc.
+- Hồ sơ từ email, Cổng TTĐT Chính phủ hoặc văn bản giấy phải được nhập vào cùng hệ thống và lưu “kênh tiếp nhận”.
+- Khi công khai phải loại/che thông tin định danh và dữ liệu không được phép công bố.
+
+### 7.2. Phân loại và định tuyến
+
+- AI phân loại đa nhãn theo lĩnh vực, sau đó đề xuất đơn vị theo lĩnh vực + nội dung + địa bàn.
+- Ngưỡng tự định tuyến đề xuất ban đầu là 0,85; dưới ngưỡng chuyển cán bộ điều phối xác nhận.
+- Đơn vị luôn có quyền trả lại sai thẩm quyền, bắt buộc lý do/đơn vị đề xuất.
+- Mọi lần cán bộ sửa nhãn/chuyển đơn vị được lưu làm dữ liệu cải thiện mô hình.
+
+### 7.3. Câu hỏi trùng
+
+- Trùng với câu đã công khai: cán bộ xác nhận và gửi đường dẫn câu trả lời có sẵn.
+- Trùng với hồ sơ đang xử lý: gộp vào hồ sơ chính và trả lời một lần cho các người hỏi liên quan.
+- Không tự gộp chỉ dựa trên AI; phải có bước xác nhận của cán bộ.
+
+### 7.4. Phê duyệt, phát hành và thu hồi
+
+- Câu trả lời chính thức phải do chuyên viên soạn và người có thẩm quyền phê duyệt.
+- Quyền xuất bản có thể thuộc điều phối đơn vị hoặc cấp Bộ tùy cấu hình.
+- Nếu điều phối đơn vị không có quyền, hồ sơ chuyển cấp Bộ để xuất bản.
+- Thu hồi tuân theo cấp đã xuất bản; mọi phiên bản, lý do và người duyệt vẫn được lưu.
+- Câu trả lời công khai khi đang rà soát hiệu lực phải có cảnh báo phù hợp.
+
+### 7.5. Dữ liệu cá nhân
+
+- Đồng ý xử lý dữ liệu phải chủ động, không pre-check.
+- Chỉ thu thập trường cần thiết; hiển thị theo vai trò và mục đích.
+- Số định danh, điện thoại, email, mã số thuế, tài khoản ngân hàng phải được che/mã hóa phù hợp.
+- Cần có quy trình yêu cầu xem/sửa/xóa/rút đồng ý; nội dung hỏi–đáp đã công khai có thể được giữ dưới dạng ẩn danh theo quy định được duyệt.
+
+## 8. Phân hệ thông minh/AI
+
+### 8.1. Chức năng trong phạm vi
+
+- Tìm kiếm lai: ngữ nghĩa + từ khóa/số hiệu văn bản + xếp hạng lại.
+- Gợi ý câu hỏi–đáp tương tự cho người dân.
+- Gợi ý văn bản pháp luật đến Điều/Khoản cho người dân và chuyên viên.
+- Phân loại lĩnh vực, định tuyến đơn vị, phát hiện bức xúc/trùng/rác, auto-tag.
+- Tóm tắt câu hỏi dài, OCR ảnh, dịch Anh–Việt theo yêu cầu.
+- Lập chỉ mục dữ liệu mới và pipeline huấn luyện lại định kỳ có phê duyệt.
+
+### 8.2. Nguyên tắc an toàn bắt buộc trong UI
+
+- Gắn nhãn rõ “Gợi ý tự động” hoặc “Do hệ thống tạo”.
+- Luôn hiển thị nguồn kiểm chứng: mã hỏi–đáp hoặc số hiệu/Điều/Khoản/link văn bản.
+- Không hiển thị nội dung chưa duyệt trong kết quả công khai.
+- Không tự công bố nội dung do mô hình sinh.
+- Cho cán bộ chấp nhận/từ chối/sửa gợi ý; ghi log phản hồi.
+- Khi AI lỗi phải fallback sang tìm kiếm từ khóa và điều phối thủ công; nghiệp vụ không bị dừng.
+- Quản trị viên có công tắc bật/tắt từng chức năng AI, xem phiên bản/chỉ số và rollback mô hình.
+
+### 8.3. Chỉ số cần theo dõi
+
+- Tìm kiếm: Recall@5/10, MRR, tỷ lệ người dân “đã tìm được câu trả lời”.
+- Phân loại: accuracy/F1, tỷ lệ cán bộ sửa nhãn.
+- Định tuyến: tỷ lệ đúng đơn vị, tỷ lệ bị trả/điều chuyển.
+- Văn bản gợi ý: tỷ lệ được chuyên viên gắn làm căn cứ.
+- Hiệu quả: thời gian trả lời trung bình, tỷ lệ tự tra cứu thành công.
+
+## 9. Tích hợp bên ngoài
+
+| Hệ thống | Mục đích | Ghi chú UI/nghiệp vụ |
+|---|---|---|
+| VNeID qua SSO Bộ Tài chính | Đăng nhập và lấy dữ liệu định danh | Consent, mức tài khoản, liên kết hồ sơ, xử lý hủy/lỗi SSO |
+| CSDL VBPQ `vbpq.mof.gov.vn` | Đồng bộ văn bản pháp quy ngành tài chính | Chỉ đọc; giữ mã/link nguồn; đồng bộ gia tăng và đối soát |
+| Email Gateway | Xác nhận, thay đổi trạng thái, trả lời, nhắc hạn | Lưu trạng thái gửi, retry và lịch sử |
+| SMS Gateway | Thông báo ngắn và OTP/2FA nếu cấu hình | Có quota/lỗi nhà cung cấp |
+| Dịch vụ ký số | Ký công văn trả lời | Nhà cung cấp/chuẩn tích hợp chưa chốt trong tài liệu |
+| Antivirus Kaspersky | Quét tệp đính kèm | Chặn/cách ly và thông báo lý do |
+| SIEM/SOC, syslog | Thu nhật ký bảo mật/vận hành | Không phải UI nghiệp vụ, có màn hình trạng thái/log quản trị |
+| Webhook/API key | Gửi sự kiện cho hệ thống khác | Quản lý secret, trạng thái và retry |
+
+## 10. Mô hình dữ liệu nghiệp vụ mức khái niệm
+
+- **User/ExternalIdentity:** người dùng, liên hệ, VNeID subject, consent, trạng thái tài khoản.
+- **Organization/Department:** cây đơn vị, lĩnh vực phụ trách, đầu mối, trạng thái.
+- **Role/Permission/DataScope:** role, permission, phạm vi dữ liệu, lịch sử gán quyền.
+- **QuestionCase:** mã hồ sơ, kênh, người gửi, tổ chức gửi, lĩnh vực, đơn vị, tiêu đề, nội dung, mức ưu tiên, trạng thái, SLA.
+- **Attachment:** tệp gốc, hash, MIME, dung lượng, kết quả virus, OCR, metadata.
+- **Assignment/WorkflowInstance/Task:** bước, người/đơn vị giữ, thời hạn, hành động, lý do chuyển.
+- **Answer/Draft/Version/Comment:** bản nháp, phiên bản, diff, bình luận, trạng thái duyệt.
+- **LegalDocument/Clause/Relation/Citation:** văn bản, Điều/Khoản, hiệu lực, quan hệ, trích dẫn trong câu trả lời.
+- **CoordinationRequest:** đơn vị phối hợp, nội dung, hạn, phản hồi, trạng thái.
+- **Approval/DigitalSignature/Publication:** người duyệt, chữ ký, công văn, lần phát hành/thu hồi.
+- **Notification:** kênh, mẫu, người nhận, thời điểm, trạng thái gửi/retry.
+- **Rating/Feedback/Clarification:** sao, hữu ích, góp ý, hỏi thêm, bổ sung.
+- **SLAEvent/Extension:** mốc, pause/resume, gia hạn, lý do, người duyệt.
+- **AuditLog:** hành động bất biến, trước/sau, người thực hiện, IP/device nếu được phép.
+- **AIRecommendation/ModelVersion:** loại gợi ý, điểm tin cậy, nguồn, phản hồi cán bộ, phiên bản mô hình.
+- **Report/Royalty:** kỳ, chỉ tiêu, dữ liệu xuất, chuyên gia, mức chi, tài khoản nhận.
+
+## 11. Thông báo và sự kiện
+
+Người dân tối thiểu nhận thông báo khi: gửi thành công, đã tiếp nhận, không tiếp nhận, cần bổ sung, được gia hạn, đã trả lời/xuất bản, câu trả lời được cập nhật/thu hồi và mời đánh giá.
+
+Cán bộ tối thiểu nhận thông báo khi: có hồ sơ mới, được phân công, bị trả lại, có yêu cầu/phản hồi phối hợp, người dân bổ sung, gần hạn/quá hạn, được trình duyệt, bị trả sửa, đã duyệt, lỗi phát hành/tích hợp.
+
+Mỗi thông báo cần: tiêu đề, nội dung, mã hồ sơ, CTA, kênh, người nhận, thời điểm, đã đọc/chưa đọc, gửi thành công/thất bại, số lần retry.
+
+## 12. Yêu cầu phi chức năng ảnh hưởng trực tiếp tới mockup/source
+
+- Phản hồi nghiệp vụ trực tuyến mục tiêu dưới 2,5 giây; tác vụ OCR/tóm tắt/dịch chạy bất đồng bộ và phải có trạng thái tiến trình.
+- Tối thiểu 500 người dùng đồng thời; hoạt động 24/7; nâng cấp không gián đoạn.
+- Responsive cho desktop/tablet/mobile; cổng nội bộ ưu tiên desktop nhưng vẫn co giãn hợp lý.
+- Tuân nhận diện Cổng TTĐT Bộ Tài chính; Unicode; ngày `DD/MM/YYYY`, giờ `hh:mm:ss`.
+- Điều hướng bằng bàn phím/TAB, nhãn form rõ, độ tương phản và hỗ trợ tiếp cận theo WCAG 2.0.
+- Trình duyệt mục tiêu: Chrome, Edge, Firefox, Safari, Cốc Cốc.
+- Phân quyền phải được kiểm tra phía server; UI ẩn nút không thay thế kiểm tra quyền.
+- Audit log chỉ ghi thêm; dữ liệu nhạy cảm không xuất hiện trong log/toast/URL.
+- Export cần PDF, XLSX và khi phù hợp DOCX/ZIP.
+- Giao diện phải có empty/loading/error/permission denied/offline/degraded state, đặc biệt cho AI và tích hợp.
+
+## 13. Kiến trúc thông tin/menu gợi ý cho mockup
+
+### Cổng công khai
+
+`Trang chủ` · `Tra cứu hỏi–đáp` · `Văn bản pháp luật` · `Gửi câu hỏi` · `Tra cứu hồ sơ` · `Hướng dẫn` · `Đăng nhập/VNeID`
+
+Sau đăng nhập: `Câu hỏi của tôi` · `Nội dung đã lưu` · `Lịch sử tra cứu` · `Thông báo` · `Hồ sơ cá nhân`.
+
+### Cổng nội bộ
+
+`Tổng quan` · `Hộp việc` · `Điều phối` · `Hồ sơ hỏi–đáp` · `Phối hợp` · `Kho pháp luật` · `Thư viện mẫu` · `Báo cáo` · `Thông báo`.
+
+Menu/hành động thay đổi theo vai trò; không cần làm một sidebar chứa mọi chức năng cho mọi người.
+
+### Cổng quản trị
+
+`Tổ chức` · `Người dùng` · `Vai trò & quyền` · `Quy trình & SLA` · `Danh mục` · `Văn bản pháp luật` · `Tích hợp` · `AI & chỉ mục` · `Vận hành` · `Nhật ký`.
+
+## 14. Phạm vi mockup ưu tiên
+
+### P0 – Bắt buộc để demo vòng nghiệp vụ chính
+
+- Trang chủ/tìm kiếm và chi tiết hỏi–đáp công khai.
+- Đăng nhập VNeID (mô phỏng).
+- Wizard gửi câu hỏi + gợi ý tương tự + xác nhận thành công.
+- Câu hỏi của tôi + timeline + chi tiết/trả lời/đánh giá/làm rõ.
+- Dashboard điều phối + danh sách + chi tiết + phân loại/phân công/điều chuyển.
+- Hồ sơ chuyên viên + tra cứu pháp luật + editor + xin phối hợp + trình duyệt.
+- Màn hình lãnh đạo duyệt/trả sửa/ký số mô phỏng.
+- Dashboard lãnh đạo/SLA/hiệu suất.
+
+### P1 – Quản trị cần để chứng minh hệ thống cấu hình được
+
+- Cây đơn vị và đầu mối.
+- Người dùng, role, permission và data scope.
+- Workflow/SLA và mẫu thông báo.
+- Danh mục/lĩnh vực/tags/mẫu trả lời.
+- Đồng bộ văn bản pháp luật và trạng thái tích hợp.
+
+### P2 – Vận hành sâu
+
+- Backup/restore, jobs, cache, maintenance.
+- Model training/version/metrics/rollback.
+- Audit/log/SIEM, cấu hình bảo mật nâng cao.
+- Nhuận bút và toàn bộ 16 mẫu báo cáo chi tiết.
+
+## 15. Bộ dữ liệu giả lập nên chuẩn bị cho mockup
+
+- 03 loại người gửi: cá nhân, doanh nghiệp, cơ quan nhà nước.
+- 08–12 lĩnh vực tiêu biểu: thuế, hải quan, kế toán–kiểm toán, ngân sách, công sản, kho bạc, giá, bảo hiểm/chứng khoán.
+- 05–08 đơn vị xử lý với cây Bộ → Cục/Vụ → Phòng.
+- Ít nhất 12 hồ sơ phủ trạng thái chuẩn và ngoại lệ: mới, sắp hạn, quá hạn, trả lại, chờ phối hợp, chờ bổ sung, chờ duyệt, bị trả sửa, đã xuất bản, đã thu hồi.
+- 05 văn bản pháp luật có quan hệ hiệu lực/sửa đổi và trích dẫn đến Điều/Khoản.
+- 03 mẫu trả lời; 03 gợi ý AI điểm cao/vừa/thấp; 01 trường hợp AI lỗi để demo fallback.
+- 01 hồ sơ trùng câu đã trả lời và 01 hồ sơ trùng câu đang xử lý.
+- 01 hồ sơ doanh nghiệp có nhiều tệp gồm PDF, ảnh OCR và một tệp bị antivirus từ chối.
+
+## 16. Điểm chưa thống nhất/cần khách hàng xác nhận trước khi chốt UI
+
+1. **VNeID bắt buộc hay tùy chọn?** Phụ lục giao diện cho phép gửi khi chưa đăng nhập và nói đây là tham số; UC có đăng nhập VNeID nhưng chưa khẳng định bắt buộc.
+2. **Tra cứu hồ sơ dùng gì để xác thực?** Một tài liệu ghi “mã hồ sơ + mật khẩu tra cứu”, phụ lục giao diện ghi “mã hồ sơ + CAPTCHA”. Cần chốt để tránh lộ dữ liệu.
+3. **Người dân có tự chọn đơn vị nhận không?** Form yêu cầu chọn đơn vị, trong khi mục tiêu AI là tự định tuyến. Nên chốt: người dùng chỉ chọn lĩnh vực, đơn vị là tùy chọn/gợi ý hay bắt buộc.
+4. **Lưu nháp khi chưa đăng nhập:** nếu cho phép anonymous thì lưu ở trình duyệt hay tạo mã/token nháp; thời hạn giữ bao lâu?
+5. **Mức độ khẩn cấp:** UC 107 cho người hỏi chọn nhưng chưa có tiêu chí/chống lạm dụng; có thể nên do hệ thống/cán bộ xác định.
+6. **Định dạng mã hồ sơ:** tài liệu giao diện dùng ví dụ `CH-2026-00012`; HSDXKT nói mã chính thức `HD-[Năm]-[Số thứ tự]`.
+7. **Danh mục trạng thái:** chưa có bộ trạng thái và màu chính thức; cần BA/chủ đầu tư duyệt state machine.
+8. **SLA pháp lý:** mốc 10 ngày và các quy trình 3/5/10 ngày trong HSDXKT có nhiều chỗ ghi “đề xuất”; cần xác nhận trước khi hard-code/mockup như quy định chính thức.
+9. **Pause SLA:** cần chốt tình huống dừng đồng hồ (chờ người dân, chờ phối hợp, ngày nghỉ) và cách hiển thị deadline cũ/mới.
+10. **Ký số:** chưa chốt nhà cung cấp, hình thức ký, người ký và luồng PIN/USB token/HSM/remote signing.
+11. **Kênh Zalo:** tài liệu giao diện nhắc Zalo/SMS/Email nhưng nhóm cấu hình chỉ nêu Email/SMS/Webhook; cần chốt Zalo có trong phạm vi không.
+12. **Đa ngôn ngữ:** có UC đổi ngôn ngữ nhưng chưa xác định ngôn ngữ, nội dung nào được dịch và ai duyệt bản dịch.
+13. **Quy tắc tệp:** chưa chốt loại, số lượng, dung lượng tối đa và cách xử lý tệp có dữ liệu nhạy cảm.
+14. **Thông tin cá nhân công khai:** cần ma trận field-level visibility cho người dân, chuyên viên, điều phối, lãnh đạo, kế toán và báo cáo xuất file.
+15. **Quyền xuất bản:** tài liệu cho phép cấu hình cấp đơn vị hoặc cấp Bộ; cần chốt theo từng loại đơn vị/câu hỏi.
+16. **Nhuận bút:** còn phụ thuộc việc Bộ tiếp tục quy chế cũ; cần chốt công thức, đối tượng và quy trình kế toán.
+17. **Xuất danh sách hồ sơ cá nhân:** đề xuất UI nêu Excel/PDF nhưng danh mục UC công khai chủ yếu yêu cầu PDF câu trả lời/kết xuất kết quả; cần xác nhận.
+18. **Tìm kiếm và dữ liệu công khai:** cần quy định câu hỏi bị ẩn danh, bị thu hồi, đang rà soát hiệu lực có được index và hiển thị không.
+19. **Tự động định tuyến:** ngưỡng 0,85 là đề xuất ban đầu, không nên đóng cứng trong UI/source.
+20. **Thiết bị di động cho nội bộ:** chưa rõ cần responsive đầy đủ hay chỉ desktop cho nghiệp vụ phức tạp.
+
+## 17. Tiêu chí hoàn thành mockup
+
+Mockup được xem là đủ cơ sở review nghiệp vụ khi:
+
+- Bao phủ trọn luồng từ tìm kiếm/gửi câu hỏi đến xuất bản/đánh giá.
+- Có prototype theo ít nhất 04 vai trò: người dân, điều phối, chuyên viên, lãnh đạo.
+- Thể hiện đầy đủ trạng thái chuẩn, ngoại lệ, SLA và quyền hành động.
+- Tách rõ dữ liệu công khai, dữ liệu hồ sơ cá nhân và dữ liệu nội bộ.
+- Mọi gợi ý AI có nguồn, điểm tin cậy/nhãn và thao tác chấp nhận/từ chối.
+- Có loading, empty, validation, error, permission denied và fallback khi AI/tích hợp lỗi.
+- Có luồng mobile cho người dân; form gửi câu hỏi và tra cứu dùng được bằng bàn phím.
+- Các điểm ở Mục 16 được gắn `TBD` trong prototype, không tự giả định thành yêu cầu cuối cùng.
+
+## 18. Kết luận định hướng triển khai
+
+Source mockup nên được dựng như một **hệ thống quản lý hồ sơ hỏi–đáp có cổng công khai**, không phải một website tin tức có thêm form liên hệ. Trục thiết kế chính là `Hồ sơ câu hỏi + Workflow + SLA + Phân quyền + Kho pháp luật + AI hỗ trợ`, trong đó trải nghiệm người dân đơn giản, còn nghiệp vụ nội bộ phải thể hiện được trách nhiệm, thời hạn, lịch sử và thẩm quyền ở từng bước.
+

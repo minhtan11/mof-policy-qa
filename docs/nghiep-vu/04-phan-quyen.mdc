@@ -1,0 +1,26 @@
+# NV-04 — Phan quyen
+
+UC: 31-40  
+Actors: system administrator, unit manager  
+Status: specified; baseline guards mocked; matrix implementation pending.
+
+## Scope
+
+Role/permission CRUD, assign/revoke roles, three data scopes (all/unit/assigned), effective-permission check and permission matrix.
+
+## Acceptance criteria
+
+- Route guard, action permission and data scope are evaluated separately.
+- Revoking a role removes effective actions after session refresh/revocation.
+- A user can be granted multiple roles; effective permission is the union constrained by scope.
+- Every deny response is safe and does not reveal hidden records.
+
+## Test mapping
+
+`auth.guards.spec.ts`, `permission.service.spec.ts` (planned).
+
+## Changelog
+
+| Date | By | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Initial per-business MDC created | 31-40 |

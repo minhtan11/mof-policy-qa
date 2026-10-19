@@ -1,0 +1,28 @@
+# NV-14 — Quy trinh tra loi
+
+UC: 142-161  
+Actors: reception, coordinator, specialist, leader, system administrator  
+Status: P0 status transitions mocked; full workflow pending.
+
+## Scope
+
+Receive/filter, assign/return/reject/merge, draft answer, legal basis, collaboration, submit/review, revise, official document, e-sign, publish/recall, extension, reminders, close/archive.
+
+## Acceptance criteria
+
+- Every transition validates current state, actor permission, required content and SLA.
+- Published answers require approval and immutable audit trail.
+- Recall removes public visibility without deleting history.
+- Extension and overdue events notify responsible actors and leaders.
+
+## Test mapping
+
+`mock-db.service.spec.ts`, `dossier-detail.component.spec.ts`, `workflow.service.spec.ts` (planned extension).
+
+## Changelog
+
+- 2026-10-20 | Codex | Bổ sung gợi ý AI vào màn hình xử lý hồ sơ nhưng không tự động phê duyệt | UC 142-161 | mocked
+
+| Date | By | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Existing processing/approval/publish flow documented | 142-161 |

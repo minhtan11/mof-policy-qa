@@ -1,0 +1,26 @@
+# NV-08 — Quan ly van ban phap luat
+
+UC: 75-83  
+Actors: specialist, leader, public user, system administrator  
+Status: specified; legal basis seed mocked; external sync pending.
+
+## Scope
+
+Sync/index legal documents, validity/version/relations, manual additions, duplicate detection, bookmarks/download/print and stale-reference warnings.
+
+## Acceptance criteria
+
+- Document validity is evaluated at the dossier/answer date.
+- Replaced/expired documents retain relation history and trigger warning on public answer.
+- Search returns chapter/article/clause/point references.
+- Manual content is marked and audited separately from synchronized content.
+
+## Test mapping
+
+`legal-document.service.spec.ts` (planned).
+
+## Changelog
+
+| Date | By | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Initial per-business MDC created | 75-83 |

@@ -1,0 +1,26 @@
+# NV-15 — Tra cuu cong khai
+
+UC: 162-175  
+Actors: public user, business user  
+Status: P0 search mocked; full personalization pending.
+
+## Scope
+
+Keyword/semantic search, advanced filters/autocomplete, authenticated tracking, search history/saved filters/alerts, detail/export/rating/similar/report/delete history.
+
+## Acceptance criteria
+
+- Public results only include published content and safe fields.
+- Tracking requires dossier code plus allowed verification data.
+- Search history and alerts are private to the user.
+- Batch export applies the same visibility rules as the result list.
+
+## Test mapping
+
+`lookup.component.spec.ts` (planned extension).
+
+## Changelog
+
+| Date | By | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Existing public lookup flow documented | 162-175 |

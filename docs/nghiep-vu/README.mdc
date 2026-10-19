@@ -1,0 +1,35 @@
+# Business specification index
+
+Router, màn hình và tài khoản mock theo role được mô tả tại `../router-va-tai-khoan-theo-role.mdc`.
+
+This directory is the change-controlled business source for the 203 use cases. The consolidated specification remains the baseline at `../dac-ta-he-thong-hoi-dap-cstc.mdc`.
+
+Every file below owns a contiguous UC range. Code changes must update its acceptance criteria and changelog before tests are changed.
+
+| File | UC range | Primary area |
+|---|---:|---|
+| 01-quan-ly-dang-nhap.mdc | 1-8 | Internal/public authentication, VNeID, session, 2FA |
+| 02-to-chuc-don-vi.mdc | 9-17 | Organization tree and routing |
+| 03-nguoi-dung.mdc | 18-30 | Internal/external user accounts |
+| 04-phan-quyen.mdc | 31-40 | Roles, permissions, scopes |
+| 05-quy-trinh.mdc | 41-51 | Configurable workflow and SLA |
+| 06-tich-hop.mdc | 52-59 | VNeID, messaging, storage, webhooks |
+| 07-danh-muc.mdc | 60-74 | Catalogues and templates |
+| 08-van-ban-phap-luat.mdc | 75-83 | Legal document library and validity |
+| 09-van-hanh.mdc | 84-99 | Operations, security, backup, AI operations |
+| 10-gui-cau-hoi.mdc | 100-113 | Public question submission |
+| 11-tuong-tac.mdc | 114-126 | Notifications, feedback, history |
+| 12-phan-he-thong-minh.mdc | 127-134 | Classification, suggestions, OCR, translation |
+| 13-du-lieu-backend.mdc | 135-141 | Search index, quality, privacy processing |
+| 14-quy-trinh-tra-loi.mdc | 142-161 | Internal answer lifecycle |
+| 15-tra-cuu-cong-khai.mdc | 162-175 | Public search and tracking |
+| 16-tra-cuu-noi-bo.mdc | 176-187 | Staff search and audit |
+| 17-bao-cao-thong-ke.mdc | 188-203 | Mandatory reports and dashboards |
+
+## Traceability status
+
+`specified` means documented; `mocked` means executable with local mock data; `tested` means covered by a spec; `integrated` is reserved for a real adapter/API; `blocked` requires customer/API clarification.
+
+## Change protocol
+
+Update the owning file's `Changed on`, `Changed by`, `Change reason`, `Affected UC`, and `Changelog` before merging code. Update cross-referenced files when a transition crosses business groups.

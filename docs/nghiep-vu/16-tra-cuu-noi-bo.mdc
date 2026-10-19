@@ -1,0 +1,26 @@
+# NV-16 — Tra cuu noi bo
+
+UC: 176-187  
+Actors: reception, specialist, leader, coordinator  
+Status: specified; dashboard queue baseline mocked.
+
+## Scope
+
+All-scope/assigned-scope search, SLA/unit/assignee/tag filters, pinned dossiers, sender history within permission, legal library, templates, attachment content, answer comparison, audit and notification history.
+
+## Acceptance criteria
+
+- Results are filtered by effective data scope before pagination/export.
+- Sender cross-history is never visible outside permission scope.
+- Comparison identifies changed fields and versions.
+- Audit history is append-only and includes actor/time/action/result.
+
+## Test mapping
+
+`internal-search.service.spec.ts` (planned).
+
+## Changelog
+
+| Date | By | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Initial per-business MDC created | 176-187 |

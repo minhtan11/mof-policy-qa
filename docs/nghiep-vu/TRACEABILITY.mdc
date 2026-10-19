@@ -1,0 +1,34 @@
+# Traceability implementation matrix
+
+> Cập nhật: 2026-10-20. Đây là trạng thái của mockup Angular, không phải trạng thái tích hợp production.
+
+## Quy ước
+
+- `specified`: đã có đặc tả trong MDC.
+- `mocked`: đã có màn hình/repository thao tác được bằng dữ liệu cục bộ.
+- `tested`: có test tự động cho logic chính.
+- `integrated`: chỉ dùng khi có adapter/API thật; hiện chưa có UC nào đạt trạng thái này.
+- `blocked`: phụ thuộc hợp đồng tích hợp hoặc quyết định nghiệp vụ chưa được cung cấp.
+
+## Phạm vi đã mocked trong source
+
+| Nhóm | UC | Màn hình / thành phần | Trạng thái |
+|---|---:|---|---|
+| Đăng nhập | 1-8 | Public login, VNeID mock, internal role login, session guard | mocked; UC 1, 4 tested |
+| Người dùng / phân quyền | 18-40 | Admin users table, role-aware guards, scope route | mocked |
+| Workflow / SLA | 41-51 | Workflow repository, draft/activate, dossier transition | mocked; transition tested |
+| Danh mục | 60-74 | Catalog repository, toggle/add in admin | mocked |
+| Văn bản pháp luật | 75-83 | Legal repository, search/add draft in admin | mocked; search tested |
+| Gửi câu hỏi | 100-113 | Reactive form, validation, create dossier, tracking code | mocked |
+| Quy trình trả lời | 142-161 | Receive, draft answer, submit approval, publish, timeline | mocked |
+| Tra cứu công khai | 162-175 | Public lookup/search view | mocked |
+| AI hỗ trợ | 127-134 | Suggest/accept/reject advisory flow in dossier/admin | mocked; service tested |
+| Báo cáo | 188-203 | Report definitions and generated summary metrics | mocked |
+
+## Chưa đánh dấu hoàn tất
+
+Các UC về SSO/VNeID thật, SMS/email gateway, storage, webhook, OCR/translation provider, audit/backup production, privacy masking, export ký số và API backend vẫn cần adapter hoặc đặc tả tích hợp của khách hàng. Không được coi mockup là production-ready cho các UC này.
+
+## Quy tắc cập nhật
+
+Mỗi thay đổi workflow, trạng thái, quyền, dữ liệu hoặc acceptance criteria phải cập nhật file MDC nhóm tương ứng và mục này; test phải ghi rõ mã UC trong tên/mô tả. Khi có API thật, chuyển trạng thái từng UC từ `mocked` sang `integrated` kèm link adapter và test contract.
