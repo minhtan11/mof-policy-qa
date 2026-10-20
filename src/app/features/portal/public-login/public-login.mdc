@@ -2,7 +2,7 @@
 
 Changed on: 2026-10-20  
 Changed by: Auto  
-Change reason: Bỏ scroll-reveal (appReveal) — chỉ landing trang chủ `/portal` dùng reveal  
+Change reason: Bỏ route `/portal/login/vneid`; tiện ích nhanh VNeID mở `/portal/login?method=vneid` (panel QR cùng trang)  
 Affected UC: UC-1..UC-8  
 MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/01-dang-nhap-cong.mdc`
 
@@ -10,7 +10,7 @@ MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/01-dang-nhap-cong.mdc`
 
 | Mục | Giá trị |
 |---|---|
-| Route | `/portal/login` (VNeID: `/portal/login/vneid`) |
+| Route | `/portal/login` (mode VNeID: `?method=vneid`) |
 | Actor | Người dân / doanh nghiệp |
 | Quyền | Công khai |
 | Trạng thái | `mocked` |
@@ -20,7 +20,7 @@ MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/01-dang-nhap-cong.mdc`
 1. Chọn loại tài khoản (Tài khoản / Doanh nghiệp) — đổi nhãn + placeholder trường định danh.
 2. Nhập định danh (bắt buộc, ≥3 ký tự) và mật khẩu (bắt buộc, ≥6 ký tự; nút hiện/ẩn).
 3. Ghi nhớ đăng nhập (mock), Đăng nhập → loading → `AuthService.loginAs('public')` → `/portal/hoi-dap`.
-4. Hoặc "Đăng nhập bằng VNeID" → `/portal/login/vneid`.
+4. Hoặc "Đăng nhập bằng VNeID" / tiện ích nhanh → cùng trang ở mode QR (`?method=vneid`).
 
 ## Luồng phụ / lỗi
 
@@ -50,14 +50,16 @@ MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/01-dang-nhap-cong.mdc`
 | 2026-10-20 | Grok Bot | Chống layout shift: ô lỗi giữ chỗ dùng chung, nút loading giữ kích thước | UC-1..UC-8 |
 | 2026-10-20 | Grok Bot | Quốc huy nền trong suốt (mof-emblem-transparent.png); 3 minh hoạ SVG đa sắc trong ô kính mờ | UC-1 |
 | 2026-10-20 | Auto | Bỏ appReveal khỏi đăng nhập cổng — reveal chỉ còn trên trang chủ | UC-1..UC-8 |
+| 2026-10-20 | Auto | Gỡ `/portal/login/vneid`; deep-link `?method=vneid` + tiện ích nhanh trang chủ | UC-1..UC-8 |
 
 ## VNeID QR trong card (không chuyển trang)
 
-- Bấm thẻ "Đăng nhập bằng VNeID" → panel phải chuyển sang `app-vneid-qr-panel` (cùng ô grid với form → chiều cao card cố định, fade/slide 220ms, reduced-motion tắt).
+- Bấm thẻ "Đăng nhập bằng VNeID" → panel phải chuyển sang `app-vneid-qr-panel` (cùng ô grid với form → chiều cao card cố định, fade/slide 220ms, reduced-motion tắt); URL đồng bộ `?method=vneid`.
+- Deep-link / tiện ích nhanh: `/portal/login?method=vneid` mở sẵn panel QR (không còn route riêng).
 - QR minh hoạ (`shared/ui/mof-qr`, không quét được), đếm ngược "Làm mới mã QR (60s)", tự làm mới khi hết hạn lúc chờ quét.
 - Bước: Chờ quét → Đã quét → Xác nhận → Thành công; lỗi: Từ chối (Đóng) / Hết hạn → Thử lại.
 - Demo: nút "Mô phỏng quét bằng điện thoại" → 1,2s → hộp thoại điện thoại mô phỏng app VNeID (Đóng / Xác nhận). Xác nhận → 0,9s → đăng nhập user `u-public` (Nguyễn Minh Anh) → chuyển `/portal/hoi-dap`.
-- Logic ở `core/auth/vneid-auth.adapter.ts` (`VneidAuthAdapter` trừu tượng + `MockVneidAuthAdapter`), cấu hình ở `core/mock-api/vneid-fixtures.ts`. Route cũ `/portal/login/vneid` giữ nguyên.
+- Logic ở `core/auth/vneid-auth.adapter.ts` (`VneidAuthAdapter` trừu tượng + `MockVneidAuthAdapter`), cấu hình ở `core/mock-api/vneid-fixtures.ts`.
 - Header: đã đăng nhập → avatar (chữ viết tắt / ảnh) + tên + menu (Câu hỏi của tôi, Đăng xuất).
 
 | 2026-10-20 | Grok Bot | VNeID QR trong card, adapter mock, menu tài khoản trên header | UC-1..UC-8 |

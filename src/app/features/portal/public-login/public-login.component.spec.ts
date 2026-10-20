@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { PublicLoginComponent } from './public-login.component';
 import { AuthService, SESSION_KEY } from '../../../core/auth/auth.service';
 import { DEMO_DEFAULT_PASSWORD } from '../../../core/mock-api/auth-credentials';
@@ -109,6 +109,24 @@ describe('PublicLoginComponent', () => {
     expect(fixture.nativeElement.querySelector('app-vneid-qr-panel app-mof-qr')).not.toBeNull();
     cmp.backToPassword();
     expect(cmp.mode()).toBe('password');
+  });
+
+  it('opens VNeID mode when arriving with ?method=vneid', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [PublicLoginComponent],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { queryParamMap: convertToParamMap({ method: 'vneid' }) } },
+        },
+      ],
+    });
+    const fixture = TestBed.createComponent(PublicLoginComponent);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.mode()).toBe('vneid');
+    expect(fixture.nativeElement.querySelector('app-vneid-qr-panel app-mof-qr')).not.toBeNull();
   });
 
   it('switches account type', () => {

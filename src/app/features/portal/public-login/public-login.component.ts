@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { MofButtonComponent } from '../../../shared/ui/mof-button/mof-button.component';
@@ -40,6 +40,7 @@ export type LoginAccountType = 'citizen' | 'business';
 export class PublicLoginComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
 
   private readonly vneid = inject(VneidAuthAdapter);
@@ -78,16 +79,37 @@ export class PublicLoginComponent {
     inject(DestroyRef).onDestroy(() => this.vneid.cancel());
     this.form.controls.identifier.valueChanges.subscribe(() => this.formError.set(null));
     this.form.controls.password.valueChanges.subscribe(() => this.formError.set(null));
+    // Tiện ích nhanh / deep-link: `/portal/login?method=vneid` mở sẵn panel QR.
+    if (this.route.snapshot.queryParamMap.get('method') === 'vneid') {
+      this.openVneid();
+    }
   }
 
   openVneid(): void {
     this.mode.set('vneid');
     this.vneid.startSession();
+    this.syncMethodQuery('vneid');
   }
 
   backToPassword(): void {
     this.vneid.cancel();
     this.mode.set('password');
+    this.syncMethodQuery(null);
+  }
+
+  /** Đồng bộ `?method=vneid` với mode hiện tại (không tạo history thừa). */
+  private syncMethodQuery(method: 'vneid' | null): void {
+    const current = this.route.snapshot.queryParamMap.get('method');
+    const next = method;
+    if ((current ?? null) === next) {
+      return;
+    }
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { method: next },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   /** Khóa i18n lỗi của một trường (chỉ hiện sau khi chạm hoặc bấm gửi). */

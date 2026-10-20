@@ -60,6 +60,7 @@ export interface PortalQuickLink {
   labelKey: string;
   route: string;
   fragment?: string;
+  queryParams?: Record<string, string>;
 }
 
 const img = (id: string, w = 800): string => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=70`;
@@ -153,7 +154,7 @@ export const PORTAL_QUICK_LINKS: PortalQuickLink[] = [
   { id: 'lookup', icon: 'search', labelKey: 'portal.quick.lookup', route: '/portal/tra-cuu' },
   { id: 'ask', icon: 'paper-plane', labelKey: 'portal.quick.ask', route: '/portal/hoi-dap' },
   { id: 'mine', icon: 'list', labelKey: 'portal.quick.mine', route: '/portal/cau-hoi-cua-toi' },
-  { id: 'vneid', icon: 'id-badge', labelKey: 'portal.quick.vneid', route: '/portal/login/vneid' },
+  { id: 'vneid', icon: 'id-badge', labelKey: 'portal.quick.vneid', route: '/portal/login', queryParams: { method: 'vneid' } },
   { id: 'login', icon: 'user', labelKey: 'portal.quick.login', route: '/portal/login' },
   { id: 'budget', icon: 'chart-histogram', labelKey: 'portal.quick.budget', route: '/portal', fragment: 'ngan-sach' },
   { id: 'contact', icon: 'phone-call', labelKey: 'portal.quick.contact', route: '/portal', fragment: 'lien-he' },

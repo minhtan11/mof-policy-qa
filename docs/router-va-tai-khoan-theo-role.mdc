@@ -18,8 +18,7 @@ Tài liệu này là bản đồ điều hướng của mockup Angular `MOF-Poli
 |---|---|---|---|
 | `/` | Redirect | Tất cả | Chuyển về `/portal` |
 | `/portal` | Trang chủ công khai | Khách, public | Tìm kiếm nhanh, xem lĩnh vực, câu hỏi mới, thông báo, thống kê |
-| `/portal/login` | Đăng nhập công dân/doanh nghiệp | Public | Đăng nhập mock hoặc tiếp tục không đăng nhập để gửi câu hỏi |
-| `/portal/login/vneid` | Đăng nhập VNeID | Public | Mô phỏng QR/redirect VNeID; bản production sẽ thay bằng adapter VNeID thật |
+| `/portal/login` | Đăng nhập công dân/doanh nghiệp | Public | Mật khẩu mock; `?method=vneid` mở panel QR VNeID (mock) trên cùng trang |
 | `/portal/hoi-dap` | Gửi câu hỏi | Public | Chọn lĩnh vực, nhập nội dung, thông tin liên hệ, tạo mã hồ sơ |
 | `/portal/tra-cuu` | Tra cứu công khai | Public | Tìm theo mã hồ sơ/từ khóa, xem hồ sơ đã công khai |
 | `/portal/huong-dan` | Hướng dẫn sử dụng cổng | Public | Hành trình gửi hỏi / theo dõi / đánh giá + FAQ (`GuideRepository`) |
@@ -50,7 +49,7 @@ Nguồn dữ liệu: `src/app/core/mock-api/demo-data.ts`, hằng `USERS`. Đây
 
 ### Cách đăng nhập mock
 
-- Public: tại `/portal/login`, email/mật khẩu hiện chỉ mô phỏng; nhập giá trị bất kỳ rồi đăng nhập. Nút VNeID mở `/portal/login/vneid` và trạng thái xác thực là mock.
+- Public: tại `/portal/login`, email/mật khẩu fixture demo; nút / tiện ích VNeID mở cùng trang với `?method=vneid` (QR mock).
 - Internal: tại `/workspace/login`, chọn role trong dropdown rồi bấm “Vào không gian làm việc”. Không cần mật khẩu trong mock.
 - Admin: chọn role `system-admin` ở `/workspace/login`, sau đó hệ thống chuyển tới `/admin`.
 - Session được lưu trong `localStorage` với key `mof-policy-qa.session.v1`; nút đăng xuất xóa session.
@@ -61,7 +60,7 @@ Nguồn dữ liệu: `src/app/core/mock-api/demo-data.ts`, hằng `USERS`. Đây
 
 `/portal` → tìm kiếm hoặc chọn lĩnh vực → `/portal/tra-cuu` để xem thông tin công khai.
 
-`/portal` → “Đăng nhập” → `/portal/login/vneid` hoặc `/portal/login` → `/portal/hoi-dap` → nhập câu hỏi → nhận mã `CSTC-...` → `/portal/tra-cuu` theo dõi kết quả.
+`/portal` → “Đăng nhập” / “Đăng nhập VNeID” → `/portal/login` (hoặc `?method=vneid`) → `/portal/hoi-dap` → nhập câu hỏi → nhận mã `CSTC-...` → `/portal/tra-cuu` theo dõi kết quả.
 
 ### Cán bộ tiếp nhận (`reception`)
 

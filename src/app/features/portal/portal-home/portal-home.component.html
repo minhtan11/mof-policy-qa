@@ -193,7 +193,14 @@
       <header class="panel-head"><h2>{{ 'portal.quick.title' | t }}</h2></header>
       <div class="quick-grid">
         @for (link of repo.quickLinks; track link.id; let i = $index) {
-          <a class="quick-item" appReveal [revealDelay]="60 + i * 50" [routerLink]="link.route" [fragment]="link.fragment">
+          <a
+            class="quick-item"
+            appReveal
+            [revealDelay]="60 + i * 50"
+            [routerLink]="link.route"
+            [queryParams]="link.queryParams ?? null"
+            [fragment]="link.fragment"
+          >
             <span><app-mof-fi-icon [name]="link.icon" /></span>
             {{ link.labelKey | t }}
           </a>

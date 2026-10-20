@@ -1,8 +1,8 @@
 # Người dân — Đăng nhập cổng công khai
 
 Changed on: 2026-10-20  
-Changed by: Codex  
-Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Changed by: Auto  
+Change reason: Gỡ route `/portal/login/vneid`; VNeID chỉ còn mode trên `/portal/login?method=vneid`  
 Affected UC: UC-001..UC-008 (phần cổng public / VNeID)
 
 ## Ai / màn hình
@@ -10,7 +10,7 @@ Affected UC: UC-001..UC-008 (phần cổng public / VNeID)
 | Mục | Nội dung |
 |---|---|
 | Actor | Người dân, doanh nghiệp |
-| Route | `/portal/login`, `/portal/login/vneid` |
+| Route | `/portal/login` (mode VNeID: `?method=vneid`) |
 | Màn | PUB-01; đăng nhập nội bộ xem workspace (`/workspace/login`) cùng nhóm UC |
 | Trạng thái | `mocked` (VNeID mô phỏng); adapter thật `blocked` |
 
@@ -67,3 +67,4 @@ UC-001..UC-008 — đăng nhập/đăng xuất, khóa/hết hạn, hồ sơ, 2FA
 | 2026-10-20 | Auto | Header portal: cán bộ nội bộ có lối «Không gian làm việc» trong menu tài khoản | UC-001..UC-008, UC-142..UC-149 |
 | 2026-10-20 | Grok Bot | VNeID QR trong card + adapter mock + menu tài khoản header | UC-001..UC-008 |
 | 2026-10-20 | Auto | Bỏ appReveal trên đăng nhập cổng (không dùng landing reveal) | UC-001..UC-008 |
+| 2026-10-20 | Auto | Gỡ `/portal/login/vneid`; tiện ích nhanh → `/portal/login?method=vneid` | UC-001..UC-008 |

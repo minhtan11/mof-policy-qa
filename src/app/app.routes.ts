@@ -6,7 +6,6 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'portal' },
   { path: 'portal', loadComponent: () => import('./features/portal/portal-home/portal-home.component').then((m) => m.PortalHomeComponent) },
   { path: 'portal/login', loadComponent: () => import('./features/portal/public-login/public-login.component').then((m) => m.PublicLoginComponent) },
-  { path: 'portal/login/vneid', loadComponent: () => import('./features/portal/vneid-login/vneid-login.component').then((m) => m.VneidLoginComponent) },
   { path: 'portal/hoi-dap', loadComponent: () => import('./features/portal/ask-question/ask-question.component').then((m) => m.AskQuestionComponent) },
   { path: 'portal/cau-hoi-cua-toi', loadComponent: () => import('./features/portal/my-questions/my-questions.component').then((m) => m.MyQuestionsComponent) },
   { path: 'portal/ho-so/:code', loadComponent: () => import('./features/portal/public-dossier-detail/public-dossier-detail.component').then((m) => m.PublicDossierDetailComponent) },
