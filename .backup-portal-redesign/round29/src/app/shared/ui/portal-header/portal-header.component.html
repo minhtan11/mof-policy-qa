@@ -1,0 +1,270 @@
+<header class="portal-header" [class.scrolled]="scrolled()">
+  <div class="content-width bar">
+    <a class="brand" routerLink="/portal" [attr.aria-label]="'app.name' | t">
+      <img src="assets/mof-emblem-transparent.png" alt="" width="44" height="44" />
+      <span>
+        <strong>{{ 'brand.ministry' | t }}</strong>
+        <small>{{ 'portal.brand.sub' | t }}</small>
+      </span>
+    </a>
+
+    <!-- Menu chính 1 hàng (≥1024). Mục không vừa chiều ngang được gom vào "Thêm" (không xuống dòng). -->
+    <nav class="main-nav" #nav [attr.aria-label]="'portal.nav.label' | t">
+      <ul class="nav-list">
+        @for (item of navItems; track item.key; let i = $index) {
+          <li
+            class="nav-item"
+            [class.has-children]="!!item.children"
+            [class.active]="isActive(item)"
+            [class.open]="openKey() === item.key"
+            [class.overflowed]="i >= visibleCount()"
+            [attr.inert]="i >= visibleCount() ? '' : null"
+            [attr.aria-hidden]="i >= visibleCount() ? 'true' : null"
+            (mouseenter)="openNav(item.key)"
+            (mouseleave)="leaveNav(item.key, $event)"
+            (focusin)="openNav(item.key)"
+            (focusout)="leaveNav(item.key, $event)"
+          >
+            <a class="nav-link" [routerLink]="item.route" [fragment]="item.fragment" [attr.aria-current]="isActive(item) ? 'page' : null">
+              @if (item.icon) {
+                <app-mof-fi-icon [name]="item.icon" />
+              }
+              {{ item.key | t }}
+              @if (item.children) {
+                <app-mof-fi-icon class="chev" name="angle-small-down" />
+              }
+            </a>
+            @if (item.children) {
+              <ul class="submenu" [attr.inert]="openKey() === item.key ? null : ''">
+                @for (child of item.children; track child.key) {
+                  <li>
+                    <a
+                      [routerLink]="child.route"
+                      [fragment]="child.fragment"
+                      [class.current]="isChildActive(child)"
+                      [attr.aria-current]="isChildActive(child) ? 'page' : null"
+                      >{{ child.key | t }}</a
+                    >
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+        <li
+          class="nav-item has-children more"
+          [class.hidden]="visibleCount() >= navItems.length"
+          [class.active]="overflowActive()"
+          [class.open]="openKey() === 'more'"
+          (mouseenter)="openNav('more')"
+          (mouseleave)="leaveNav('more', $event)"
+          (focusin)="openNav('more')"
+          (focusout)="leaveNav('more', $event)"
+        >
+          <button type="button" class="nav-link" aria-haspopup="true" [attr.aria-expanded]="openKey() === 'more'">
+            {{ 'header.more' | t }} <app-mof-fi-icon class="chev" name="angle-small-down" />
+          </button>
+          <ul class="submenu" [attr.inert]="openKey() === 'more' ? null : ''">
+            @for (item of navItems.slice(visibleCount()); track item.key) {
+              <li>
+                <a [routerLink]="item.route" [fragment]="item.fragment" [class.current]="isActive(item)">{{ item.key | t }}</a>
+              </li>
+            }
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <app-header-search (opened)="onActionPanelOpen('search')" />
+      <app-header-notifications class="bell" (opened)="onActionPanelOpen('notif')" />
+      @if (auth.user(); as user) {
+        <div class="user-menu" [class.open]="userOpen()" (focusout)="onUserFocusOut($event)" (keydown.escape)="userOpen.set(false)">
+          <button
+            type="button"
+            class="user-btn"
+            aria-haspopup="menu"
+            aria-controls="portal-user-menu"
+            [attr.aria-expanded]="userOpen()"
+            [attr.aria-label]="'header.account' | t"
+            (click)="toggleUser()"
+          >
+            @if (isImage(user.avatar)) {
+              <img class="avatar" [src]="user.avatar" alt="" width="36" height="36" />
+            } @else {
+              <span class="avatar" aria-hidden="true">{{ user.avatar }}</span>
+            }
+            <span class="user-name" [attr.title]="user.name">{{ user.name }}</span>
+            <app-mof-fi-icon class="chev" name="angle-small-down" />
+          </button>
+          <div class="user-dropdown" id="portal-user-menu" role="menu" [attr.inert]="userOpen() ? null : ''">
+            <div class="who">
+              <strong>{{ user.name }}</strong>
+              <small>{{ user.email }}</small>
+            </div>
+            <a role="menuitem" routerLink="/portal/cau-hoi-cua-toi" (click)="userOpen.set(false)"><app-mof-fi-icon name="document" /> {{ 'nav.myQuestions' | t }}</a>
+            <hr />
+            <app-header-prefs (navigate)="userOpen.set(false)" />
+            <hr />
+            <button role="menuitem" type="button" class="logout" (click)="logout()"><app-mof-fi-icon name="sign-out-alt" /> {{ 'action.logout' | t }}</button>
+          </div>
+        </div>
+      } @else {
+        <div class="user-menu settings" [class.open]="userOpen()" (focusout)="onUserFocusOut($event)" (keydown.escape)="userOpen.set(false)">
+          <app-mof-icon-button
+            fi="settings"
+            size="lg"
+            variant="outline"
+            [label]="'header.prefs' | t"
+            [expanded]="userOpen()"
+            haspopup="menu"
+            controls="portal-settings-menu"
+            (click)="toggleUser()"
+          />
+          <div class="user-dropdown" id="portal-settings-menu" role="menu" [attr.inert]="userOpen() ? null : ''">
+            <app-header-prefs (navigate)="userOpen.set(false)" />
+          </div>
+        </div>
+        <a routerLink="/portal/login" class="login-btn"><app-mof-fi-icon name="user" /> {{ 'action.login' | t }}</a>
+      }
+      <button
+        type="button"
+        class="menu-btn"
+        #menuBtn
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="portal-drawer"
+        [attr.aria-label]="'portal.nav.label' | t"
+        (click)="menuOpen() ? closeMenu() : openMenu()"
+      >
+        <app-mof-fi-icon [name]="menuOpen() ? 'cross' : 'menu-burger'" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Drawer mobile (< 1024px): nằm NGOÀI <header> vì header có backdrop-filter (tạo containing block cho fixed). -->
+@if (!desktop()) {
+  <div class="drawer-root" [class.open]="menuOpen()" [attr.inert]="menuOpen() ? null : ''" [attr.aria-hidden]="!menuOpen()">
+    <div class="drawer-scrim" (click)="closeMenu()" aria-hidden="true"></div>
+    <aside
+      #drawer
+      class="drawer"
+      id="portal-drawer"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'portal.nav.label' | t"
+      (keydown)="onDrawerKey($event)"
+    >
+      <div class="drawer-head">
+        <a class="drawer-brand" routerLink="/portal" (click)="closeMenu()">
+          <img src="assets/mof-emblem-transparent.png" alt="" width="40" height="40" />
+          <span>
+            <strong>{{ 'brand.ministry' | t }}</strong>
+            <small>{{ 'portal.brand.sub' | t }}</small>
+          </span>
+        </a>
+        <button #closeBtn type="button" class="drawer-close" [attr.aria-label]="'portal.drawer.close' | t" (click)="closeMenu()">
+          <app-mof-fi-icon name="cross" />
+        </button>
+      </div>
+
+      <!-- Tiện ích: hàng chip gọn ngay dưới header drawer -->
+      <div class="drawer-tools d-item" style="--i: 0" [attr.aria-label]="'portal.drawer.utilities' | t" role="group">
+        <a class="chip" routerLink="/portal" fragment="lien-he" [attr.title]="'portal.util.sitemap' | t" (click)="closeMenu()"><app-mof-fi-icon name="sitemap" /><span class="lbl">{{ 'portal.util.sitemap' | t }}</span></a>
+        <a class="chip" routerLink="/portal/tra-cuu" [attr.title]="'portal.util.help' | t" (click)="closeMenu()"><app-mof-fi-icon name="interrogation" /><span class="lbl">{{ 'portal.util.help' | t }}</span></a>
+        <button
+          type="button"
+          class="chip icon"
+          (click)="theme.toggle()"
+          [attr.aria-pressed]="theme.theme() === 'dark'"
+          [attr.aria-label]="(theme.theme() === 'light' ? 'action.themeDark' : 'action.themeLight') | t"
+          [attr.title]="(theme.theme() === 'light' ? 'action.themeDark' : 'action.themeLight') | t"
+        >
+          <app-mof-icon [name]="theme.theme() === 'light' ? 'moon' : 'sun'" [size]="16" />
+        </button>
+        <app-lang-switch class="tools-lang" />
+      </div>
+
+      <div class="drawer-body">
+        <section class="drawer-user d-item" style="--i: 1">
+          @if (auth.user(); as user) {
+            <div class="du-id">
+              @if (isImage(user.avatar)) {
+                <img class="avatar" [src]="user.avatar" alt="" width="36" height="36" />
+              } @else {
+                <span class="avatar" aria-hidden="true">{{ user.avatar }}</span>
+              }
+              <span class="du-text">
+                <strong [attr.title]="user.name">{{ user.name }}</strong>
+                <small>{{ user.email }}</small>
+              </span>
+            </div>
+            <div class="du-actions">
+              <a routerLink="/portal/cau-hoi-cua-toi" (click)="closeMenu()"><app-mof-fi-icon name="document" /> {{ 'nav.myQuestions' | t }}</a>
+              <button type="button" class="logout" (click)="logout()"><app-mof-fi-icon name="sign-out-alt" /> {{ 'action.logout' | t }}</button>
+            </div>
+          } @else {
+            <a class="drawer-login" routerLink="/portal/login" (click)="closeMenu()">
+              <app-mof-fi-icon name="user" /> {{ 'action.login' | t }}
+            </a>
+            <small class="du-hint">{{ 'portal.drawer.loginHint' | t }}</small>
+          }
+        </section>
+
+        <ul class="acc">
+          @for (item of navItems; track item.key; let i = $index) {
+            <li class="acc-item d-item" [style.--i]="i + 2">
+              @if (item.children) {
+                <button
+                  type="button"
+                  class="acc-row"
+                  [class.active]="isActive(item)"
+                  [attr.aria-expanded]="expanded() === item.key"
+                  [attr.aria-controls]="'acc-panel-' + i"
+                  [id]="'acc-btn-' + i"
+                  (click)="toggleSection(item.key)"
+                >
+                  <span class="acc-ico" aria-hidden="true"><app-mof-fi-icon [name]="item.drawerIcon ?? 'apps'" /></span>
+                  <span class="acc-label">{{ item.key | t }}</span>
+                  <app-mof-fi-icon class="acc-chev" name="angle-small-down" />
+                </button>
+                <div class="acc-panel" role="region" [id]="'acc-panel-' + i" [attr.aria-labelledby]="'acc-btn-' + i" [class.open]="expanded() === item.key">
+                  <div class="acc-inner">
+                    <ul class="acc-children">
+                      @for (child of item.children; track child.key) {
+                        <li>
+                          <a
+                            [routerLink]="child.route"
+                            [fragment]="child.fragment"
+                            [class.current]="isChildActive(child)"
+                            [attr.aria-current]="isChildActive(child) ? 'page' : null"
+                            [attr.tabindex]="expanded() === item.key ? null : -1"
+                            (click)="closeMenu()"
+                            >{{ child.key | t }}</a
+                          >
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              } @else {
+                <a
+                  class="acc-row"
+                  [class.active]="isLeafActive(item)"
+                  [attr.aria-current]="isLeafActive(item) ? 'page' : null"
+                  [routerLink]="item.route"
+                  [fragment]="item.fragment"
+                  (click)="closeMenu()"
+                >
+                  <span class="acc-ico" aria-hidden="true"><app-mof-fi-icon [name]="item.drawerIcon ?? item.icon ?? 'apps'" /></span>
+                  <span class="acc-label">{{ item.key | t }}</span>
+                </a>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+
+    </aside>
+  </div>
+}

@@ -1,0 +1,22 @@
+<app-portal-header />
+<main class="public-login">
+  <div class="login-card surface-card">
+    <a routerLink="/portal" class="back"><app-mof-icon name="arrow-left" [size]="14" /> {{ 'login.back' | t }}</a>
+    <div class="login-mark"><img src="assets/mof-mark.svg" alt="" /></div>
+    <p class="eyebrow">{{ 'login.eyebrow' | t }}</p>
+    <h1>{{ 'login.title' | t }}</h1>
+    <p class="muted">{{ 'login.intro' | t }}</p>
+    <div class="field">
+      <label>{{ 'login.email' | t }}</label>
+      <app-mof-input type="email" [(ngModel)]="email" placeholder="name@example.vn" />
+    </div>
+    <div class="field">
+      <label>{{ 'login.password' | t }}</label>
+      <app-mof-input type="password" [(ngModel)]="password" />
+    </div>
+    <app-mof-button class="full" [label]="'login.submit' | t" icon="arrow-right" iconPos="right" [loading]="loading()" [block]="true" (click)="login()" />
+    <div class="divider"><span>{{ 'login.or' | t }}</span></div>
+    <app-mof-button [label]="'login.guest' | t" variant="secondary" [block]="true" (click)="continueAsGuest()" />
+    <a class="vneid-link" routerLink="/portal/login/vneid">{{ 'login.vneid' | t }}</a>
+  </div>
+</main>

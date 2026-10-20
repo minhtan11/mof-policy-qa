@@ -1,0 +1,106 @@
+# Kế hoạch giai đoạn mockup MOF-PolicyQA
+
+> Cập nhật: 2026-10-20. File này theo dõi tiến độ theo giai đoạn UI/nghiệp vụ. Traceability UC chi tiết vẫn ở `TRACEABILITY.mdc`.
+
+## Quy ước trạng thái giai đoạn
+
+| Status | Ý nghĩa |
+|---|---|
+| `planned` | Đã chốt phạm vi, chưa bắt đầu |
+| `in_progress` | Đang làm |
+| `done` | Đủ acceptance của giai đoạn |
+| `blocked` | Chờ quyết định khách hàng / tích hợp thật |
+
+Một giai đoạn chỉ `done` khi: màn hình thao tác được end-to-end (mock), đủ light/dark + vi/en với form/màn đã đụng, MDC liên quan có changelog, logic chính có test nếu AGENTS yêu cầu.
+
+## Tổng quan
+
+| GĐ | Tên | Status | Changed on | Done criteria tóm tắt |
+|---|---|---|---|---|
+| G0-UI | Design system, bỏ PrimeNG, theme, i18n, portal home | `done` | 2026-10-20 | Token light/dark, i18n vi/en, shared kit, portal home soft-MOF, không còn phụ thuộc PrimeNG |
+| G1 | Portal P0 nghiệp vụ | `done` | 2026-10-20 | Wizard gửi câu hỏi, similar, consent, câu hỏi của tôi, chi tiết/đánh giá/làm rõ |
+| G2 | Workspace P0 | `done` | 2026-10-20 | Điều phối, phân công, soạn/trình, trả sửa, ký số mock, xuất bản, state machine đủ |
+| G3 | Dashboard + Admin P1 | `done` | 2026-10-20 | DASH-01 live, tổ chức, user, role–scope, workflow/SLA, danh mục, VBPL, báo cáo P1 |
+| G4 | P2 vận hành sâu | done | 2026-10-20 | Backup/jobs/reset, AI ops, 16 báo cáo, bút phê, thu hồi, phối hợp, tra cứu nội bộ |
+
+## G0-UI – checklist
+
+### Rule & docs
+- [x] Cập nhật `AGENTS.md`: bỏ PrimeNG; bắt buộc theme + i18n
+- [x] Tạo file kế hoạch giai đoạn này
+- [x] Cập nhật README công nghệ
+
+### Nền tảng
+- [x] Design token light + dark
+- [x] `ThemeService` + persist
+- [x] `I18nService` vi/en + pipe
+- [x] Shared kit: button, input, select, textarea, badge, icon, toast
+- [x] ApexCharts wrapper (`mof-chart`) trên workspace dashboard
+
+### Portal
+- [x] Redesign portal header (theme + language toggle)
+- [x] Redesign portal home (soft Linear-MOF, vi/en, light/dark)
+- [x] Gỡ PrimeNG khỏi portal/login/lookup/ask/vneid
+
+### Workspace/Admin (tối thiểu để bỏ PrimeNG)
+- [x] Thay control PrimeNG bằng shared kit để build sạch
+- [x] Chart workspace dùng ApexCharts
+
+### Acceptance G0
+- [x] `npm run build` thành công
+- [x] Portal home đọc được VI/EN và light/dark
+- [x] Không còn dependency `primeng` / `primeicons` / `@primeuix/themes`
+
+## G1 – checklist
+
+- [x] Rule AGENTS: MDC cạnh feature + form chỉ shared kit
+- [x] Shared kit: `mof-checkbox`, `mof-stepper`, `mof-file-upload`
+- [x] Wizard `/portal/hoi-dap` (topic/content → contact/files → similar/consent → success)
+- [x] `/portal/cau-hoi-cua-toi` lọc theo email
+- [x] `/portal/ho-so/:code` timeline + rating + làm rõ
+- [x] i18n vi/en cho copy mới; MDC co-locate + NV người dân
+- [x] Spec mock-db + ask-question step validation
+
+## G2 – checklist
+
+- [x] Hàng đợi `/workspace` lọc theo trạng thái (`activeQueue`)
+- [x] Chi tiết `/workspace/ho-so/:id`: tiếp nhận, phân công, soạn, căn cứ, trình duyệt
+- [x] Lãnh đạo: trả sửa, phê duyệt, phê duyệt & công khai, xuất bản + ký số mock
+- [x] `WorkflowRepository.canTransition` đủ vòng đời P0
+- [x] i18n vi/en + shared kit cho action form; toast chỉ kèm mã hồ sơ
+- [x] MDC co-locate workspace + dossier-detail; cập nhật `02-can-bo/01..03`
+- [x] Spec: mock-db assign, workflow transitions, dossier-detail assign
+
+## G3 – checklist
+
+- [x] OrganizationRepository + tab Tổ chức
+- [x] AdminAccountRepository (mask email, khóa/mở) + tab Người dùng
+- [x] PermissionRepository ma trận role/scope + tab Phân quyền
+- [x] Catalog form thêm + toggle; Workflow create/activate/updateSla
+- [x] VBPL tìm/thêm/ban hành; Báo cáo chọn kỳ + chart
+- [x] Workspace DASH-01: metric + SLA donut live từ mock DB
+- [x] i18n vi/en toàn admin; MDC co-locate + `03-admin/01..05`, `07-bao-cao`
+- [x] Spec org/account/catalog/permission/workflow SLA/report
+
+## G4 – checklist
+
+- [x] Thu hồi công khai (`published` → `answered`)
+- [x] Form phối hợp liên đơn vị trên dossier-detail
+- [x] Tra cứu nội bộ `/workspace/tra-cuu`
+- [x] Bút phê / audit notes
+- [x] OpsRepository: jobs, backup, reset seed; tab Vận hành
+- [x] AI model status ops trên admin
+- [x] Đủ 16 báo cáo RPT-01..16 + rows theo category
+- [x] MDC + specs; build/test
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected |
+|---|---|---|---|
+| 2026-10-20 | Codex | Hoàn thành G0-UI: bỏ PrimeNG, token light/dark, i18n vi/en, shared kit, redesign portal, ApexCharts | AGENTS, README, portal, workspace, admin, shared UI |
+| 2026-10-20 | Codex | Portal home sinh động hơn: loading, stats/highlights, footer đầy đủ, lang switch cờ, typography Be Vietnam fluid, rule responsive đầy đủ | portal-home, lang-switch, AGENTS, tokens |
+| 2026-10-20 | Codex | Hoàn thành G1: wizard ask + similar/consent, my-questions, public detail rating/clarify, shared checkbox/stepper/file-upload, MDC co-locate | portal features, shared UI, AGENTS, NV-10/11/15 |
+| 2026-10-20 | Codex | Sắp docs/nghiep-vu theo folder người dân / cán bộ / admin; viết lại MDC tiếng Việt | docs/nghiep-vu, AGENTS, use-case-registry, MDC feature portal |
+| 2026-10-20 | Codex | Hoàn thành G2: tiếp nhận–phân công–soạn–trình–trả sửa–duyệt–xuất bản mock + state machine | workspace, dossier-detail, mock-db, workflow, 02-can-bo |
+| 2026-10-20 | Codex | Hoàn thành G3: admin P1 (org/user/role/catalog/workflow/VBPL/report) + dashboard live | admin, repos, workspace metrics, 03-admin |
+| 2026-10-20 | Codex | Hoàn thành G4 + gap: thu hồi, phối hợp, tra cứu, bút phê, ops/reset, 16 báo cáo | workspace search, dossier, ops, reports |

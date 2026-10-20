@@ -1,0 +1,92 @@
+<app-workspace-shell [title]="'workspace.overview' | t">
+  <div class="welcome">
+    <div>
+      <p class="eyebrow">19/10/2026</p>
+      <h2>{{ roleGreeting() }}, {{ auth.user()?.name }}.</h2>
+      <p>{{ 'workspace.welcome' | t }}</p>
+    </div>
+    <app-mof-button [label]="'workspace.create' | t" icon="plus" variant="secondary" />
+  </div>
+
+  <div class="metric-grid">
+    @for (metric of metrics(); track metric.key) {
+      <article class="metric" [class]="metric.tone">
+        <span><app-mof-icon name="inbox" /></span>
+        <div>
+          <p>{{ metric.key | t }}</p>
+          <strong>{{ metric.value }}</strong>
+          <small>{{ 'workspace.metricDeltaLive' | t }}</small>
+        </div>
+      </article>
+    }
+  </div>
+
+  <div class="workspace-grid">
+    <section class="queue surface-card">
+      <header>
+        <div>
+          <h3>{{ 'workspace.queueTitle' | t }}</h3>
+          <p>{{ 'workspace.queueHint' | t }}</p>
+        </div>
+      </header>
+
+      <div class="filter-tabs" role="tablist">
+        <button type="button" [class.active]="filter() === 'all'" (click)="setFilter('all')">
+          {{ 'workspace.filterAll' | t }}
+        </button>
+        <button type="button" [class.active]="filter() === 'new'" (click)="setFilter('new')">
+          {{ 'workspace.filterNew' | t }}
+        </button>
+        <button type="button" [class.active]="filter() === 'processing'" (click)="setFilter('processing')">
+          {{ 'workspace.filterProcessing' | t }}
+        </button>
+        <button type="button" [class.active]="filter() === 'waiting-approval'" (click)="setFilter('waiting-approval')">
+          {{ 'workspace.filterApproval' | t }}
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'workspace.dossier' | t }}</th>
+              <th>{{ 'workspace.status' | t }}</th>
+              <th>{{ 'workspace.due' | t }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of queue(); track item.id) {
+              <tr>
+                <td>
+                  <b>{{ item.code }}</b>
+                  <span>{{ item.question }}</span>
+                </td>
+                <td><app-status-badge [status]="item.status" /></td>
+                <td>
+                  <span class="due"><app-mof-icon name="clock" [size]="14" /> {{ item.dueAt | date: 'dd/MM' }}</span>
+                </td>
+                <td>
+                  <a class="row-link" [routerLink]="['/workspace/ho-so', item.id]"><app-mof-icon name="arrow-right" /></a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="chart-card surface-card">
+      <header>
+        <h3>{{ 'workspace.progress' | t }}</h3>
+        <p>{{ 'workspace.chartMonth' | t }}</p>
+      </header>
+      <app-mof-chart [options]="chartOptions()" />
+      <div class="legend">
+        <span><i class="blue"></i> {{ 'workspace.onTime' | t }} {{ slaBreakdown().onTime }}</span>
+        <span><i class="amber"></i> {{ 'workspace.nearDue' | t }} {{ slaBreakdown().nearDue }}</span>
+        <span><i class="red"></i> {{ 'workspace.overdue' | t }} {{ slaBreakdown().overdue }}</span>
+      </div>
+    </section>
+  </div>
+</app-workspace-shell>

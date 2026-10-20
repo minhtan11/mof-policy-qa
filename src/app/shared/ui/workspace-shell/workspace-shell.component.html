@@ -1,0 +1,98 @@
+<a class="skip" href="#ws-main" (click)="skipToMain($event)">{{ 'wsNav.skip' | t }}</a>
+<div class="shell" [class.rail]="state.collapsed()" [class.anim]="state.animating()">
+  <!-- Cột sidebar (≥1024) / drawer off-canvas (<1024) — CÙNG một DOM -->
+  <div #sideRoot class="side-root" [class.open]="state.drawerOpen()" (keydown)="onDrawerKey($event)">
+    <div class="scrim" aria-hidden="true" (click)="closeDrawer()"></div>
+    <app-workspace-sidebar
+      class="side"
+      id="ws-sidebar"
+      [drawer]="mobile()"
+      [attr.role]="mobile() ? 'dialog' : null"
+      [attr.aria-modal]="mobile() && state.drawerOpen() ? 'true' : null"
+      [attr.aria-label]="'wsNav.aria' | t"
+      [attr.inert]="mobile() && !state.drawerOpen() ? '' : null"
+      (closeDrawer)="closeDrawer()"
+    />
+  </div>
+
+  <div class="main">
+    <header class="ws-header" [class.scrolled]="scrolled()">
+      <div class="bar">
+        <button
+          #menuBtn
+          type="button"
+          class="menu-btn"
+          aria-controls="ws-sidebar"
+          [attr.aria-expanded]="mobile() ? state.drawerOpen() : !state.collapsed()"
+          [attr.aria-label]="(mobile() ? 'wsNav.openMenu' : state.collapsed() ? 'wsNav.expand' : 'wsNav.collapse') | t"
+          [attr.title]="(mobile() ? 'wsNav.openMenu' : state.collapsed() ? 'wsNav.expand' : 'wsNav.collapse') | t"
+          (click)="toggleSidebar()"
+        >
+          <app-mof-fi-icon name="menu-burger" />
+        </button>
+
+        <app-header-search class="pill search" variant="pill" scope="workspace" [shortcuts]="shortcuts()" (opened)="userOpen.set(false)" />
+
+        <div class="actions">
+          <app-mof-icon-button
+            class="theme"
+            [fi]="theme.theme() === 'dark' ? 'sun' : 'moon'"
+            size="lg"
+            variant="outline"
+            [label]="(theme.theme() === 'dark' ? 'header.lightMode' : 'header.darkMode') | t"
+            (click)="theme.toggle()"
+          />
+          <app-header-notifications class="bell" [source]="notifs" panelId="ws-notif" (opened)="userOpen.set(false)" />
+          <app-lang-switch class="lang" />
+
+          @if (auth.user(); as user) {
+            <div class="user-menu" [class.open]="userOpen()" (focusout)="onUserFocusOut($event)" (keydown.escape)="userOpen.set(false)">
+              <button
+                type="button"
+                class="user-btn"
+                aria-haspopup="menu"
+                aria-controls="ws-user-menu"
+                [attr.aria-expanded]="userOpen()"
+                [attr.aria-label]="'header.account' | t"
+                (click)="toggleUser()"
+              >
+                <span class="avatar" aria-hidden="true">{{ user.avatar }}</span>
+                <span class="who">
+                  <b [attr.title]="user.name">{{ user.name }}</b>
+                  <small>{{ user.organization }} · {{ roleKey() | t }}</small>
+                </span>
+                <app-mof-fi-icon class="chev" name="angle-small-down" />
+              </button>
+              <div class="user-dropdown" id="ws-user-menu" role="menu" [attr.inert]="userOpen() ? null : ''">
+                <div class="who-full">
+                  <strong>{{ user.name }}</strong>
+                  <small>{{ user.email }}</small>
+                  <small class="role">{{ roleKey() | t }} · {{ user.organization }}</small>
+                </div>
+                <hr />
+                <a role="menuitem" class="profile" [routerLink]="profileRoute" (click)="userOpen.set(false)">
+                  <app-mof-fi-icon name="user" /> {{ 'wsNav.profile' | t }}
+                  <span class="soon-tag">{{ 'wsNav.soonTag' | t }}</span>
+                </a>
+                <hr />
+                <app-header-prefs [portalLinks]="false" (navigate)="userOpen.set(false)" />
+                <hr />
+                <button role="menuitem" type="button" class="logout" (click)="logout()"><app-mof-fi-icon name="sign-out-alt" /> {{ 'action.logout' | t }}</button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </header>
+
+    <main id="ws-main" class="ws-content" tabindex="-1">
+      @if (title()) {
+        <div class="page-head">
+          <p class="eyebrow">{{ eyebrow() }}</p>
+          <h1>{{ title() }}</h1>
+        </div>
+      }
+      <ng-content />
+    </main>
+  </div>
+</div>

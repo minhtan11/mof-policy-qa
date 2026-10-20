@@ -1,0 +1,35 @@
+# Màn PUB-03 — Câu hỏi của tôi
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Viết tiếng Việt; trỏ MDC nhóm theo folder người dân  
+Affected UC: UC-110, UC-122, UC-165  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/04-cau-hoi-cua-toi.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/portal/cau-hoi-cua-toi` |
+| Actor | Người dân / doanh nghiệp |
+| Phạm vi dữ liệu | Khớp `senderEmail` |
+| Trạng thái | `mocked` |
+
+## Luồng chính
+
+1. Prefill email từ phiên hoặc email vừa gửi.  
+2. Tải danh sách qua `MockDbService.dossiersByEmail`.  
+3. Mở chi tiết `/portal/ho-so/:code`.
+
+## Acceptance
+
+- Chỉ hiện hồ sơ đúng email.  
+- Empty state có CTA gửi câu hỏi.  
+- Ô email dùng shared kit.
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Thêm màn câu hỏi của tôi (G1) | 110, 122 |
+| 2026-10-20 | Codex | Viết lại tiếng Việt; path MDC nhóm mới | 110, 122, 165 |

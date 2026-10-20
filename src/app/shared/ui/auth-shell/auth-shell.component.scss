@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.auth-page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: clamp(1rem, 4vw, 3rem) clamp(0.75rem, 3vw, 2rem);
+}
+
+.auth-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+  width: min(65rem, 100%);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--mof-line) 70%, transparent);
+  border-radius: calc(var(--mof-radius) + 0.5rem);
+  background: var(--mof-surface);
+  box-shadow: 0 1.875rem 4.375rem color-mix(in srgb, var(--mof-navy) 16%, transparent);
+
+  &.even {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(72rem, 100%);
+  }
+}
+
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  > ::ng-deep [authBrand] {
+    flex: 1;
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3.25rem);
+}
+
+@media (max-width: 1023px) {
+  .auth-card:not(.even) {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .auth-card,
+  .auth-card.even {
+    grid-template-columns: 1fr;
+  }
+}

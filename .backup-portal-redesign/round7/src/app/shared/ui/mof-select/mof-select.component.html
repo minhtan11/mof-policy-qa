@@ -1,0 +1,74 @@
+@if (label()) {
+  <label class="mof-select-label" [attr.for]="id() || uid">{{ label() }}</label>
+}
+<button
+  #trigger
+  type="button"
+  class="mof-field trigger"
+  role="combobox"
+  aria-haspopup="listbox"
+  [id]="id() || uid"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="listId"
+  [attr.aria-activedescendant]="open() && !searchable() ? activeId() : null"
+  [disabled]="isDisabled()"
+  (click)="toggle()"
+  (keydown)="onKeydown($event)"
+  (keyup.space)="$event.preventDefault()"
+  (blur)="!open() && markTouched()"
+>
+  <span class="value" [class.placeholder]="!selected()">
+    {{ selected()?.label ?? (placeholder() || ('select.placeholder' | t)) }}
+  </span>
+  <app-mof-fi-icon class="chevron" name="angle-small-down" />
+</button>
+
+@if (open()) {
+  <div
+    #panel
+    class="mof-select-panel"
+    [class.is-sm]="size() === 'sm'"
+    (keydown)="onKeydown($event)"
+  >
+    @if (searchable()) {
+      <div class="search">
+        <input
+          #search
+          type="text"
+          role="searchbox"
+          autocomplete="off"
+          [attr.aria-controls]="listId"
+          [attr.aria-activedescendant]="activeId()"
+          [attr.aria-label]="'select.search' | t"
+          [placeholder]="'select.search' | t"
+          [value]="query()"
+          (input)="onQuery($event)"
+        />
+        <app-mof-fi-icon class="search-icon" name="search" />
+      </div>
+    }
+    <ul class="options" role="listbox" [id]="listId" [attr.aria-label]="label() || placeholder() || ('select.placeholder' | t)">
+      @for (option of filtered(); track option.value; let i = $index) {
+        <li
+          role="option"
+          [id]="uid + '-opt-' + i"
+          [class.active]="i === activeIndex()"
+          [class.selected]="option.value === value()"
+          [class.disabled]="option.disabled"
+          [attr.aria-selected]="option.value === value()"
+          [attr.aria-disabled]="option.disabled || null"
+          (mouseenter)="activeIndex.set(i)"
+          (mousedown)="$event.preventDefault()"
+          (click)="choose(option)"
+        >
+          <span>{{ option.label }}</span>
+          @if (option.value === value()) {
+            <app-mof-fi-icon class="check" name="check" />
+          }
+        </li>
+      } @empty {
+        <li class="empty" role="presentation">{{ 'select.empty' | t }}</li>
+      }
+    </ul>
+  </div>
+}

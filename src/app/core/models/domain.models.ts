@@ -12,12 +12,16 @@ export type DossierStatus =
   | 'processing'
   | 'waiting-approval'
   | 'answered'
-  | 'published';
+  | 'published'
+  /** Từ chối tiếp nhận / không thuộc phạm vi (round 28 — người dân thấy ở “Câu hỏi của tôi”). */
+  | 'rejected';
 
 export interface PortalUser {
   id: string;
   name: string;
   email: string;
+  /** Tên đăng nhập ngắn (mock) — đăng nhập được bằng username hoặc email. */
+  username?: string;
   organization?: string;
   role: UserRole;
   avatar: string;
@@ -39,6 +43,39 @@ export interface TimelineEvent {
   state: 'done' | 'current' | 'pending';
 }
 
+export interface DossierRating {
+  id: string;
+  stars: number;
+  comment: string;
+  at: string;
+}
+
+export interface DossierClarification {
+  id: string;
+  text: string;
+  at: string;
+  status: 'open' | 'answered';
+}
+
+export interface DossierCollaboration {
+  id: string;
+  unitId: string;
+  unitName: string;
+  note: string;
+  dueAt: string;
+  status: 'open' | 'done';
+  requestedBy: string;
+  at: string;
+}
+
+/** Bút phê / ghi chú audit nội bộ — UC-176..UC-187 */
+export interface DossierAuditNote {
+  id: string;
+  text: string;
+  actor: string;
+  at: string;
+}
+
 export interface Dossier {
   id: string;
   code: string;
@@ -57,6 +94,10 @@ export interface Dossier {
   attachments: string[];
   timeline: TimelineEvent[];
   isPublic: boolean;
+  ratings?: DossierRating[];
+  clarifications?: DossierClarification[];
+  collaborations?: DossierCollaboration[];
+  auditNotes?: DossierAuditNote[];
 }
 
 export interface Notice {
@@ -114,8 +155,32 @@ export interface ReportDefinition {
   code: string;
   name: string;
   description: string;
-  category: 'operations' | 'sla' | 'quality' | 'public';
+  category: 'operations' | 'sla' | 'quality' | 'public' | 'audit';
   lastGenerated?: string;
+}
+
+/** Job vận hành mock — UC-084..UC-099 */
+export interface OpsJob {
+  id: string;
+  name: string;
+  schedule: string;
+  lastRunAt: string;
+  status: 'idle' | 'running' | 'success' | 'failed';
+}
+
+export interface BackupSnapshot {
+  id: string;
+  label: string;
+  createdAt: string;
+  sizeLabel: string;
+}
+
+export interface AiModelInfo {
+  id: string;
+  name: string;
+  purpose: string;
+  version: string;
+  status: 'online' | 'degraded' | 'offline';
 }
 
 export interface CatalogEntry {
@@ -125,6 +190,34 @@ export interface CatalogEntry {
   label: string;
   active: boolean;
   sortOrder: number;
+}
+
+/** Đơn vị tổ chức — UC-009..UC-017 */
+export interface OrganizationUnit {
+  id: string;
+  code: string;
+  name: string;
+  parentId: string | null;
+  intakeTopicIds: string[];
+  active: boolean;
+}
+
+/** Tài khoản nội bộ quản trị — UC-018..UC-030 */
+export interface AdminAccount {
+  id: string;
+  name: string;
+  email: string;
+  organizationId: string;
+  role: Exclude<UserRole, 'public'>;
+  active: boolean;
+  avatar: string;
+}
+
+/** Ma trận quyền hiển thị — UC-031..UC-040 */
+export interface RolePermissionRow {
+  role: Exclude<UserRole, 'public'>;
+  permissions: string[];
+  scope: 'all' | 'unit' | 'assigned';
 }
 
 export type UseCaseTraceStatus = 'specified' | 'mocked' | 'tested' | 'integrated' | 'blocked';

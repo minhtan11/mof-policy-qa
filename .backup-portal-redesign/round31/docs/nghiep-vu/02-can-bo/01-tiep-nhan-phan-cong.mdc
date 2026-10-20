@@ -1,0 +1,63 @@
+# Cán bộ — Tiếp nhận, phân loại, phân công
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G2 — hàng đợi lọc trạng thái, tiếp nhận/phân công trên chi tiết hồ sơ  
+Affected UC: UC-142..UC-149; hỗ trợ AI UC-127..UC-130
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Tiếp nhận, điều phối, đầu mối đơn vị |
+| Route | `/workspace`, `/workspace/ho-so/:id`, `/workspace/login` |
+| Màn | OPS-01..OPS-05 (mock một phần trên workspace / chi tiết) |
+| Trạng thái | `mocked` |
+| MDC màn | `src/app/features/workspace/workspace/workspace.mdc`, `.../dossier-detail/dossier-detail.mdc` |
+
+## Cán bộ làm gì (theo thứ tự)
+
+1. Đăng nhập nội bộ (`/workspace/login`) theo role.  
+2. Xem hàng đợi trên `/workspace`; lọc Tất cả / Mới / Đang xử lý / Chờ duyệt.  
+3. Mở chi tiết 360°: nội dung, đính kèm, timeline.  
+4. Tiếp nhận (`new` → `received`) hoặc Phân công chuyên viên (`new`/`received` → `processing`).  
+5. Gợi ý AI lĩnh vực–đơn vị–trùng (advisory, không tự đổi trạng thái).
+
+## UC liên quan
+
+Nhận–lọc, giao–trả–từ chối–gộp; SLA tiếp nhận/phân công (đặc tả ≤ 1 ngày làm việc/bước).
+
+## Điều kiện chuyển
+
+| Từ | Đến | Ai (mock) |
+|---|---|---|
+| `new` | `received` | reception, coordinator |
+| `new` / `received` | `processing` | reception, coordinator (+ chọn assignee) |
+
+- Phải đúng trạng thái hiện tại + quyền actor (`WorkflowRepository.canTransition`).  
+- AI không tự phê duyệt / không tự đổi trạng thái cuối.
+
+## Cross-ref
+
+- Hồ sơ đến từ: `../01-nguoi-dan/03-gui-cau-hoi.mdc`  
+- Bước sau: `02-soan-tra-loi.mdc`  
+- AI: `06-phan-he-thong-minh.mdc`
+
+## Acceptance
+
+- Mọi chuyển trạng thái có actor, thời điểm, mô tả trên timeline.  
+- Gợi ý AI có thể chấp nhận/từ chối, không silent-apply.
+
+## Test
+
+`mock-db.service.spec.ts`, `workflow.repository.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Luồng xử lý/phân công mock | 142–149 |
+| 2026-10-20 | Codex | Chuyển folder cán bộ, tiếng Việt | 142–149 |
+| 2026-10-20 | Codex | G2: filter queue + tiếp nhận/phân công E2E mock | 142–149 |
+| 2026-10-20 | Grok Bot | R29 khung workspace: sidebar rail/mở rộng + flyout, drawer < 1024, header 1 hàng (tìm kiếm Ctrl K, chuông, VI/EN, user pill). Hàng đợi đồng bộ `?filter=`; admin đồng bộ `?tab=`; tra cứu nội bộ đọc `?q=` | 142–149 |
+| 2026-10-20 | Grok Bot | R30: menu workspace hiển thị các mục mockup chưa có màn (tag «Sắp có», route `/workspace/<slug>` tới trang Sắp ra mắt); ma trận vai trò `WS_ROLE_MATRIX` | 142–149 |

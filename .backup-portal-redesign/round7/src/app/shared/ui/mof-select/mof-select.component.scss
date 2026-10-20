@@ -1,0 +1,231 @@
+:host {
+  display: block;
+  width: 100%;
+  --select-h: 44px;
+  --select-font: var(--mof-text-sm);
+}
+
+:host(.is-sm) {
+  --select-h: 36px;
+  --select-font: var(--mof-text-xs);
+}
+
+.mof-select-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--mof-ink);
+  font-size: var(--mof-text-sm);
+  font-weight: 600;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: var(--select-h);
+  padding: 0 12px 0 14px;
+  border: 1px solid var(--mof-line);
+  border-radius: 10px;
+  background: var(--mof-surface);
+  color: var(--mof-ink);
+  font: inherit;
+  font-size: var(--select-font);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--mof-fast) ease,
+    box-shadow var(--mof-fast) ease;
+
+  &:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--mof-blue) 40%, var(--mof-line));
+  }
+
+  &:focus-visible,
+  :host(.is-open) & {
+    outline: none;
+    border-color: var(--mof-blue);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mof-blue) 16%, transparent);
+  }
+
+  &:disabled {
+    background: var(--mof-canvas);
+    color: var(--mof-muted);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.value {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  &.placeholder {
+    color: var(--mof-muted);
+  }
+}
+
+.chevron {
+  flex: none;
+  color: var(--mof-muted);
+  transition: transform 200ms ease;
+
+  :host(.is-open) & {
+    transform: rotate(180deg);
+    color: var(--mof-blue);
+  }
+}
+
+/* Panel nằm trong <body>; vị trí do core floating ghi bằng transform → KHÔNG animate transform/top/left. */
+.mof-select-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  overflow: hidden;
+  border: 1px solid var(--mof-line);
+  border-radius: 12px;
+  background: var(--mof-surface);
+  color: var(--mof-ink);
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--mof-navy-deep) 16%, transparent);
+  font-family: inherit;
+  transform-origin: top center;
+  animation: panel-in 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  &[data-side='top'] {
+    transform-origin: bottom center;
+  }
+}
+
+.search {
+  position: relative;
+  flex: none;
+  padding: 10px;
+  border-bottom: 1px solid var(--mof-line);
+
+  input {
+    width: 100%;
+    height: 38px;
+    padding: 0 36px 0 12px;
+    border: 1px solid var(--mof-line);
+    border-radius: 8px;
+    background: var(--mof-surface);
+    color: var(--mof-ink);
+    font: inherit;
+    font-size: var(--mof-text-sm);
+    transition:
+      border-color var(--mof-fast) ease,
+      box-shadow var(--mof-fast) ease;
+
+    &::placeholder {
+      color: var(--mof-muted);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--mof-blue);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--mof-blue) 14%, transparent);
+    }
+  }
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 22px;
+  color: var(--mof-muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.options {
+  flex: 1;
+  min-height: 0;
+  max-height: 260px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mof-line) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--mof-line);
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: var(--mof-text-sm);
+    line-height: 1.35;
+    cursor: pointer;
+    transition: background 120ms ease;
+
+    &.active {
+      background: var(--mof-blue-soft);
+    }
+
+    &.selected {
+      color: var(--mof-blue);
+      font-weight: 600;
+    }
+
+    &.disabled {
+      color: var(--mof-muted);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    &.empty {
+      justify-content: center;
+      color: var(--mof-muted);
+      cursor: default;
+    }
+  }
+}
+
+.mof-select-panel.is-sm .options li {
+  min-height: 34px;
+  font-size: var(--mof-text-xs);
+}
+
+.check {
+  flex: none;
+  color: var(--mof-blue);
+}
+
+/* Dùng thuộc tính `scale` riêng (không đụng `transform` đang dùng để định vị). */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mof-select-panel {
+    animation: none;
+  }
+
+  .chevron,
+  .trigger,
+  .options li {
+    transition: none;
+  }
+}

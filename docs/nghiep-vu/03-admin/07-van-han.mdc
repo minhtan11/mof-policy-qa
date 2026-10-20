@@ -1,0 +1,38 @@
+# Admin — Vận hành, ATTT, backup
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G4 — tab Vận hành: jobs, backup, reset seed (mock)  
+Affected UC: UC-084..UC-099
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Quản trị hệ thống / vận hành |
+| Route | `/admin` · tab Vận hành |
+| Trạng thái | `mocked` (job/backup/reset); ATTT production `blocked` |
+
+## Admin làm gì
+
+1. Chạy job mock (backup index, SLA, notify).  
+2. Tạo bản sao lưu snapshot.  
+3. Reset seed demo về dữ liệu gốc.  
+4. (Tab AI) đổi trạng thái model advisory.
+
+## Acceptance
+
+- Reset seed có toast rõ ràng; không tuyên bố đạt chuẩn ATTT.  
+- Backup chỉ lưu metadata mock trong memory/session.
+
+## Test
+
+`ops.repository.spec.ts`, `mock-db.service.spec.ts` (resetSeed)
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Khởi tạo MDC vận hành | 84–99 |
+| 2026-10-20 | Codex | Chuyển `03-admin`, tiếng Việt | 84–99 |
+| 2026-10-20 | Codex | G4 ops tab + reset seed | 84–99 |

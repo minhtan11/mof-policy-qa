@@ -1,33 +1,90 @@
-<main class="login-page">
-  <section class="login-aside">
-    <a routerLink="/portal" class="login-brand">
-      <i class="pi pi-building-columns"></i>
+<app-auth-shell split="even">
+  <div authBrand class="ws-brand">
+    <div class="brand-row">
+      <img class="emblem" src="assets/mof-emblem-transparent.png" alt="" width="64" height="64" />
       <span>
-        <b>BỘ TÀI CHÍNH</b>
-        <small>Cổng Hỏi đáp chính sách tài chính</small>
+        <strong>{{ 'brand.ministry' | t }}</strong>
+        <small>{{ 'portal.brand.sub' | t }}</small>
       </span>
-    </a>
-
-    <div>
-      <p class="eyebrow">Không gian nghiệp vụ</p>
-      <h1>Xử lý chính xác.<br /><em>Phối hợp thông suốt.</em></h1>
-      <p>Hệ thống dành cho cán bộ tiếp nhận, chuyên viên, lãnh đạo, điều phối và quản trị viên.</p>
     </div>
-
-    <footer><i class="pi pi-shield"></i> Phiên bản mockup · Dữ liệu chỉ lưu trên trình duyệt</footer>
-  </section>
-
-  <section class="login-form">
-    <div class="form-card">
-      <a routerLink="/portal" class="back"><i class="pi pi-arrow-left"></i> Về cổng công khai</a>
-      <p class="eyebrow">Đăng nhập nghiệp vụ</p>
-      <h2>Chọn vai trò để trải nghiệm</h2>
-      <p class="muted">Trong triển khai thực tế, màn hình này sẽ kết nối SSO/IAM hoặc VNeID của Bộ.</p>
-
-      <label for="role">Vai trò mô phỏng</label>
-      <p-select inputId="role" [options]="roles" [(ngModel)]="selectedRole" optionLabel="label" optionValue="value" placeholder="Chọn vai trò" appendTo="body" />
-      <div class="role-note"><i class="pi pi-info-circle"></i><span>Chọn vai trò để hệ thống hiển thị đúng phạm vi chức năng và dữ liệu.</span></div>
-      <p-button label="Vào không gian làm việc" icon="pi pi-arrow-right" iconPos="right" [loading]="loading()" (onClick)="login()" [disabled]="!selectedRole" />
+    <div class="hero">
+      <span class="rule" aria-hidden="true"></span>
+      <p class="eyebrow">{{ 'ws.brandEyebrow' | t }}</p>
+      <h2>{{ 'ws.headline1' | t }}<br /><em>{{ 'ws.headline2' | t }}</em></h2>
+      <p class="sub">{{ 'ws.brandSub' | t }}</p>
+      <ul class="features">
+        @for (f of features; track f.key) {
+          <li>
+            <span class="feature-icon"><img [src]="f.art" alt="" width="26" height="26" /></span>
+            <span>{{ f.key | t }}</span>
+          </li>
+        }
+      </ul>
     </div>
-  </section>
-</main>
+    <p class="note"><app-mof-fi-icon name="info" /> {{ 'ws.note' | t }}</p>
+  </div>
+
+  <a routerLink="/portal" class="back"><app-mof-fi-icon name="arrow-left" /> {{ 'login.back' | t }}</a>
+  <p class="eyebrow-form">{{ 'ws.eyebrow' | t }}</p>
+  <h1>{{ 'ws.heading' | t }}</h1>
+  <p class="intro">{{ 'ws.subtitle' | t }}</p>
+
+  <form [formGroup]="form" (ngSubmit)="login()" novalidate>
+    <div class="field">
+      <label for="ws-id">{{ 'ws.identifier' | t }}</label>
+      <app-mof-input
+        id="ws-id"
+        formControlName="identifier"
+        prefixIcon="user"
+        autocomplete="username"
+        [placeholder]="'ws.identifierPlaceholder' | t"
+        [invalid]="!!errorOf('identifier')"
+        describedBy="ws-id-err"
+      />
+      <app-mof-field-error id="ws-id-err" [message]="errorOf('identifier') ? (errorOf('identifier')! | t) : null" />
+    </div>
+    <div class="field">
+      <label for="ws-pw">{{ 'login.password' | t }}</label>
+      <app-mof-input
+        id="ws-pw"
+        type="password"
+        formControlName="password"
+        prefixIcon="lock"
+        autocomplete="current-password"
+        [revealable]="true"
+        [placeholder]="'login.passwordPlaceholder' | t"
+        [invalid]="!!errorOf('password')"
+        describedBy="ws-pw-err"
+      />
+      <app-mof-field-error id="ws-pw-err" [message]="errorOf('password') ? (errorOf('password')! | t) : null" />
+    </div>
+    <div class="row">
+      <app-mof-checkbox formControlName="remember" [label]="'login.remember' | t" />
+      <a routerLink="/workspace/login" fragment="quen-mat-khau" class="forgot">{{ 'login.forgot' | t }}</a>
+    </div>
+    <app-mof-field-error class="form-error" id="ws-form-err" [message]="formError() ? (formError()! | t) : null" />
+    <app-mof-button
+      class="submit"
+      type="submit"
+      variant="gradient"
+      size="lg"
+      [block]="true"
+      icon="arrow-right"
+      iconPos="right"
+      [loading]="loading()"
+      [label]="'login.submit' | t"
+    />
+  </form>
+
+  <div class="divider"><span>{{ 'login.orWith' | t }}</span></div>
+
+  <div class="demo">
+    <app-mof-select
+      [label]="'ws.demoRole' | t"
+      [options]="accountOptions"
+      [ngModel]="demoAccount"
+      (ngModelChange)="pickAccount($event)"
+    />
+    <small>{{ 'ws.demoHint' | t }}</small>
+  </div>
+</app-auth-shell>

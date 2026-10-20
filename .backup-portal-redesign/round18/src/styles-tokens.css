@@ -1,0 +1,277 @@
+:root,
+[data-theme='light'] {
+  --mof-navy: #0b2d52;
+  --mof-navy-deep: #071e38;
+  --mof-blue: #1769aa;
+  --mof-blue-strong: #0d4f8a;
+  --mof-blue-soft: #e8f2fb;
+  --mof-gold: #c8993f;
+  --mof-ink: #14263f;
+  --mof-muted: #667890;
+  --mof-line: #d9e3ef;
+  --mof-surface: #ffffff;
+  --mof-canvas: #f3f7fb;
+  --mof-success: #1f8a57;
+  --mof-warning: #c4841d;
+  --mof-danger: #c44747;
+  --mof-hero-overlay: linear-gradient(120deg, rgb(7 30 56 / 78%) 0%, rgb(11 45 82 / 58%) 48%, rgb(23 105 170 / 42%) 100%);
+  --mof-header-bg: rgb(255 255 255 / 82%);
+  --mof-radius: 16px;
+  --mof-shadow: 0 14px 36px rgb(16 40 70 / 8%);
+  --mof-fast: 140ms;
+  --mof-z-dropdown: 1000;
+  --mof-field-error-h: 1.125rem;
+  /* Pill tài khoản header — mọi kích thước bám theo avatar */
+  /* Drawer menu mobile */
+  --mof-touch: 2.75rem;
+  --mof-z-drawer: 1100;
+  --mof-drawer-w: min(23rem, 88vw);
+  --mof-drawer-pad: clamp(0.875rem, 0.6rem + 1vw, 1.25rem);
+  --mof-drawer-dur: 280ms;
+  --mof-avatar-size: clamp(1.75rem, 1.5rem + 0.8vw, 2.25rem);
+  --mof-avatar-ring: 0.125rem;
+  --mof-avatar-font: calc(var(--mof-avatar-size) * 0.38);
+  --mof-user-pill-inset: calc(var(--mof-avatar-size) * 0.1);
+  --mof-user-pill-gap: calc(var(--mof-avatar-size) * 0.28);
+  --mof-user-pill-pad-end: calc(var(--mof-avatar-size) * 0.33);
+  --mof-user-pill-font: clamp(0.8rem, 0.74rem + 0.2vw, 0.9rem);
+  --mof-user-name-max: clamp(6rem, 3.5rem + 6vw, 10rem);
+  /* QR luôn tối-trên-sáng để quét được ở cả dark mode */
+  --mof-qr-ink: #0b1f3a;
+  --mof-qr-bg: #ffffff;
+  --mof-medium: 220ms;
+  --mof-text-xs: clamp(0.72rem, 0.12vw + 0.68rem, 0.78rem);
+  --mof-text-sm: clamp(0.82rem, 0.14vw + 0.76rem, 0.9rem);
+  --mof-text-md: clamp(0.92rem, 0.16vw + 0.86rem, 1rem);
+  --mof-text-lg: clamp(1.05rem, 0.35vw + 0.92rem, 1.25rem);
+  --mof-text-xl: clamp(1.35rem, 0.8vw + 1rem, 1.85rem);
+  --mof-text-2xl: clamp(1.75rem, 1.6vw + 1.1rem, 2.75rem);
+  --mof-text-hero: clamp(2rem, 2.8vw + 1.2rem, 3.35rem);
+  --mof-on-brand: #ffffff;
+  --mof-btn-gradient: linear-gradient(90deg, #1a6fe0 0%, #2f86f0 55%, #1d5fc9 100%);
+  --mof-login-brand-bg: linear-gradient(165deg, #1f6fd8 0%, #1559c0 45%, #2a7fe0 100%);
+  --mof-chart-3: #7b6fd6;
+  --mof-header-glass: rgb(255 255 255 / 86%);
+  --mof-page-bg: linear-gradient(160deg, #e6f0fb 0%, #eef5fd 45%, #e9f2fc 100%);
+  --mof-blob: rgb(120 175 240 / 45%);
+  --mof-blob-2: rgb(170 205 245 / 50%);
+  --mof-hero-overlay-lr: linear-gradient(90deg, rgb(12 74 140 / 94%) 0%, rgb(23 105 190 / 78%) 34%, rgb(40 130 210 / 30%) 62%, rgb(40 130 210 / 0%) 82%);
+  --mof-footer-bg: linear-gradient(135deg, #0b2d52 0%, #0d4f8a 100%);
+  --mof-chart-2: #8fb8e0;
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --mof-navy: #9ec4ef;
+  --mof-navy-deep: #07111d;
+  --mof-blue: #5aa5e0;
+  --mof-blue-strong: #8fc4ef;
+  --mof-blue-soft: #16324d;
+  --mof-gold: #d4b067;
+  --mof-ink: #e8eef7;
+  --mof-muted: #9aadc2;
+  --mof-line: #2a3d55;
+  --mof-surface: #121c29;
+  --mof-canvas: #0b131e;
+  --mof-success: #4cba84;
+  --mof-warning: #e0a84a;
+  --mof-danger: #e07272;
+  --mof-hero-overlay: linear-gradient(120deg, rgb(4 10 18 / 86%) 0%, rgb(8 20 34 / 72%) 50%, rgb(18 48 74 / 58%) 100%);
+  --mof-header-bg: rgb(18 28 41 / 86%);
+  --mof-shadow: 0 16px 40px rgb(0 0 0 / 35%);
+  --mof-on-brand: #e8eef7;
+  --mof-btn-gradient: linear-gradient(90deg, #2f6fb8 0%, #3d84d0 55%, #2a62a8 100%);
+  --mof-login-brand-bg: linear-gradient(165deg, #0e2e55 0%, #0b2546 45%, #143c6b 100%);
+  --mof-chart-3: #a49bf0;
+  --mof-header-glass: rgb(14 24 38 / 86%);
+  --mof-page-bg: linear-gradient(160deg, #0b1828 0%, #0a1422 50%, #0c1a2c 100%);
+  --mof-blob: rgb(30 80 150 / 38%);
+  --mof-blob-2: rgb(20 60 115 / 40%);
+  --mof-hero-overlay-lr: linear-gradient(90deg, rgb(5 16 30 / 95%) 0%, rgb(10 32 58 / 82%) 36%, rgb(14 46 80 / 45%) 64%, rgb(14 46 80 / 15%) 85%);
+  --mof-footer-bg: linear-gradient(135deg, #07111d 0%, #10263d 100%);
+  --mof-chart-2: #3f6f9c;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+html {
+  /* Fluid base: ~15px mobile → ~16.5px desktop; tránh chữ quá nhỏ/to */
+  font-size: clamp(15px, 0.22vw + 14.4px, 16.5px);
+}
+
+body {
+  min-width: 320px;
+  background: var(--mof-canvas);
+  color: var(--mof-ink);
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.route-stage {
+  min-height: 100vh;
+  animation: page-enter var(--mof-medium) ease both;
+}
+
+.content-width {
+  width: min(1120px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.eyebrow {
+  margin: 0 0 0.6rem;
+  color: var(--mof-blue);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.muted {
+  color: var(--mof-muted);
+}
+
+.surface-card {
+  border: 1px solid var(--mof-line);
+  border-radius: var(--mof-radius);
+  background: var(--mof-surface);
+  box-shadow: 0 4px 18px rgb(16 40 70 / 4%);
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .content-width {
+    width: min(100% - 28px, 1120px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .content-width {
+    width: min(1200px, calc(100% - 64px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Motion dùng chung (route transition, scroll-reveal, đổi ngôn ngữ) ---- */
+.mof-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 220ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.mof-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Route transition (withViewTransitions): fade + trượt nhẹ 200ms */
+::view-transition-old(root) {
+  animation: vt-out 180ms ease both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in 200ms ease both;
+}
+
+/* Đổi ngôn ngữ: chỉ crossfade, không trượt → không cảm giác giật */
+.vt-locale::view-transition-old(root),
+.vt-locale::view-transition-new(root) {
+  animation-duration: 160ms;
+  animation-name: vt-fade;
+}
+
+.vt-locale::view-transition-new(root) {
+  animation-direction: reverse;
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes vt-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mof-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* Breakpoint dự án cho pill tài khoản (320/480/768/1024/1280/1440) */
+@media (max-width: 479px) {
+  :root { --mof-avatar-size: 1.875rem; }
+}
+@media (min-width: 480px) and (max-width: 767px) {
+  :root { --mof-avatar-size: 2rem; }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  :root { --mof-user-name-max: 8rem; }
+}
+@media (min-width: 1440px) {
+  :root { --mof-user-name-max: 12rem; }
+}

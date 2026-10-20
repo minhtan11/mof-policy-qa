@@ -1,17 +1,24 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angular/router';
-import { providePrimeNG } from 'primeng/config';
-import { MessageService } from 'primeng/api';
-import Aura from '@primeuix/themes/aura';
+import { provideRouter, withViewTransitions } from '@angular/router';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideAnimationsAsync(),
-    provideRouter(routes, withViewTransitions(), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
-    providePrimeNG({ ripple: true, theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } } }),
-    MessageService,
+    // Chuyển cảnh chỉ khi ĐỔI TRANG (route khác). Chỉ đổi query/fragment trên cùng trang (lọc, phân trang, đổi kiểu xem)
+    // → bỏ chuyển cảnh toàn trang (trước đây gây nháy). Cuộn lên đầu cũng chỉ khi đổi trang — xem App.
+    provideRouter(
+      routes,
+      withViewTransitions({
+        skipInitialTransition: true,
+        onViewTransitionCreated: ({ transition, from, to }) => {
+          if (from.firstChild?.routeConfig === to.firstChild?.routeConfig) {
+            transition.skipTransition();
+          }
+        },
+      }),
+    ),
   ],
 };

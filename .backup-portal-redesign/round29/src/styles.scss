@@ -1,0 +1,52 @@
+/* Legacy entry kept unused; global styles live in styles.css + styles-tokens.css. */
+
+/* Khóa cuộn trang khi drawer/dialog mở */
+/* Chỉ khóa overflow (không position:fixed / đổi width body). scrollbar-gutter giữ chỗ thanh cuộn
+   trên desktop → trang không bị dịch khi khóa. */
+html {
+  scrollbar-gutter: stable;
+}
+
+html.mof-scroll-lock {
+  overflow: hidden;
+}
+
+/* Ẩn trực quan, vẫn đọc được bởi trình đọc màn hình */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Neo #fragment không bị header sticky che */
+[id] {
+  scroll-margin-top: calc(var(--mof-header-h) + 1rem);
+}
+
+/* Crossfade danh sách tra cứu (đổi trang / kiểu xem) — ngắn, chỉ opacity */
+::view-transition-old(qa-list),
+::view-transition-new(qa-list),
+::view-transition-old(mine-list),
+::view-transition-new(mine-list) {
+  animation-duration: 180ms;
+  animation-timing-function: ease;
+}
+
+::view-transition-group(qa-list),
+::view-transition-group(mine-list) {
+  animation-duration: 180ms;
+}
+
+/* Header cổng có tên riêng → ảnh chụp header vẽ TRÊN danh sách đang crossfade (không lộ bảng đè header). */
+app-portal-header .portal-header {
+  view-transition-name: portal-header;
+}
+
+::view-transition-group(portal-header),
+::view-transition-old(portal-header),
+::view-transition-new(portal-header) {
+  animation: none;
+}

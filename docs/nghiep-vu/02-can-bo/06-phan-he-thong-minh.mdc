@@ -1,0 +1,41 @@
+# Cán bộ — Phân hệ thông minh (AI hỗ trợ)
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Affected UC: UC-127..UC-134
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Hệ thống gợi ý; chuyên viên / điều phối quyết định |
+| Route | Gắn trên chi tiết hồ sơ / admin AI |
+| Trạng thái | `mocked` (suggest/accept/reject); OCR/dịch thật `blocked` |
+
+## Nguyên tắc bắt buộc
+
+1. AI chỉ **gợi ý** (phân loại, định tuyến, căn cứ, tóm tắt, trùng, dịch).  
+2. Người dùng **chấp nhận / từ chối** tường minh.  
+3. Không tự phê duyệt, không tự xuất bản, không ghi đè nội dung đã ký.
+
+## Cross-ref
+
+- Tiếp nhận: `01-tiep-nhan-phan-cong.mdc`  
+- Soạn: `02-soan-tra-loi.mdc`
+
+## Acceptance
+
+- Mỗi gợi ý có trạng thái suggested/accepted/rejected + độ tin cậy.  
+- UI không tuyên bố AI đã quyết định thay cán bộ.
+
+## Test
+
+`ai-advisor.service.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | AI advisory trên hồ sơ | 127–130 |
+| 2026-10-20 | Codex | Chuyển folder cán bộ, tiếng Việt | 127–134 |

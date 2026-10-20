@@ -1,0 +1,39 @@
+<div class="mof-upload" [class.is-disabled]="disabled">
+  <input
+    #fileInput
+    class="mof-upload__input"
+    type="file"
+    [id]="id() || null"
+    [accept]="accept()"
+    [multiple]="multiple()"
+    [disabled]="disabled"
+    (change)="onFilesSelected($event)"
+  />
+
+  <div class="mof-upload__row">
+    <app-mof-button
+      type="button"
+      variant="soft"
+      icon="plus"
+      [label]="buttonLabel()"
+      [disabled]="disabled"
+      (click)="openPicker()"
+    />
+    @if (hint()) {
+      <p class="mof-upload__hint">{{ hint() }}</p>
+    }
+  </div>
+
+  @if (files().length) {
+    <ul class="mof-upload__list">
+      @for (name of files(); track name) {
+        <li>
+          <span><app-mof-fi-icon name="document" /> {{ name }}</span>
+          <button type="button" class="mof-upload__remove" [disabled]="disabled" (click)="remove(name)">
+            <app-mof-icon name="close" [size]="14" />
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

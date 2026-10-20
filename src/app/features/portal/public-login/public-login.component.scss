@@ -1,0 +1,248 @@
+@use '../../../shared/ui/auth-shell/auth-form';
+
+:host {
+  display: block;
+}
+
+
+/* ---------- Panel thương hiệu (trái) ---------- */
+.brand-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 640px;
+  overflow: hidden;
+  background: var(--mof-login-brand-bg);
+  color: var(--mof-on-brand);
+  isolation: isolate;
+}
+
+.brand-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(28px, 4vw, 44px) clamp(20px, 3vw, 36px) 0;
+  text-align: center;
+
+  strong {
+    margin-top: 12px;
+    font-size: clamp(1.4rem, 1.2vw + 1rem, 2rem);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  small {
+    font-size: var(--mof-text-sm);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+}
+
+.emblem {
+  width: clamp(72px, 7vw, 96px);
+  height: auto;
+  filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--mof-navy-deep) 35%, transparent));
+}
+
+.tagline {
+  max-width: 300px;
+  margin: 22px 0 18px;
+  font-size: var(--mof-text-md);
+  line-height: 1.55;
+  opacity: 0.95;
+}
+
+.features {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  max-width: 300px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: var(--mof-text-sm);
+    line-height: 1.4;
+  }
+}
+
+
+/* Ảnh trụ sở mờ dần vào nền xanh */
+.building {
+  flex: 1;
+  min-height: 220px;
+  margin-top: -40px;
+  background: url('/assets/hero/mof-hq.jpg') 72% 60% / cover no-repeat;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 38%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 38%);
+}
+
+/* Tabs segmented: pill trắng + gạch chân xanh cho tab đang chọn */
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 22px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--mof-canvas);
+
+  app-mof-button {
+    display: block;
+  }
+}
+
+
+/* Hai chế độ xếp chồng trong cùng ô grid: chiều cao = view cao nhất → chuyển đổi không layout shift */
+.stage {
+  display: grid;
+  flex: 1;
+}
+
+.view {
+  display: flex;
+  flex-direction: column;
+  grid-area: 1 / 1;
+  min-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(12px);
+  transition: opacity 220ms ease, transform 220ms ease, visibility 0s linear 220ms;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity 220ms ease, transform 220ms ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view,
+  .view.active {
+    transform: none;
+    transition: none;
+  }
+}
+
+.vneid-card {
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--mof-line);
+  border-radius: 14px;
+  background: var(--mof-surface);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--mof-navy) 5%, transparent);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+
+  img {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+  }
+
+  strong {
+    display: block;
+    color: var(--mof-navy);
+    font-size: var(--mof-text-md);
+    font-weight: 700;
+  }
+
+  small {
+    color: var(--mof-muted);
+    font-size: var(--mof-text-xs);
+  }
+
+  .chev {
+    margin-left: auto;
+    color: var(--mof-ink);
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--mof-blue) 45%, var(--mof-line));
+    box-shadow: var(--mof-shadow);
+  }
+}
+
+/* ---------- Responsive ---------- */
+/* Mobile: panel trái thành banner gọn phía trên */
+@media (max-width: 767px) {
+  .brand-panel {
+    min-height: 0;
+  }
+
+  .brand-top {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 12px;
+    padding: 18px 18px 16px;
+    text-align: left;
+
+    strong {
+      margin-top: 0;
+      font-size: var(--mof-text-lg);
+    }
+
+    small {
+      flex-basis: 100%;
+      padding-left: calc(56px + 12px);
+      margin-top: -4px;
+    }
+  }
+
+  .emblem {
+    width: 56px;
+  }
+
+  .tagline,
+  .features {
+    display: none;
+  }
+
+  .building {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    margin: 0;
+    min-height: 0;
+    opacity: 0.22;
+    mask-image: linear-gradient(to left, #000 0%, transparent 85%);
+    -webkit-mask-image: linear-gradient(to left, #000 0%, transparent 85%);
+  }
+}
+
+@media (max-width: 359px) {
+  .brand-top small {
+    padding-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vneid-card {
+    transition: none;
+  }
+
+  .vneid-card:hover {
+    transform: none;
+  }
+}

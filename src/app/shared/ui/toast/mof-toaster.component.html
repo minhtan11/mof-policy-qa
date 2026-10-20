@@ -1,0 +1,32 @@
+<section class="toaster" [attr.aria-label]="'toast.region' | t">
+  @for (t of toast.toasts(); track t.id + ':' + t.rev) {
+    <article
+      class="toast"
+      [attr.data-type]="t.type"
+      [class.leaving]="t.leaving"
+      [class.paused]="t.paused"
+      [attr.role]="t.type === 'error' ? 'alert' : 'status'"
+      [attr.aria-live]="t.type === 'error' ? 'assertive' : 'polite'"
+      aria-atomic="true"
+      (mouseenter)="toast.pause(t.id)"
+      (mouseleave)="toast.resume(t.id)"
+      (focusin)="toast.pause(t.id)"
+      (focusout)="onFocusOut($event, t.id)"
+    >
+      <span class="ico" aria-hidden="true"><app-mof-fi-icon [name]="icon[t.type]" /></span>
+      <div class="body">
+        @if (t.title) {
+          <strong>{{ t.title }}</strong>
+        }
+        <p>{{ t.message }}</p>
+        @if (t.action; as a) {
+          <button type="button" class="action" (click)="runAction(t.id, a.run)">{{ a.label }}</button>
+        }
+      </div>
+      <app-mof-icon-button class="close" icon="close" size="sm" [label]="'toast.close' | t" (click)="toast.dismiss(t.id)" />
+      @if (t.duration > 0) {
+        <span class="bar" aria-hidden="true" [style.animation-duration.ms]="t.duration"></span>
+      }
+    </article>
+  }
+</section>

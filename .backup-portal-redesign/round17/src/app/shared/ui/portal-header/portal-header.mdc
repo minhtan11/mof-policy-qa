@@ -1,0 +1,29 @@
+# Shared UI — Portal header
+
+Changed on: 2026-10-20  
+Changed by: Grok Bot  
+Change reason: Thiết kế lại menu mobile thành drawer off-canvas  
+Affected UC: UC-1..UC-8 (điều hướng cổng)
+
+## Desktop (≥ 1024px)
+
+Thanh tiện ích (ngày · sơ đồ · hỗ trợ · theme · đăng nhập/pill tài khoản), hàng nhận diện + tìm kiếm + VI|EN, menu chính có dropdown. Mục con chỉ sáng khi khớp CẢ path và fragment (`isChildActive`).
+
+## Mobile (< 1024px) — drawer
+
+- Nút menu mở drawer phải (`--mof-drawer-w`), scrim mờ, khóa cuộn (`html.mof-scroll-lock`), focus trap, Esc/scrim/điều hướng đều đóng, trả focus về nút menu.
+- Drawer nằm ngoài `<header>` (header có backdrop-filter → sẽ làm `position: fixed` sai).
+- Trên cùng: logo + nút đóng; khối tài khoản (avatar + tên + email, "Câu hỏi của tôi" / "Đăng xuất") hoặc CTA "Đăng nhập".
+- Accordion: mỗi section 1 hàng (icon + nhãn + chevron xoay), chỉ mở 1, tự mở section chứa route hiện tại; animate `grid-template-rows`. Mục con thụt lề + đường dẫn trái; chỉ route hiện tại có thanh brand + tint. Touch target ≥ `--mof-touch` (2.75rem).
+- Footer: Sơ đồ cổng, Hỗ trợ, đổi theme, VI|EN. Dưới 768px thanh tiện ích + VI|EN ở header ẩn (đã có trong drawer); ô tìm kiếm giữ ở header.
+- Stagger fade-in các mục; reduced-motion tắt mọi transition/animation.
+
+## Test mapping
+
+`portal-header.component.spec.ts`: đăng nhập/đăng xuất (pill), drawer mở + khóa cuộn + Esc, accordion một mục, không highlight sai, khối tài khoản/CTA.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Drawer mobile off-canvas, accordion, chỉ highlight route hiện tại (sửa lỗi nhiều mục sáng do routerLinkActive bỏ qua fragment) | UC-1..UC-8 |

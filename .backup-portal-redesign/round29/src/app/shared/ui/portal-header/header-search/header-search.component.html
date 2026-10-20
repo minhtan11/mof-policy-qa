@@ -1,0 +1,29 @@
+<app-mof-icon-button fi="search" size="lg" variant="outline" [label]="'action.search' | t" [expanded]="open()" haspopup="dialog" (click)="show()" />
+@if (open()) {
+  <div class="cmd-root" (keydown)="onKey($event)">
+    <div class="scrim" aria-hidden="true" (click)="close()"></div>
+    <div #panel class="cmd" role="dialog" aria-modal="true" [attr.aria-label]="'header.searchTitle' | t">
+      <form role="search" (submit)="submit($event)">
+        <app-mof-fi-icon class="lead" name="search" />
+        <input
+          #input
+          type="search"
+          name="q"
+          autocomplete="off"
+          [attr.aria-label]="'action.search' | t"
+          [placeholder]="'lookup.placeholder' | t"
+          [ngModel]="keyword()"
+          (ngModelChange)="keyword.set($event)"
+        />
+        <button type="submit" class="go">{{ 'action.search' | t }}</button>
+      </form>
+      <p class="label">{{ 'header.searchSuggest' | t }}</p>
+      <div class="chips">
+        @for (tp of topics; track tp.id) {
+          <button type="button" (click)="goTopic(tp.id)"><app-mof-fi-icon name="hastag" /> {{ tp.name }}</button>
+        }
+      </div>
+      <p class="foot"><kbd>Enter</kbd> {{ 'header.searchEnter' | t }} · <kbd>Esc</kbd> {{ 'header.searchEsc' | t }} · <kbd>Ctrl K</kbd></p>
+    </div>
+  </div>
+}

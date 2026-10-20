@@ -1,0 +1,37 @@
+# Admin — Phân quyền và phạm vi dữ liệu
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G3 — ma trận role/permission/scope trên tab Phân quyền  
+Affected UC: UC-031..UC-040
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Quản trị hệ thống |
+| Route | `/admin` · tab Phân quyền; guard `/workspace`, `/admin` |
+| Trạng thái | `mocked` |
+
+## Ba lớp quyền
+
+1. Route guard  
+2. Permission hành động (`PermissionRepository.hasPermission`)  
+3. Data scope (`all` / `unit` / `assigned`)
+
+## Acceptance
+
+- Tab hiển thị ma trận rõ ràng.  
+- Wildcard `admin.*` chỉ áp dụng cho system-admin trong mock.
+
+## Test
+
+`permission.repository.spec.ts`, `auth.guards` / `auth.service.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Guard theo role | 31–32 |
+| 2026-10-20 | Codex | Chuyển `03-admin`, tiếng Việt | 31–40 |
+| 2026-10-20 | Codex | G3 ma trận quyền + scope | 31–40 |

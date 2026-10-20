@@ -1,0 +1,137 @@
+<header class="portal-header">
+  <div class="util-bar">
+    <div class="content-width util-row">
+      <span class="util-date">{{ today() }}</span>
+      <span class="sep" aria-hidden="true"></span>
+      <a routerLink="/portal" fragment="lien-he">{{ 'portal.util.sitemap' | t }}</a>
+      <span class="sep" aria-hidden="true"></span>
+      <a routerLink="/portal/tra-cuu">{{ 'portal.util.help' | t }}</a>
+      <span class="sep" aria-hidden="true"></span>
+      <button
+        type="button"
+        class="theme-btn"
+        (click)="theme.toggle()"
+        [attr.aria-label]="theme.theme() === 'light' ? ('action.themeDark' | t) : ('action.themeLight' | t)"
+        [attr.title]="theme.theme() === 'light' ? ('action.themeDark' | t) : ('action.themeLight' | t)"
+      >
+        <app-mof-icon [name]="theme.theme() === 'light' ? 'moon' : 'sun'" [size]="13" />
+      </button>
+      <span class="sep" aria-hidden="true"></span>
+      @if (auth.user(); as user) {
+        <!-- Menu tài khoản: dropdown absolute trong wrapper relative (chiến lược inline của core/overlay) -->
+        <div class="user-menu" [class.open]="userOpen()" (mouseleave)="userOpen.set(false)" (focusout)="onUserFocusOut($event)" (keydown.escape)="userOpen.set(false)">
+          <button
+            type="button"
+            class="user-btn"
+            aria-haspopup="menu"
+            aria-controls="portal-user-menu"
+            [attr.aria-expanded]="userOpen()"
+            [attr.aria-label]="'header.account' | t"
+            (click)="userOpen.set(!userOpen())"
+          >
+            @if (isImage(user.avatar)) {
+              <img class="avatar" [src]="user.avatar" alt="" width="22" height="22" />
+            } @else {
+              <span class="avatar" aria-hidden="true">{{ user.avatar }}</span>
+            }
+            <span class="user-name">{{ user.name }}</span>
+            <app-mof-fi-icon class="chev" name="angle-small-down" />
+          </button>
+          <ul class="user-dropdown" id="portal-user-menu" role="menu">
+            <li role="none">
+              <a role="menuitem" routerLink="/portal/cau-hoi-cua-toi" (click)="userOpen.set(false)"><app-mof-fi-icon name="document" /> {{ 'nav.myQuestions' | t }}</a>
+            </li>
+            <li role="none">
+              <button role="menuitem" type="button" class="logout" (click)="logout()"><app-mof-fi-icon name="sign-out-alt" /> {{ 'action.logout' | t }}</button>
+            </li>
+          </ul>
+        </div>
+      } @else {
+        <a routerLink="/portal/login" class="login-link"><app-mof-fi-icon name="user" /> {{ 'action.login' | t }}</a>
+      }
+    </div>
+  </div>
+
+  <div class="brand-bar">
+    <div class="content-width brand-row">
+      <a class="brand" routerLink="/portal" [attr.aria-label]="'app.name' | t">
+        <img src="assets/mof-emblem-transparent.png" alt="" width="72" height="72" />
+        <span>
+          <strong>{{ 'brand.ministry' | t }}</strong>
+          <small>{{ 'portal.brand.sub' | t }}</small>
+        </span>
+      </a>
+
+      <div class="brand-tools">
+        <div class="search" role="search" (keyup.enter)="search()">
+          <app-mof-input
+            type="search"
+            [placeholder]="'portal.searchPlaceholder' | t"
+            [ngModel]="keyword()"
+            (ngModelChange)="keyword.set($event)"
+          />
+          <button type="button" class="search-btn" (click)="search()" [attr.aria-label]="'action.search' | t">
+            <app-mof-icon name="search" [size]="16" />
+          </button>
+        </div>
+
+        <app-lang-switch />
+
+        <button
+          type="button"
+          class="menu-btn"
+          [attr.aria-expanded]="menuOpen()"
+          aria-controls="portal-main-nav"
+          [attr.aria-label]="'portal.nav.label' | t"
+          (click)="menuOpen.set(!menuOpen())"
+        >
+          <app-mof-fi-icon [name]="menuOpen() ? 'cross' : 'menu-burger'" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="main-nav" id="portal-main-nav" [class.open]="menuOpen()" [attr.aria-label]="'portal.nav.label' | t">
+    <ul class="content-width nav-list">
+      @for (item of navItems; track item.key) {
+        <li
+          class="nav-item"
+          [class.has-children]="!!item.children"
+          [class.active]="isActive(item)"
+          [class.open]="openKey() === item.key"
+          (mouseenter)="openKey.set(item.key)"
+          (mouseleave)="openKey.set(null)"
+          (focusin)="openKey.set(item.key)"
+          (focusout)="openKey.set(null)"
+        >
+          <a class="nav-link" [routerLink]="item.route" [fragment]="item.fragment" (click)="menuOpen.set(false)">
+            @if (item.icon) {
+              <app-mof-fi-icon [name]="item.icon" />
+            }
+            {{ item.key | t }}
+            @if (item.children) {
+              <app-mof-fi-icon class="chev" name="angle-small-down" />
+            }
+          </a>
+          @if (item.children) {
+            <ul class="submenu">
+              @for (child of item.children; track child.key) {
+                <li>
+                  <a
+                    [routerLink]="child.route"
+                    [fragment]="child.fragment"
+                    routerLinkActive="current"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="menuOpen.set(false)"
+                  >
+                    {{ child.key | t }}
+                  </a>
+                </li>
+              }
+            </ul>
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+</header>

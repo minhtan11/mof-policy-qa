@@ -1,0 +1,66 @@
+# Màn PUB-03 — Câu hỏi của tôi
+
+Changed on: 2026-10-20  
+Changed by: Grok Bot  
+Change reason: Round 28 — thiết kế lại theo mockup (hero sáng, thẻ email, bảng hồ sơ, lọc/sắp xếp/phân trang theo URL)  
+Affected UC: UC-110, UC-122, UC-165  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/04-cau-hoi-cua-toi.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/portal/cau-hoi-cua-toi` |
+| Actor | Người dân / doanh nghiệp (đăng nhập hoặc khách) |
+| Phạm vi dữ liệu | Khớp `senderEmail` (không phân biệt hoa thường) |
+| Dữ liệu | `MyQuestionRepository` → `MockDbService` (fixture `my-questions-fixtures.ts`) |
+| Trạng thái | `mocked` |
+
+## Bố cục
+
+- Breadcrumb **Dịch vụ công › Câu hỏi của tôi** (`portal.nav.services` › `nav.myQuestions` — đúng nhãn trang, không dùng “Tra cứu hồ sơ” của mockup).
+- Eyebrow “THEO DÕI HỒ SƠ”, tiêu đề có phần nhấn `my.titleAccent` (vi “của tôi”, en “My”), phụ đề `my.intro`.
+- Hero sáng tràn viền: token `--mof-mine-hero-overlay` + `--mof-mine-hero-bg` (light/dark) trên ảnh `mof-hq.jpg`, minh hoạ `lookup-docs.svg` (chỉ xanh/trắng, không vàng). Nội dung theo `.wide` = `min(100% - 2*gutter, 96rem)`.
+- Thẻ email: ô icon thư, nhãn, `app-mof-input` + nút “Tải danh sách”, gợi ý; lỗi trong `app-mof-field-error` (giữ chỗ → không nhảy layout).
+- Thẻ bảng: “Tổng số: N hồ sơ” + 3 `app-mof-select` có icon đầu (input mới `icon`, `ariaLabel`): Trạng thái / Lĩnh vực / Sắp xếp.
+  - Cột: Mã hồ sơ (icon file theo màu trạng thái + link), Nội dung (clamp 2 dòng + lĩnh vực), Trạng thái (pill + icon), Ngày gửi, Hạn xử lý, Thao tác “Xem chi tiết →”.
+  - Trạng thái người dân (gộp từ nội bộ): Đang xử lý (new/received/processing, amber `--mof-warning`), Chờ phê duyệt (waiting-approval, xanh `--mof-blue`), Đã trả lời (answered/published, xanh lá `--mof-success`), Từ chối (`rejected` — trạng thái mới, đỏ `--mof-danger`).
+  - Hạn xử lý: “-” khi đã trả lời/từ chối; **Quá hạn** (đỏ) / **Sắp đến hạn** ≤ 48 giờ (amber) hiển thị nhẹ dưới ngày.
+  - `thead` sticky dưới header (`top: var(--mof-header-h)`; thẻ dùng `overflow: clip` để không tạo scroll container), hover dòng.
+  - < 768px: mỗi `tr` thành thẻ xếp chồng (CÙNG DOM, chỉ CSS; nhãn từ `data-label`, viền trái theo màu trạng thái).
+  - Chân: `app-mof-pagination layout="per-page"` — “Hiển thị [10] kết quả trên trang” + số trang (10/20/50).
+
+## Luồng & trạng thái
+
+1. **Đã đăng nhập:** prefill email tài khoản + tự tải. **Khách:** prefill email vừa gửi trên máy (`lastSenderEmail`, như cũ) và tự tải nếu hợp lệ; nếu trống → nhập email rồi “Tải danh sách”.
+2. Validate: bắt buộc + định dạng có tên miền (`mineEmailValidator`, trim trước). Lỗi chỉ hiện sau lần bấm tải đầu.
+3. Tải xong mà không có hồ sơ → toast info `my.toastEmpty` + empty state (CTA Gửi câu hỏi). Lọc ra rỗng → “Không có hồ sơ phù hợp bộ lọc” + Xoá bộ lọc.
+4. URL: `?status=&topic=&sort=(oldest|due)&page=&size=` (bỏ mặc định; email KHÔNG lên URL vì là dữ liệu cá nhân). Lọc/sắp xếp/đổi size → về trang 1; `page` kẹp trong [1, pages].
+5. **Xem chi tiết** → route có sẵn `/portal/ho-so/:code` (PUB-04; có link “← Câu hỏi của tôi”; trình duyệt Back giữ nguyên bộ lọc). Trang chi tiết hiện câu trả lời của hồ sơ đã trả lời/từ chối kể cả khi chưa công khai.
+6. Hồ sơ gửi qua “Gửi câu hỏi” (`createDossier`) hiện ngay (repository đọc signal).
+
+## Chống nháy (bài học round 27)
+
+- Không skeleton (dữ liệu client). `@for … track r.id`; dòng không dùng `appReveal` (chỉ hero reveal một lần).
+- Đổi lọc/sắp xếp/trang: `router.navigate([], {replaceUrl})` → component KHÔNG tạo lại; View Transition crossfade 180ms trên `view-transition-name: mine-list` (bỏ qua nếu reduced-motion/không hỗ trợ); giữ `min-height` vùng bảng trong lúc đổi; chỉ cuộn mượt về toolbar khi toolbar ngoài khung nhìn.
+- Header cổng có `view-transition-name: portal-header` (không animation) để ảnh chụp header nằm trên bảng trong lúc crossfade.
+- Playwright (1440): đổi trang / lọc / sắp xếp → 0 node bảng bị huỷ, opacity vùng bảng luôn 1; không tràn ngang 320→1920.
+
+## Dữ liệu
+
+- `MY_QUESTIONS_FIXTURES` (23 hồ sơ) + `d-001` = 24 hồ sơ cho `minhanh@example.vn`, đủ 4 nhóm trạng thái, hạn quá/sắp/còn.
+- `MockDbService` seed = `SEED_DOSSIERS`; storage `dossiers.v2` (di trú từ v1: giữ hồ sơ tự gửi).
+
+## Acceptance
+
+- Chỉ hiện hồ sơ đúng email; email sai → lỗi giữ chỗ; không kết quả → toast.
+- Lọc, sắp xếp, phân trang đồng bộ URL, không nháy, không nhảy layout.
+- Mobile dạng thẻ; light/dark; reduced-motion; vi/en.
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Thêm màn câu hỏi của tôi (G1) | 110, 122 |
+| 2026-10-20 | Codex | Viết lại tiếng Việt; path MDC nhóm mới | 110, 122, 165 |
+| 2026-10-20 | Grok Bot | Round 28: redesign theo mockup — hero sáng, thẻ email (validate giữ chỗ, toast), bảng sticky + thẻ mobile, lọc/sắp xếp/phân trang URL (mof-pagination per-page), trạng thái `rejected`, fixture 24 hồ sơ, chống nháy | 110, 122, 165 |

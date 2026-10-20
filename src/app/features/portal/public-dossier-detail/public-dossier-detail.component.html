@@ -1,0 +1,96 @@
+<app-portal-header />
+<section class="page">
+  <div class="content-width narrow">
+    @if (dossier(); as item) {
+      <a class="back" routerLink="/portal/cau-hoi-cua-toi">← {{ 'my.backToList' | t }}</a>
+      <div class="page-heading">
+        <p class="eyebrow">{{ 'detail.eyebrow' | t }}</p>
+        <div class="title-row">
+          <h1>{{ item.code }}</h1>
+          <app-status-badge [status]="item.status" />
+        </div>
+        <p class="topic">{{ topicName() }}</p>
+        <h2 class="question">{{ item.question }}</h2>
+      </div>
+
+      <div class="grid">
+        <article class="surface-card block">
+          <h3>{{ 'detail.timeline' | t }}</h3>
+          <ol class="timeline">
+            @for (event of item.timeline; track event.at + event.title) {
+              <li [attr.data-state]="event.state">
+                <strong>{{ event.title }}</strong>
+                <p>{{ event.description }}</p>
+                <small>{{ event.at }} · {{ event.actor }}</small>
+              </li>
+            }
+          </ol>
+        </article>
+
+        <article class="surface-card block">
+          <h3>{{ 'detail.answer' | t }}</h3>
+          @if (item.answer && (item.isPublic || item.status === 'answered' || item.status === 'rejected')) {
+            <p class="answer">{{ item.answer }}</p>
+            @if (item.legalBasis.length) {
+              <h4>{{ 'detail.legal' | t }}</h4>
+              <ul>
+                @for (law of item.legalBasis; track law) {
+                  <li>{{ law }}</li>
+                }
+              </ul>
+            }
+          } @else {
+            <p class="muted">{{ 'detail.pendingAnswer' | t }}</p>
+          }
+        </article>
+      </div>
+
+      @if (item.isPublic && item.answer) {
+        <div class="feedback-grid">
+          <form class="surface-card block" [formGroup]="ratingForm" (ngSubmit)="submitRating()">
+            <h3>{{ 'detail.ratingTitle' | t }}</h3>
+            <p class="muted">{{ 'detail.ratingHint' | t }}</p>
+            @if (!ratingSaved()) {
+              <div class="field">
+                <label>{{ 'detail.stars' | t }}</label>
+                <app-mof-select formControlName="stars" [options]="starOptions" />
+              </div>
+              <div class="field">
+                <label>{{ 'detail.ratingComment' | t }}</label>
+                <app-mof-textarea formControlName="comment" [rows]="3" />
+              </div>
+              <app-mof-button type="submit" [label]="'detail.ratingSubmit' | t" />
+            } @else {
+              <p class="ok">{{ 'detail.ratingDone' | t }}</p>
+            }
+          </form>
+
+          <form class="surface-card block" [formGroup]="clarifyForm" (ngSubmit)="submitClarify()">
+            <h3>{{ 'detail.clarifyTitle' | t }}</h3>
+            <p class="muted">{{ 'detail.clarifyHint' | t }}</p>
+            @if (!clarifySaved()) {
+              <div class="field">
+                <label>{{ 'detail.clarifyText' | t }}</label>
+                <app-mof-textarea formControlName="text" [rows]="4" />
+              </div>
+              <app-mof-button type="submit" [label]="'detail.clarifySubmit' | t" variant="soft" />
+            } @else {
+              <p class="ok">{{ 'detail.clarifyDone' | t }}</p>
+            }
+          </form>
+        </div>
+      }
+
+      <div class="meta">
+        <span>{{ 'my.received' | t }}: {{ item.receivedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+        <span>{{ 'my.due' | t }}: {{ item.dueAt | date: 'dd/MM/yyyy' }}</span>
+      </div>
+    } @else {
+      <div class="empty surface-card">
+        <h1>{{ 'detail.notFoundTitle' | t }}</h1>
+        <p>{{ 'detail.notFoundBody' | t }}</p>
+        <a routerLink="/portal/tra-cuu"><app-mof-button [label]="'detail.backLookup' | t" /></a>
+      </div>
+    }
+  </div>
+</section>

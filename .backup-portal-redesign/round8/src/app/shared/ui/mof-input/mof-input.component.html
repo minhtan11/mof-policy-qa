@@ -1,0 +1,10 @@
+<input
+  class="mof-field"
+  [id]="id() || null"
+  [type]="type()"
+  [placeholder]="placeholder()"
+  [value]="value()"
+  [disabled]="isDisabled"
+  (input)="onInput($event)"
+  (blur)="markTouched()"
+/>

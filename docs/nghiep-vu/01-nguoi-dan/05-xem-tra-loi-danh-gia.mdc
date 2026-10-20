@@ -1,0 +1,55 @@
+# Người dân — Xem trả lời, đánh giá, làm rõ
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Affected UC: UC-114..UC-126 (trọng tâm 114–118), UC-165
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Người dân, doanh nghiệp |
+| Route | `/portal/ho-so/:code` |
+| Màn | PUB-04 / PUB-06 |
+| MDC màn | `src/app/features/portal/public-dossier-detail/public-dossier-detail.mdc` |
+| Trạng thái | `mocked` |
+
+## Người dùng làm gì
+
+1. Mở hồ sơ theo mã: xem trạng thái + timeline.  
+2. Nếu đã công khai và có câu trả lời: đọc nội dung + căn cứ pháp lý.  
+3. Gửi đánh giá (sao + nhận xét) — không sửa nội dung trả lời chính thức.  
+4. Gửi yêu cầu làm rõ — ghi nhận + thêm sự kiện timeline.  
+5. Toast chỉ hiện mã hồ sơ.
+
+## UC liên quan
+
+UC-114..UC-126 — timeline công khai, đánh giá, làm rõ, thông báo cá nhân, ngôn ngữ/trợ giúp, lịch sử, PDF (PDF còn mở rộng), phản hồi hệ thống.
+
+## Luồng phụ / lỗi
+
+- Mã sai → không tìm thấy.  
+- Chưa công khai / chưa có trả lời → thông báo đang xử lý; ẩn form đánh giá.
+
+## Acceptance
+
+- Đánh giá/làm rõ gắn hồ sơ đã công bố, không đổi nội dung official.  
+- Timeline chỉ sự kiện được phép với actor công khai.  
+- Không lộ PII đầy đủ trên toast/URL.
+
+## Test
+
+`mock-db.service.spec.ts` (addRating)
+
+## Cross-ref
+
+- Tra cứu: `02-tra-cuu-cong-khai.mdc`  
+- Cán bộ xử lý làm rõ: `../02-can-bo/02-soan-tra-loi.mdc`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Chi tiết công khai + rating/clarify (G1) | 114–118, 165 |
+| 2026-10-20 | Codex | Chuyển folder người dân, tiếng Việt | 114–126 |

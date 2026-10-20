@@ -1,0 +1,69 @@
+# Người dân — Đăng nhập cổng công khai
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Affected UC: UC-001..UC-008 (phần cổng public / VNeID)
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Người dân, doanh nghiệp |
+| Route | `/portal/login`, `/portal/login/vneid` |
+| Màn | PUB-01; đăng nhập nội bộ xem workspace (`/workspace/login`) cùng nhóm UC |
+| Trạng thái | `mocked` (VNeID mô phỏng); adapter thật `blocked` |
+
+## Người dùng làm gì (theo thứ tự)
+
+1. Vào cổng, chọn đăng nhập tài khoản hoặc VNeID.  
+2. Với VNeID mock: xem QR / trạng thái sẵn sàng → đang kiểm tra → thành công / lỗi (không khẳng định xác thực thật).  
+3. Sau đăng nhập: gửi câu hỏi, xem “Câu hỏi của tôi”, nhận thông báo cá nhân (mock).  
+4. Đăng xuất xóa phiên demo; phiên hết hạn không vào route được bảo vệ.
+
+## UC liên quan
+
+UC-001..UC-008 — đăng nhập/đăng xuất, khóa/hết hạn, hồ sơ, 2FA, VNeID/SSO, audit đăng nhập.
+
+## Luồng phụ / lỗi
+
+- VNeID lỗi mạng / hết hạn mã → thông báo lỗi rõ, không lộ PII.  
+- Sai mật khẩu / tài khoản khóa → không vào portal được bảo vệ.
+
+## Dữ liệu vào / ra
+
+- Vào: email/mật khẩu demo hoặc mô phỏng VNeID.  
+- Ra: phiên `AuthService` (localStorage), không ghi CCCD/đầy đủ PII vào toast/URL.
+
+## Acceptance
+
+- Màn VNeID có đủ trạng thái ready/checking/success/error.  
+- Không tuyên bố đã xác thực VNeID thật.  
+- Guard route độc lập với ẩn/hiện nút UI.
+
+## Test
+
+`auth.service.spec.ts`, `auth.guards.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Thêm luồng VNeID mock | 1–8 |
+| 2026-10-20 | Codex | Chuyển vào `01-nguoi-dan`, viết tiếng Việt | 1–8 |
+| 2026-10-20 | Grok Bot | Giao diện đăng nhập mới; validation bắt buộc định danh/mật khẩu (≥6); tab cá nhân/doanh nghiệp; cross-ref `src/app/features/portal/public-login/public-login.mdc` | 1–8 |
+
+## Cập nhật 2026-10-20 — VNeID QR ngay trên trang đăng nhập
+
+- Luồng: `/portal/login` → "Đăng nhập bằng VNeID" → QR (minh hoạ, 60s, tự làm mới) → điện thoại quét → hộp thoại app "Bạn đang thực hiện đăng nhập trên trang tin định danh điện tử…" → Xác nhận = đăng nhập; Đóng = từ chối (Thử lại); quá hạn khi chưa xác nhận = hết hạn (Thử lại).
+- Mock: user công dân mặc định `u-public` — Nguyễn Minh Anh (`demo-data.ts` USERS). Phiên lưu như `AuthService` (localStorage).
+- Thay adapter thật: cung cấp class khác cho token `VneidAuthAdapter` (OIDC sso.mof.gov.vn), UI không đổi. Trạng thái adapter thật: `blocked`.
+- Header hiện avatar + tên, menu Câu hỏi của tôi / Đăng xuất; đăng xuất xóa phiên và trở về header chưa đăng nhập.
+- Cán bộ nội bộ (session role ≠ `public`) khi đang ở cổng: menu tài khoản/drawer thêm «Không gian làm việc» → `/workspace` (hoặc `/admin` nếu system-admin).
+- Test: `vneid-auth.adapter.spec.ts` (máy trạng thái), `portal-header.component.spec.ts` (đăng nhập/đăng xuất), `public-login.component.spec.ts`.
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Header portal: cán bộ nội bộ có lối «Không gian làm việc» trong menu tài khoản | UC-001..UC-008, UC-142..UC-149 |
+| 2026-10-20 | Grok Bot | VNeID QR trong card + adapter mock + menu tài khoản header | UC-001..UC-008 |
+| 2026-10-20 | Auto | Bỏ appReveal trên đăng nhập cổng (không dùng landing reveal) | UC-001..UC-008 |

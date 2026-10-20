@@ -1,0 +1,209 @@
+<app-portal-header />
+<app-page-backdrop />
+<section class="form-page">
+  <div class="content-width narrow">
+    <nav class="breadcrumb" aria-label="breadcrumb">
+      <a routerLink="/portal">{{ 'ask.breadcrumb' | t }}</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">{{ 'nav.ask' | t }}</span>
+    </nav>
+
+    @if (!submitted()) {
+      <div class="page-heading">
+        <p class="eyebrow">{{ 'ask.eyebrow' | t }}</p>
+        <h1>{{ 'ask.title' | t }}</h1>
+        <p>{{ 'ask.intro' | t }}</p>
+      </div>
+
+      <form class="question-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="stepper-wrap">
+          <app-mof-stepper
+            [steps]="stepperSteps()"
+            [activeIndex]="step()"
+            [completed]="completedSteps()"
+            [ariaLabel]="'ask.stepsLabel' | t"
+            (stepSelect)="goTo($event)"
+          />
+        </div>
+
+        @switch (step()) {
+          @case (0) {
+            <section class="pane">
+              <header class="step-head">
+                <span class="step-ico" aria-hidden="true"><app-mof-fi-icon name="edit" /></span>
+                <div>
+                  <small class="step-of">{{ 'ask.stepOf' | t: { n: 1, total: 3 } }}</small>
+                  <h2>{{ 'ask.step1' | t }}</h2>
+                  <p>{{ 'ask.step1Hint' | t }}</p>
+                </div>
+              </header>
+              <div class="fields">
+                <div class="two-col">
+                  <div class="field">
+                    <label for="topic">{{ 'ask.topic' | t }} <b aria-hidden="true">*</b></label>
+                    <app-mof-select id="topic" formControlName="topicId" [options]="topicOptions()" [placeholder]="'ask.topicPlaceholder' | t" />
+                  </div>
+                  <div class="field">
+                    <label for="priority">{{ 'ask.priority' | t }}</label>
+                    <app-mof-select id="priority" formControlName="priority" [options]="priorityOptions()" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="question">{{ 'ask.question' | t }} <b aria-hidden="true">*</b></label>
+                  <app-mof-textarea id="question" formControlName="question" [rows]="7" [placeholder]="'ask.questionPlaceholder' | t" />
+                  <small class="hint">{{ 'ask.questionHint' | t }} · {{ form.controls.question.value.length }}</small>
+                </div>
+              </div>
+            </section>
+          }
+          @case (1) {
+            <section class="pane">
+              <header class="step-head">
+                <span class="step-ico" aria-hidden="true"><app-mof-fi-icon name="user" /></span>
+                <div>
+                  <small class="step-of">{{ 'ask.stepOf' | t: { n: 2, total: 3 } }}</small>
+                  <h2>{{ 'ask.step2' | t }}</h2>
+                  <p>{{ 'ask.step2Hint' | t }}</p>
+                </div>
+              </header>
+              <div class="fields">
+                <div class="two-col">
+                  <div class="field">
+                    <label for="name">{{ 'ask.name' | t }} <b aria-hidden="true">*</b></label>
+                    <app-mof-input id="name" formControlName="sender" prefixIcon="user" autocomplete="name" />
+                  </div>
+                  <div class="field">
+                    <label for="email">{{ 'ask.email' | t }} <b aria-hidden="true">*</b></label>
+                    <app-mof-input id="email" type="email" formControlName="senderEmail" prefixIcon="envelope" autocomplete="email" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="org">{{ 'ask.org' | t }}</label>
+                  <app-mof-input id="org" formControlName="organization" prefixIcon="building" autocomplete="organization" />
+                </div>
+                <div class="field">
+                  <label for="files">{{ 'ask.attachments' | t }}</label>
+                  <app-mof-file-upload
+                    id="files"
+                    formControlName="attachments"
+                    [buttonLabel]="'ask.attachmentsBtn' | t"
+                    [dropLabel]="'upload.drop' | t"
+                    [removeLabel]="'upload.remove' | t"
+                    [hint]="'ask.attachmentsHint' | t"
+                    (rejected)="onFileRejected($event)"
+                  />
+                </div>
+              </div>
+            </section>
+          }
+          @case (2) {
+            <section class="pane">
+              <header class="step-head">
+                <span class="step-ico" aria-hidden="true"><app-mof-fi-icon name="list-check" /></span>
+                <div>
+                  <small class="step-of">{{ 'ask.stepOf' | t: { n: 3, total: 3 } }}</small>
+                  <h2>{{ 'ask.step3' | t }}</h2>
+                  <p>{{ 'ask.step3Hint' | t }}</p>
+                </div>
+              </header>
+
+              <div class="summary">
+                <article class="sum-card">
+                  <header>
+                    <h3><app-mof-fi-icon name="edit" /> {{ 'ask.stepContent' | t }}</h3>
+                    <button type="button" class="edit-link" (click)="goTo(0)">{{ 'ask.edit' | t }}</button>
+                  </header>
+                  <dl>
+                    <div><dt>{{ 'ask.summaryTopic' | t }}</dt><dd>{{ topicName(form.controls.topicId.value) }}</dd></div>
+                    <div><dt>{{ 'ask.priority' | t }}</dt><dd>{{ priorityLabel() }}</dd></div>
+                    <div class="wide"><dt>{{ 'ask.summaryQuestion' | t }}</dt><dd class="q">{{ form.controls.question.value }}</dd></div>
+                  </dl>
+                </article>
+                <article class="sum-card">
+                  <header>
+                    <h3><app-mof-fi-icon name="user" /> {{ 'ask.stepContact' | t }}</h3>
+                    <button type="button" class="edit-link" (click)="goTo(1)">{{ 'ask.edit' | t }}</button>
+                  </header>
+                  <dl>
+                    <div><dt>{{ 'ask.name' | t }}</dt><dd>{{ form.controls.sender.value }}</dd></div>
+                    <div><dt>{{ 'ask.email' | t }}</dt><dd>{{ form.controls.senderEmail.value }}</dd></div>
+                    <div><dt>{{ 'ask.org' | t }}</dt><dd>{{ form.controls.organization.value || '—' }}</dd></div>
+                    <div class="wide">
+                      <dt>{{ 'ask.summaryFiles' | t }}</dt>
+                      <dd>
+                        @if (form.controls.attachments.value.length) {
+                          <ul class="file-list">
+                            @for (f of form.controls.attachments.value; track f) {
+                              <li><app-mof-fi-icon name="clip" /> {{ f }}</li>
+                            }
+                          </ul>
+                        } @else {
+                          —
+                        }
+                      </dd>
+                    </div>
+                  </dl>
+                </article>
+              </div>
+
+              <div class="similar">
+                <h3>{{ 'ask.similarTitle' | t }}</h3>
+                <p class="muted">{{ 'ask.similarHint' | t }}</p>
+                @if (similar().length) {
+                  <ul>
+                    @for (item of similar(); track item.id) {
+                      <li>
+                        <a [routerLink]="['/portal/ho-so', item.code]"><app-mof-fi-icon name="interrogation" /> {{ item.question }}</a>
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <p class="empty-hint">{{ 'ask.similarEmpty' | t }}</p>
+                }
+              </div>
+
+              <div class="consent-block">
+                <app-mof-checkbox formControlName="consent" [label]="'ask.consent' | t" />
+              </div>
+            </section>
+          }
+        }
+
+        <app-mof-field-error class="step-error" id="ask-step-err" [message]="stepError() || null" />
+
+        <footer class="form-foot">
+          <span class="secure"><app-mof-fi-icon name="shield-check" /> {{ 'ask.privacy' | t }}</span>
+          <div class="footer-actions">
+            @if (step() > 0) {
+              <app-mof-button type="button" variant="secondary" icon="arrow-left" [label]="'action.back' | t" (click)="back()" />
+            }
+            @if (step() < 2) {
+              <app-mof-button type="button" [label]="'action.next' | t" icon="arrow-right" iconPos="right" (click)="next()" />
+            } @else {
+              <app-mof-button type="submit" [label]="'ask.submit' | t" icon="send" iconPos="right" [loading]="saving()" />
+            }
+          </div>
+        </footer>
+      </form>
+    } @else {
+      <div class="success-card">
+        <div class="success-icon"><app-mof-icon name="check" /></div>
+        <p class="eyebrow">{{ 'ask.successEyebrow' | t }}</p>
+        <h1>{{ 'ask.successTitle' | t }}</h1>
+        <p>{{ 'ask.successBody' | t: { code: submitted()!.code, due: dueLabel(submitted()!.dueAt) } }}</p>
+        <div class="code-box">{{ submitted()!.code }}</div>
+        <div class="success-actions">
+          <a [routerLink]="['/portal/ho-so', submitted()!.code]">
+            <app-mof-button [label]="'ask.track' | t" icon="search" />
+          </a>
+          <a routerLink="/portal/cau-hoi-cua-toi">
+            <app-mof-button [label]="'ask.myList' | t" variant="soft" />
+          </a>
+          <a routerLink="/portal">
+            <app-mof-button [label]="'ask.home' | t" variant="secondary" />
+          </a>
+        </div>
+      </div>
+    }
+  </div>
+</section>

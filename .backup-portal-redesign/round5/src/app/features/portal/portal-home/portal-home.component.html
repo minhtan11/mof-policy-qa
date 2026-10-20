@@ -1,0 +1,206 @@
+<div class="portal-home">
+  <div class="page-backdrop" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <app-portal-header />
+
+  <main>
+    <section
+      class="content-width hero"
+      appReveal
+      [attr.aria-label]="'portal.hero.label' | t"
+      aria-roledescription="carousel"
+      (mouseenter)="pause(true)"
+      (mouseleave)="pause(false)"
+      (focusin)="pause(true)"
+      (focusout)="pause(false)"
+    >
+      @for (slide of slides; track slide.id; let i = $index) {
+        <div
+          class="hero-slide"
+          [class.active]="i === slideIndex()"
+          [attr.aria-hidden]="i !== slideIndex()"
+          [style.background-image]="'url(' + slide.image + ')'"
+          [style.background-position]="slide.position"
+        ></div>
+      }
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-copy" aria-live="polite">
+        <p class="hero-eyebrow">{{ 'portal.hero.eyebrow' | t }}</p>
+        <h1>
+          @for (line of heroLines(slide().titleKey); track $index) {
+            <span>{{ line }}</span>
+          }
+        </h1>
+        <p class="hero-sub">{{ slide().subtitleKey | t }}</p>
+        <a class="hero-cta" routerLink="/portal/tra-cuu">
+          {{ 'portal.hero.cta' | t }}
+          <app-mof-fi-icon name="arrow-right" />
+        </a>
+      </div>
+      <p class="hero-motto" aria-hidden="true">{{ 'portal.hero.motto' | t }}</p>
+      <div class="hero-dots">
+        @for (slide of slides; track slide.id; let i = $index) {
+          <button
+            type="button"
+            [class.active]="i === slideIndex()"
+            [attr.aria-label]="'portal.hero.goTo' | t: { n: i + 1 }"
+            [attr.aria-current]="i === slideIndex()"
+            (click)="goTo(i)"
+          ></button>
+        }
+      </div>
+      <div class="hero-arrows">
+        <button type="button" [attr.aria-label]="'portal.hero.prev' | t" (click)="step(-1)">
+          <app-mof-fi-icon name="angle-small-left" />
+        </button>
+        <button type="button" [attr.aria-label]="'portal.hero.next' | t" (click)="step(1)">
+          <app-mof-fi-icon name="angle-small-right" />
+        </button>
+      </div>
+    </section>
+
+    <section class="content-width services" [attr.aria-label]="'portal.services.label' | t">
+      @for (card of repo.serviceCards; track card.id; let i = $index) {
+        <a class="service-card" appReveal [revealDelay]="i * 70" [routerLink]="card.route" [fragment]="card.fragment">
+          <span class="service-top">
+            <span class="service-icon"><app-mof-fi-icon [name]="card.icon" weight="sr" /></span>
+            <span class="service-arrow"><app-mof-fi-icon name="angle-small-right" /></span>
+          </span>
+          <h3>{{ card.titleKey | t }}</h3>
+          <p>{{ card.bodyKey | t }}</p>
+        </a>
+      }
+    </section>
+
+    <section class="content-width news-row" id="tin-tuc">
+      <div class="panel news-panel" appReveal>
+        <header class="panel-head" appReveal [revealDelay]="60">
+          <h2>{{ 'portal.news.title' | t }}</h2>
+          <a class="more" routerLink="/portal/tra-cuu">{{ 'action.viewAll' | t }} <app-mof-fi-icon name="arrow-right" /></a>
+        </header>
+        <div class="news-grid">
+          @if (news.featured; as item) {
+            <article class="news-featured" appReveal [revealDelay]="120">
+              <div class="thumb">
+                <img [src]="item.image" alt="" loading="lazy" />
+                <span class="tag">{{ 'portal.news.featured' | t }}</span>
+              </div>
+              <time [attr.datetime]="item.publishedAt"><app-mof-fi-icon name="calendar" /> {{ formatDate(item.publishedAt) }}</time>
+              <h3>{{ text(item.title) }}</h3>
+              <p>{{ text(item.summary) }}</p>
+            </article>
+          }
+          <ul class="news-list">
+            @for (item of news.others; track item.id; let i = $index) {
+              <li appReveal [revealDelay]="180 + i * 80">
+                <div class="news-thumb"><img [src]="item.image" alt="" loading="lazy" /></div>
+                <div>
+                  <time [attr.datetime]="item.publishedAt"><app-mof-fi-icon name="calendar" /> {{ formatDate(item.publishedAt) }}</time>
+                  <h4>{{ text(item.title) }}</h4>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <aside class="panel notice-panel" id="thong-bao" appReveal [revealDelay]="100">
+        <header class="panel-head">
+          <h2><app-mof-fi-icon name="bell" /> {{ 'portal.notice.title' | t }}</h2>
+          <a class="more" routerLink="/portal/tra-cuu">{{ 'action.viewAll' | t }} <app-mof-fi-icon name="arrow-right" /></a>
+        </header>
+        <ul class="notice-list">
+          @for (item of notices; track item.id; let i = $index) {
+            <li appReveal [revealDelay]="160 + i * 60">
+              <a routerLink="/portal/tra-cuu">
+                <span>
+                  <time [attr.datetime]="item.publishedAt">{{ formatDate(item.publishedAt) }}</time>
+                  {{ text(item.title) }}
+                </span>
+                <app-mof-fi-icon name="angle-small-right" />
+              </a>
+            </li>
+          }
+        </ul>
+      </aside>
+    </section>
+
+    <section class="content-width budget-row" id="ngan-sach">
+      <div class="panel budget-panel" appReveal>
+        <header class="panel-head">
+          <h2>{{ 'portal.budget.title' | t }}</h2>
+          <app-mof-select class="year-select" [options]="yearOptions" [ngModel]="year()" (ngModelChange)="year.set($event)" />
+        </header>
+        <div class="segmented" role="tablist" appReveal [revealDelay]="60">
+          @for (item of repo.budgetTabs; track item) {
+            <app-mof-button
+              role="tab"
+              size="sm"
+              [class.on]="tab() === item"
+              [attr.aria-selected]="tab() === item"
+              [variant]="tab() === item ? 'soft' : 'ghost'"
+              [label]="'portal.budget.tab.' + item | t"
+              (click)="tab.set(item)"
+            />
+          }
+        </div>
+        <div class="kpi-grid" [attr.data-count]="kpis().length">
+          @for (kpi of kpis(); track kpi.id; let i = $index) {
+            <article class="kpi" [attr.data-tone]="kpi.tone" appReveal [revealDelay]="100 + i * 70">
+              <div class="kpi-head">
+                <span class="kpi-icon"><app-mof-fi-icon [name]="kpi.icon" weight="sr" /></span>
+                <p class="kpi-label">{{ kpi.labelKey | t }}</p>
+              </div>
+              <div class="kpi-body">
+                <div>
+                  <strong>{{ formatNumber(kpi.value) }}{{ kpi.id === 'disbursement' ? '%' : '' }}</strong>
+                  <small>{{ kpi.unitKey | t }}</small>
+                </div>
+                @if (kpi.id !== 'disbursement') {
+                  <span class="spark" aria-hidden="true">
+                    @for (h of sparkFor(kpi.id); track $index) {
+                      <i [style.height.%]="h"></i>
+                    }
+                  </span>
+                }
+              </div>
+              @if (kpi.id === 'disbursement') {
+                <span class="progress" role="progressbar" [attr.aria-valuenow]="kpi.value" aria-valuemin="0" aria-valuemax="100">
+                  <i [style.width.%]="kpi.value"></i>
+                </span>
+              }
+              @if (kpi.delta !== null) {
+                <p class="kpi-delta"><app-mof-fi-icon name="arrow-trend-up" /> {{ formatNumber(kpi.delta) }}% <span>{{ 'portal.budget.yoy' | t }}</span></p>
+              } @else if (kpi.noteKey) {
+                <p class="kpi-note">{{ kpi.noteKey | t: { value: formatNumber(kpi.noteValue ?? 0) } }}</p>
+              }
+            </article>
+          }
+        </div>
+        <p class="disclaimer">{{ 'portal.budget.disclaimer' | t }}</p>
+      </div>
+
+      <div class="panel chart-panel" appReveal [revealDelay]="120">
+        <header class="panel-head">
+          <h2>{{ 'portal.budget.chartTitle' | t }}</h2>
+          <app-mof-select class="year-select" [options]="yearOptions" [ngModel]="chartYear()" (ngModelChange)="chartYear.set($event)" />
+        </header>
+        <p class="chart-unit">{{ 'portal.budget.unitCaption' | t }}</p>
+        <div class="chart-box" appReveal [revealDelay]="200"><app-mof-chart [options]="chartOptions()" /></div>
+      </div>
+    </section>
+
+    <section class="content-width panel quick" appReveal>
+      <header class="panel-head"><h2>{{ 'portal.quick.title' | t }}</h2></header>
+      <div class="quick-grid">
+        @for (link of repo.quickLinks; track link.id; let i = $index) {
+          <a class="quick-item" appReveal [revealDelay]="60 + i * 50" [routerLink]="link.route" [fragment]="link.fragment">
+            <span><app-mof-fi-icon [name]="link.icon" /></span>
+            {{ link.labelKey | t }}
+          </a>
+        }
+      </div>
+    </section>
+  </main>
+
+  <app-portal-footer />
+</div>

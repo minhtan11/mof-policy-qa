@@ -1,0 +1,29 @@
+# Admin — Cấu hình tích hợp
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Affected UC: UC-052..UC-059
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Quản trị hệ thống |
+| Trạng thái | `blocked` / adapter mock (chưa API thật) |
+
+## Phạm vi
+
+VNeID thật, email/SMS, kho lưu trữ, webhook, SSO/AD — chỉ mô phỏng cho đến khi có hợp đồng/API.
+
+## Acceptance
+
+- UI không tuyên bố đã kết nối production.  
+- Mỗi kênh có adapter riêng để thay mock sau này.
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Khởi tạo; đánh dấu blocked tích hợp thật | 52–59 |
+| 2026-10-20 | Codex | Chuyển `03-admin`, tiếng Việt | 52–59 |

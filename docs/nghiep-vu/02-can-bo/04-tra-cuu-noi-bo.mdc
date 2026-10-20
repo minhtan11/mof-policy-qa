@@ -1,0 +1,38 @@
+# Cán bộ — Tra cứu nội bộ / audit
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G4 — màn `/workspace/tra-cuu` + bút phê trên chi tiết  
+Affected UC: UC-176..UC-187
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Chuyên viên, điều phối, lãnh đạo (theo scope) |
+| Route | `/workspace/tra-cuu`; bút phê trên `/workspace/ho-so/:id` |
+| MDC màn | `src/app/features/workspace/internal-search/internal-search.mdc` |
+| Trạng thái | `mocked` |
+
+## Cán bộ làm gì
+
+1. Tìm hồ sơ theo mã, từ khóa, lĩnh vực, trạng thái, SLA.  
+2. Mở chi tiết; xem/ghi bút phê nội bộ (không công khai).  
+3. Kết quả lấy từ `MockDbService.searchInternal`.
+
+## Acceptance
+
+- Không lộ email/PII đầy đủ trên bảng kết quả.  
+- Bút phê chỉ nội bộ, không đẩy lên cổng công khai.
+
+## Test
+
+`mock-db.service.spec.ts` (searchInternal)
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Khởi tạo MDC nhóm | 176–187 |
+| 2026-10-20 | Codex | Chuyển folder cán bộ, tiếng Việt | 176–187 |
+| 2026-10-20 | Codex | G4 tra cứu nội bộ + audit notes | 176–187 |

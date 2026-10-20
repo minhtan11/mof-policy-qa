@@ -1,0 +1,181 @@
+<app-portal-header />
+<section class="form-page">
+  <div class="content-width narrow">
+    <div class="breadcrumb">
+      {{ 'ask.breadcrumb' | t }}
+      <span>›</span>
+      {{ 'nav.ask' | t }}
+    </div>
+
+    @if (!submitted()) {
+      <div class="page-heading">
+        <p class="eyebrow">{{ 'ask.eyebrow' | t }}</p>
+        <h1>{{ 'ask.title' | t }}</h1>
+        <p>{{ 'ask.intro' | t }}</p>
+      </div>
+
+      <app-mof-stepper [steps]="stepperSteps()" [activeIndex]="step()" />
+
+      <form class="question-form surface-card" [formGroup]="form" (ngSubmit)="submit()">
+        @if (step() === 0) {
+          <section>
+            <div class="step-head">
+              <h2>{{ 'ask.step1' | t }}</h2>
+              <p>{{ 'ask.step1Hint' | t }}</p>
+            </div>
+            <div class="field">
+              <label for="topic">{{ 'ask.topic' | t }} <b>*</b></label>
+              <app-mof-select
+                id="topic"
+                formControlName="topicId"
+                [options]="topicOptions()"
+                [placeholder]="'ask.topicPlaceholder' | t"
+              />
+            </div>
+            <div class="field">
+              <label for="question">{{ 'ask.question' | t }} <b>*</b></label>
+              <app-mof-textarea
+                id="question"
+                formControlName="question"
+                [rows]="7"
+                [placeholder]="'ask.questionPlaceholder' | t"
+              />
+              <small>{{ 'ask.questionHint' | t }}</small>
+            </div>
+            <div class="field">
+              <label for="priority">{{ 'ask.priority' | t }}</label>
+              <app-mof-select id="priority" formControlName="priority" [options]="priorityOptions()" />
+            </div>
+          </section>
+        }
+
+        @if (step() === 1) {
+          <section>
+            <div class="step-head">
+              <h2>{{ 'ask.step2' | t }}</h2>
+              <p>{{ 'ask.step2Hint' | t }}</p>
+            </div>
+            <div class="two-col">
+              <div class="field">
+                <label for="name">{{ 'ask.name' | t }} <b>*</b></label>
+                <app-mof-input id="name" formControlName="sender" />
+              </div>
+              <div class="field">
+                <label for="email">{{ 'ask.email' | t }} <b>*</b></label>
+                <app-mof-input id="email" type="email" formControlName="senderEmail" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="org">{{ 'ask.org' | t }}</label>
+              <app-mof-input id="org" formControlName="organization" />
+            </div>
+            <div class="field">
+              <label>{{ 'ask.attachments' | t }}</label>
+              <app-mof-file-upload
+                formControlName="attachments"
+                [buttonLabel]="'ask.attachmentsBtn' | t"
+                [hint]="'ask.attachmentsHint' | t"
+              />
+            </div>
+          </section>
+        }
+
+        @if (step() === 2) {
+          <section>
+            <div class="step-head">
+              <h2>{{ 'ask.step3' | t }}</h2>
+              <p>{{ 'ask.step3Hint' | t }}</p>
+            </div>
+
+            <div class="summary">
+              <div>
+                <small>{{ 'ask.summaryTopic' | t }}</small>
+                <strong>{{ topicName(form.controls.topicId.value) }}</strong>
+              </div>
+              <div>
+                <small>{{ 'ask.summaryQuestion' | t }}</small>
+                <p>{{ form.controls.question.value }}</p>
+              </div>
+              <div>
+                <small>{{ 'ask.summaryContact' | t }}</small>
+                <p>{{ form.controls.sender.value }} · {{ form.controls.senderEmail.value }}</p>
+              </div>
+              <div>
+                <small>{{ 'ask.summaryFiles' | t }}</small>
+                <p>
+                  @if (form.controls.attachments.value.length) {
+                    {{ form.controls.attachments.value.join(', ') }}
+                  } @else {
+                    —
+                  }
+                </p>
+              </div>
+            </div>
+
+            <div class="similar">
+              <h3>{{ 'ask.similarTitle' | t }}</h3>
+              <p class="muted">{{ 'ask.similarHint' | t }}</p>
+              @if (similar().length) {
+                <ul>
+                  @for (item of similar(); track item.id) {
+                    <li>
+                      <a [routerLink]="['/portal/ho-so', item.code]">{{ item.question }}</a>
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="empty-hint">{{ 'ask.similarEmpty' | t }}</p>
+              }
+            </div>
+
+            <div class="consent-block">
+              <app-mof-checkbox formControlName="consent" [label]="'ask.consent' | t" />
+            </div>
+          </section>
+        }
+
+        @if (stepError()) {
+          <p class="form-error" role="alert">{{ stepError() }}</p>
+        }
+
+        <footer>
+          <span><app-mof-icon name="info" [size]="14" /> {{ 'ask.privacy' | t }}</span>
+          <div class="footer-actions">
+            @if (step() > 0) {
+              <app-mof-button type="button" variant="secondary" [label]="'action.back' | t" (click)="back()" />
+            }
+            @if (step() < 2) {
+              <app-mof-button type="button" [label]="'action.next' | t" icon="arrow-right" iconPos="right" (click)="next()" />
+            } @else {
+              <app-mof-button
+                type="submit"
+                [label]="'ask.submit' | t"
+                icon="send"
+                [loading]="saving()"
+              />
+            }
+          </div>
+        </footer>
+      </form>
+    } @else {
+      <div class="success-card surface-card">
+        <div class="success-icon"><app-mof-icon name="check" /></div>
+        <p class="eyebrow">{{ 'ask.successEyebrow' | t }}</p>
+        <h1>{{ 'ask.successTitle' | t }}</h1>
+        <p>{{ 'ask.successBody' | t: { code: submitted()!.code, due: dueLabel(submitted()!.dueAt) } }}</p>
+        <div class="code-box">{{ submitted()!.code }}</div>
+        <div class="success-actions">
+          <a [routerLink]="['/portal/ho-so', submitted()!.code]">
+            <app-mof-button [label]="'ask.track' | t" icon="search" />
+          </a>
+          <a routerLink="/portal/cau-hoi-cua-toi">
+            <app-mof-button [label]="'ask.myList' | t" variant="soft" />
+          </a>
+          <a routerLink="/portal">
+            <app-mof-button [label]="'ask.home' | t" variant="secondary" />
+          </a>
+        </div>
+      </div>
+    }
+  </div>
+</section>

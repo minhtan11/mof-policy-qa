@@ -1,0 +1,295 @@
+<app-workspace-shell [title]="'dossier.title' | t" [collapsed]="collapsed()" (collapse)="collapsed.set(!collapsed())">
+  <div class="crumb">
+    <a routerLink="/workspace">{{ 'dossier.crumbHome' | t }}</a>
+    <span>›</span>
+    <span>{{ dossier()?.code }}</span>
+  </div>
+
+  @if (dossier(); as item) {
+    <div class="detail-head">
+      <div>
+        <div class="status-row">
+          <app-status-badge [status]="item.status" />
+          <span>{{ item.code }}</span>
+        </div>
+        <h2>{{ item.question }}</h2>
+        <p>
+          <app-mof-icon name="building" [size]="14" /> {{ item.organization }} ·
+          <app-mof-icon name="calendar" [size]="14" />
+          {{ 'dossier.receivedAt' | t }} {{ item.receivedAt | date: 'dd/MM/yyyy HH:mm' }}
+        </p>
+      </div>
+
+      <div class="actions" [formGroup]="draftForm">
+        @if (canReceive()) {
+          <app-mof-button [label]="'dossier.receive' | t" icon="inbox" [loading]="saving()" (click)="receive()" />
+        }
+        @if (canSubmit()) {
+          <app-mof-button
+            [label]="'dossier.submitApproval' | t"
+            icon="send"
+            [loading]="saving()"
+            (click)="sendForApproval()"
+          />
+        }
+        @if (canReturn()) {
+          <app-mof-button
+            [label]="'dossier.return' | t"
+            variant="secondary"
+            [loading]="saving()"
+            (click)="returnForRevision()"
+          />
+        }
+        @if (canApprove()) {
+          <app-mof-button [label]="'dossier.approve' | t" variant="soft" [loading]="saving()" (click)="approveOnly()" />
+          <app-mof-button
+            [label]="'dossier.approvePublish' | t"
+            icon="check"
+            [loading]="saving()"
+            (click)="approveAndPublish()"
+          />
+        }
+        @if (canPublish() && item.status === 'answered') {
+          <app-mof-button
+            [label]="'dossier.publish' | t"
+            icon="check"
+            [loading]="saving()"
+            (click)="publish()"
+          />
+        }
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="main-col">
+        <section class="surface-card detail-card">
+          <header>
+            <div>
+              <p class="eyebrow">{{ 'dossier.questionEyebrow' | t }}</p>
+              <h3>{{ 'dossier.questionBlock' | t }}</h3>
+            </div>
+          </header>
+          <p class="question">{{ item.question }}</p>
+          <div class="info-grid">
+            <div>
+              <small>{{ 'dossier.topic' | t }}</small>
+              <b>{{ topicName(item.topicId) }}</b>
+            </div>
+            <div>
+              <small>{{ 'dossier.dueAt' | t }}</small>
+              <b class="due"><app-mof-icon name="clock" [size]="14" /> {{ item.dueAt | date: 'dd/MM/yyyy HH:mm' }}</b>
+            </div>
+            <div>
+              <small>{{ 'dossier.assignee' | t }}</small>
+              <b>{{ item.assignedTo || ('dossier.unassigned' | t) }}</b>
+            </div>
+          </div>
+        </section>
+
+        @if (canAssign()) {
+          <section class="surface-card detail-card assign-card" [formGroup]="draftForm">
+            <header>
+              <div>
+                <p class="eyebrow">{{ 'dossier.assign' | t }}</p>
+                <h3>{{ 'dossier.assignTo' | t }}</h3>
+              </div>
+            </header>
+            <div class="assign-row">
+              <app-mof-select
+                formControlName="assignee"
+                [options]="specialistOptions"
+                [placeholder]="'dossier.assignPlaceholder' | t"
+              />
+              <app-mof-button [label]="'dossier.assignSubmit' | t" icon="user" (click)="assign()" />
+            </div>
+          </section>
+        }
+
+        @if (canRecall()) {
+          <section class="surface-card detail-card" [formGroup]="recallForm">
+            <header>
+              <div>
+                <p class="eyebrow">{{ 'dossier.recallEyebrow' | t }}</p>
+                <h3>{{ 'dossier.recallTitle' | t }}</h3>
+              </div>
+            </header>
+            <app-mof-textarea formControlName="reason" [rows]="3" [placeholder]="'dossier.recallPlaceholder' | t" />
+            <footer>
+              <span>{{ 'dossier.recallHint' | t }}</span>
+              <app-mof-button [label]="'dossier.recall' | t" variant="secondary" (click)="recall()" />
+            </footer>
+          </section>
+        }
+
+        @if (canCollaborate()) {
+          <section class="surface-card detail-card" [formGroup]="collabForm">
+            <header>
+              <div>
+                <p class="eyebrow">{{ 'dossier.collabEyebrow' | t }}</p>
+                <h3>{{ 'dossier.collabTitle' | t }}</h3>
+              </div>
+            </header>
+            <div class="assign-row">
+              <app-mof-select
+                formControlName="unitId"
+                [options]="unitOptions()"
+                [placeholder]="'dossier.collabUnit' | t"
+              />
+              <app-mof-input formControlName="dueAt" [placeholder]="'dossier.collabDue' | t" />
+            </div>
+            <app-mof-textarea formControlName="note" [rows]="3" [placeholder]="'dossier.collabNote' | t" />
+            <footer>
+              <span>{{ 'dossier.collabHint' | t }}</span>
+              <app-mof-button [label]="'dossier.collabSubmit' | t" icon="send" (click)="requestCollab()" />
+            </footer>
+            @if (item.collaborations?.length) {
+              <ul class="collab-list">
+                @for (c of item.collaborations; track c.id) {
+                  <li>
+                    <b>{{ c.unitName }}</b>
+                    <span>{{ c.note }}</span>
+                    <small>{{ c.status }} · {{ c.dueAt }}</small>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+        }
+
+        <section class="surface-card detail-card answer-editor" [formGroup]="draftForm">
+          <header>
+            <div>
+              <p class="eyebrow">{{ 'dossier.draftEyebrow' | t }}</p>
+              <h3>{{ 'dossier.draftTitle' | t }}</h3>
+            </div>
+          </header>
+          <app-mof-textarea
+            formControlName="answer"
+            [rows]="10"
+            [placeholder]="'dossier.draftPlaceholder' | t"
+          />
+          <div class="basis">
+            <b><app-mof-icon name="book" [size]="14" /> {{ 'dossier.legal' | t }}</b>
+            @for (basis of legalBasis(); track basis; let i = $index) {
+              <span>
+                {{ basis }}
+                @if (canDraft()) {
+                  <button type="button" class="chip-remove" (click)="removeLegal(i)">×</button>
+                }
+              </span>
+            }
+          </div>
+          @if (canDraft()) {
+            <div class="legal-add">
+              <app-mof-input formControlName="legalItem" [placeholder]="'dossier.legalPlaceholder' | t" />
+              <app-mof-button type="button" variant="soft" [label]="'dossier.legalAdd' | t" (click)="addLegal()" />
+            </div>
+          }
+          @if (canApprove() || canPublish()) {
+            <div class="sign-row">
+              <app-mof-checkbox formControlName="signed" [label]="'dossier.signMock' | t" />
+            </div>
+          }
+          <footer>
+            <span>{{ 'dossier.mockNote' | t }}</span>
+            @if (canDraft()) {
+              <app-mof-button [label]="'dossier.saveDraft' | t" variant="secondary" icon="check" (click)="saveDraft()" />
+            }
+          </footer>
+        </section>
+
+        @if (aiSuggestions().length) {
+          <section class="surface-card ai-card">
+            <header>
+              <div>
+                <p class="eyebrow">{{ 'dossier.aiEyebrow' | t }}</p>
+                <h3>{{ 'dossier.aiTitle' | t }}</h3>
+                <p>{{ 'dossier.aiHint' | t }}</p>
+              </div>
+              <app-mof-icon name="sparkles" />
+            </header>
+            @for (suggestion of aiSuggestions(); track suggestion.id) {
+              <div class="ai-item">
+                <p>{{ suggestion.value }}</p>
+                <small>
+                  {{ 'dossier.aiConfidence' | t }} {{ suggestion.confidence * 100 | number: '1.0-0' }}% ·
+                  {{ suggestion.model }}
+                </small>
+                <div class="ai-actions">
+                  <app-mof-button
+                    [label]="'dossier.aiUse' | t"
+                    variant="ghost"
+                    size="sm"
+                    [disabled]="suggestion.status !== 'suggested'"
+                    (click)="acceptAi(suggestion.id)"
+                  />
+                  <app-mof-button
+                    [label]="'dossier.aiSkip' | t"
+                    variant="ghost"
+                    size="sm"
+                    [disabled]="suggestion.status !== 'suggested'"
+                    (click)="rejectAi(suggestion.id)"
+                  />
+                </div>
+              </div>
+            }
+          </section>
+        } @else {
+          <section class="surface-card ai-card ai-empty">
+            <app-mof-icon name="sparkles" />
+            <div>
+              <b>{{ 'dossier.aiEmptyTitle' | t }}</b>
+              <p>{{ 'dossier.aiEmptyBody' | t }}</p>
+            </div>
+            <app-mof-button [label]="'dossier.aiRun' | t" icon="sparkles" variant="secondary" (click)="runAi()" />
+          </section>
+        }
+      </div>
+
+      <aside class="side-col">
+        <section class="surface-card timeline">
+          <header><h3>{{ 'dossier.timeline' | t }}</h3></header>
+          @for (event of item.timeline; track event.at + event.title) {
+            <div class="event" [class.current]="event.state === 'current'">
+              <i></i>
+              <div>
+                <b>{{ event.title }}</b>
+                <p>{{ event.description }}</p>
+                <small>{{ event.at }} · {{ event.actor }}</small>
+              </div>
+            </div>
+          }
+        </section>
+        <section class="surface-card attachment">
+          <h3>{{ 'dossier.attachments' | t }}</h3>
+          @for (file of item.attachments; track file) {
+            <a>{{ file }}</a>
+          } @empty {
+            <p>{{ 'dossier.noAttachments' | t }}</p>
+          }
+        </section>
+
+        <section class="surface-card audit-notes" [formGroup]="noteForm">
+          <header><h3>{{ 'dossier.notesTitle' | t }}</h3></header>
+          @for (note of item.auditNotes ?? []; track note.id) {
+            <div class="note-item">
+              <p>{{ note.text }}</p>
+              <small>{{ note.actor }} · {{ note.at | date: 'dd/MM/yyyy HH:mm' }}</small>
+            </div>
+          } @empty {
+            <p class="muted">{{ 'dossier.notesEmpty' | t }}</p>
+          }
+          @if (canAuditNote()) {
+            <app-mof-textarea formControlName="text" [rows]="3" [placeholder]="'dossier.notesPlaceholder' | t" />
+            <app-mof-button [label]="'dossier.notesAdd' | t" variant="soft" size="sm" (click)="addNote()" />
+          }
+        </section>
+      </aside>
+    </div>
+  } @else {
+    <div class="not-found surface-card">
+      <h2>{{ 'dossier.notFound' | t }}</h2>
+      <a routerLink="/workspace"><app-mof-button [label]="'dossier.back' | t" /></a>
+    </div>
+  }
+</app-workspace-shell>

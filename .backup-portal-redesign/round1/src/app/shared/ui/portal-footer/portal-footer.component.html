@@ -1,0 +1,39 @@
+<footer class="portal-footer" id="lien-he">
+  <div class="content-width footer-main">
+    <div class="footer-brand">
+      <img src="assets/mof-emblem-official.png" alt="" width="52" height="52" />
+      <div>
+        <strong>{{ 'brand.ministry' | t }}</strong>
+        <small>{{ 'brand.portal' | t }}</small>
+      </div>
+    </div>
+
+    <address class="footer-info">
+      <p>{{ 'portal.footer.owner' | t }}</p>
+      <p><app-mof-fi-icon name="marker" /> {{ 'home.footerAddress' | t }}</p>
+      <p>
+        <app-mof-fi-icon name="phone-call" /> {{ 'home.footerPhone' | t }}
+        <span class="sep">·</span>
+        <app-mof-fi-icon name="envelope" /> {{ 'home.footerEmail' | t }}
+      </p>
+    </address>
+
+    <nav class="footer-links" [attr.aria-label]="'home.footerLinks' | t">
+      <a routerLink="/portal/tra-cuu"><app-mof-fi-icon name="search" />{{ 'nav.search' | t }}</a>
+      <a routerLink="/portal/hoi-dap"><app-mof-fi-icon name="paper-plane" />{{ 'nav.ask' | t }}</a>
+      <a routerLink="/portal/cau-hoi-cua-toi"><app-mof-fi-icon name="list" />{{ 'nav.myQuestions' | t }}</a>
+      <a routerLink="/workspace"><app-mof-fi-icon name="briefcase" />{{ 'nav.workspace' | t }}</a>
+    </nav>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="content-width bottom-row">
+      <span>{{ 'home.footer' | t }}</span>
+      <span>{{ 'home.footerRights' | t }}</span>
+      <span class="attr">
+        Uicons by <a href="https://www.flaticon.com/uicons" target="_blank" rel="noopener">Flaticon</a> ·
+        {{ 'portal.footer.photos' | t }} <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>
+      </span>
+    </div>
+  </div>
+</footer>

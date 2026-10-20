@@ -1,0 +1,174 @@
+<div class="side-head">
+  <a class="brand" routerLink="/workspace" [attr.aria-label]="'wsNav.brandAria' | t" (click)="navigated()" (mouseenter)="showTip($event, 'wsNav.brandAria')" (mouseleave)="hideTip()" (focus)="showTip($event, 'wsNav.brandAria')" (blur)="hideTip()">
+    <img class="emblem" src="assets/mof-emblem-transparent.png" alt="" width="40" height="40" />
+    <span class="brand-text label">
+      <b>{{ 'wsNav.brandTitle' | t }}</b>
+      <small>{{ 'wsNav.brandSub' | t }}</small>
+    </span>
+  </a>
+  @if (drawer()) {
+    <button type="button" class="head-btn close" data-drawer-close [attr.aria-label]="'wsNav.closeMenu' | t" (click)="closeDrawer.emit()">
+      <app-mof-fi-icon name="cross-small" />
+    </button>
+  } @else if (!rail()) {
+    <button type="button" class="head-btn" aria-controls="ws-menu" aria-expanded="true" [attr.aria-label]="'wsNav.collapse' | t" [attr.title]="'wsNav.collapse' | t" (click)="state.setCollapsed(true)">
+      <app-mof-fi-icon name="angle-double-small-left" />
+    </button>
+  }
+</div>
+
+@if (rail()) {
+  <button
+    type="button"
+    class="edge-toggle"
+    aria-controls="ws-menu"
+    aria-expanded="false"
+    [attr.aria-label]="'wsNav.expand' | t"
+    (click)="state.setCollapsed(false)"
+    (mouseenter)="showTip($event, 'wsNav.expand')"
+    (mouseleave)="hideTip()"
+    (focus)="showTip($event, 'wsNav.expand')"
+    (blur)="hideTip()"
+  >
+    <app-mof-fi-icon name="angle-double-small-right" />
+  </button>
+}
+
+<nav #menu class="menu" id="ws-menu" [attr.aria-label]="'wsNav.aria' | t" (scroll)="onMenuScroll($event)">
+  <a
+    class="item home"
+    [routerLink]="home.route"
+    [class.active]="isActive(home)"
+    [attr.aria-current]="isActive(home) ? 'page' : null"
+    [attr.aria-label]="rail() ? (home.labelKey | t) : null"
+    (click)="navigated()"
+    (mouseenter)="showTip($event, home.labelKey)"
+    (mouseleave)="hideTip()"
+    (focus)="showTip($event, home.labelKey)"
+    (blur)="hideTip()"
+  >
+    <app-mof-fi-icon class="ico" [name]="home.icon" />
+    <span class="label">{{ home.labelKey | t }}</span>
+  </a>
+
+  @if (rail()) {
+    <ul class="rail-list">
+      @for (g of groups(); track g.id) {
+        <li>
+          <button
+            #gb
+            type="button"
+            class="item rail-btn"
+            [class.active]="activeGroup()?.id === g.id"
+            [class.open]="flyout()?.id === g.id"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="flyout()?.id === g.id"
+            [attr.aria-controls]="flyout()?.id === g.id ? 'ws-flyout' : null"
+            [attr.aria-label]="g.titleKey | t"
+            (click)="toggleFlyout(g, gb)"
+            (mouseenter)="showTip($event, g.titleKey)"
+            (mouseleave)="hideTip()"
+            (focus)="showTip($event, g.titleKey)"
+            (blur)="hideTip()"
+          >
+            <app-mof-fi-icon class="ico" [name]="g.icon" />
+            @if (groupBadge(g)) {
+              <span class="dot" aria-hidden="true"></span>
+            }
+          </button>
+        </li>
+      }
+    </ul>
+  } @else {
+    @for (g of groups(); track g.id) {
+      <section class="group" [class.open]="open(g)">
+        <div class="g-head">
+          <h2 class="g-title" [id]="'ws-g-' + g.id">{{ g.titleKey | t }}</h2>
+          <button
+            type="button"
+            class="g-toggle"
+            [attr.aria-expanded]="open(g)"
+            [attr.aria-controls]="'ws-gb-' + g.id"
+            [attr.aria-label]="(open(g) ? 'wsNav.groupCollapse' : 'wsNav.groupExpand') | t: { name: (g.titleKey | t) }"
+            (click)="state.toggleGroup(g.id)"
+          >
+            <app-mof-fi-icon name="angle-small-down" />
+          </button>
+        </div>
+        <div class="g-body" [id]="'ws-gb-' + g.id" [attr.inert]="open(g) ? null : ''">
+          <ul [attr.aria-labelledby]="'ws-g-' + g.id">
+            @for (it of g.items; track it.id) {
+              <li>
+                <a
+                  class="item"
+                  [routerLink]="it.route"
+                  [queryParams]="it.query ?? null"
+                  [class.active]="isActive(it)"
+                  [attr.aria-current]="isActive(it) ? 'page' : null"
+                  (click)="navigated()"
+                >
+                  <app-mof-fi-icon class="ico" [name]="it.icon" />
+                  <span class="label">{{ it.labelKey | t }}</span>
+                  @if (badge(it) !== null) {
+                    <span class="badge" [attr.aria-label]="'wsNav.count' | t: { n: badge(it)! }">{{ badge(it) }}</span>
+                  }
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+    }
+  }
+</nav>
+
+<div class="side-foot">
+  @if (rail()) {
+    <a
+      class="item rail-btn support"
+      [href]="phoneHref"
+      [attr.aria-label]="'wsNav.supportAria' | t: { phone: phone }"
+      (mouseenter)="showTip($event, 'wsNav.supportAria', { phone: phone })"
+      (mouseleave)="hideTip()"
+      (focus)="showTip($event, 'wsNav.supportAria', { phone: phone })"
+      (blur)="hideTip()"
+    >
+      <app-mof-fi-icon class="ico" name="headset" />
+    </a>
+  } @else {
+    <div class="support-card">
+      <span class="s-ico" aria-hidden="true"><app-mof-fi-icon name="headset" /></span>
+      <span class="s-txt">
+        <small>{{ 'wsNav.support' | t }}</small>
+        <a [href]="phoneHref">{{ phone }}</a>
+      </span>
+    </div>
+  }
+</div>
+
+@if (tip(); as t) {
+  <div class="tip" role="tooltip" [style.left.px]="t.x" [style.top.px]="t.y">{{ t.text }}</div>
+}
+
+@if (flyout(); as g) {
+  <div #fly class="flyout" id="ws-flyout" role="menu" [attr.aria-label]="g.titleKey | t" (keydown)="onFlyKey($event)">
+    <p class="fly-title">{{ g.titleKey | t }}</p>
+    @for (it of g.items; track it.id) {
+      <a
+        role="menuitem"
+        class="fly-item"
+        [routerLink]="it.route"
+        [queryParams]="it.query ?? null"
+        [class.active]="isActive(it)"
+        [attr.aria-current]="isActive(it) ? 'page' : null"
+        (click)="navigated()"
+      >
+        <app-mof-fi-icon class="ico" [name]="it.icon" />
+        <span class="label">{{ it.labelKey | t }}</span>
+        @if (badge(it) !== null) {
+          <span class="badge">{{ badge(it) }}</span>
+        }
+      </a>
+    }
+  </div>
+}

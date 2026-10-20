@@ -1,0 +1,34 @@
+<app-mof-icon-button
+  fi="bell"
+  size="lg"
+  variant="outline"
+  [label]="'notif.title' | t"
+  [badge]="repo().unread()"
+  [expanded]="open()"
+  haspopup="true"
+  [controls]="panelId()"
+  (click)="toggle()"
+/>
+<div class="panel" [id]="panelId()" [class.open]="open()" [attr.inert]="open() ? null : ''">
+  <div class="head">
+    <strong>{{ 'notif.title' | t }}</strong>
+    <button type="button" class="link" [disabled]="!repo().unread()" (click)="repo().markAllRead()">{{ 'notif.markAll' | t }}</button>
+  </div>
+  <ul>
+    @for (n of repo().items(); track n.id) {
+      <li>
+        <button type="button" class="item" [class.unread]="!n.read" (click)="go(n)">
+          <span class="ico" [attr.data-kind]="n.kind"><app-mof-fi-icon [name]="icon[n.kind]" /></span>
+          <span class="txt">
+            <strong>{{ n.titleKey | t: n.params }}</strong>
+            <small>{{ n.bodyKey | t: n.params }}</small>
+            <time>{{ n.at | date: 'dd/MM/yyyy HH:mm' }}</time>
+          </span>
+          @if (!n.read) {
+            <span class="dot"><span class="sr-only">{{ 'notif.unread' | t }}</span></span>
+          }
+        </button>
+      </li>
+    }
+  </ul>
+</div>

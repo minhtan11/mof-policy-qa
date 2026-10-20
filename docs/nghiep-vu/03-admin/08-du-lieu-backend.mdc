@@ -1,0 +1,29 @@
+# Admin / hệ thống — Xử lý dữ liệu backend
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Affected UC: UC-135..UC-141
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Hệ thống / quản trị kỹ thuật |
+| Trạng thái | `specified`; index/search mock một phần; pipeline thật `blocked` |
+
+## Phạm vi
+
+Chỉ mục tìm kiếm, chất lượng dữ liệu, ẩn danh / quyền riêng tư, tối ưu truy vấn.
+
+## Acceptance
+
+- Tìm kiếm công khai chỉ trả field an toàn.  
+- Không đưa PII đầy đủ vào log/index demo.
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Khởi tạo MDC dữ liệu | 135–141 |
+| 2026-10-20 | Codex | Chuyển `03-admin`, tiếng Việt | 135–141 |

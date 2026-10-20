@@ -1,0 +1,48 @@
+# Màn W-02 — Chi tiết hồ sơ nội bộ
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G4 — thu hồi, phối hợp đơn vị, bút phê audit  
+Affected UC: UC-142..UC-161, UC-176..UC-187  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/01`…`04`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/ho-so/:id` |
+| Actor | Tiếp nhận, điều phối, chuyên viên, lãnh đạo |
+| Trạng thái | `mocked` |
+
+## Hành động theo role / trạng thái
+
+| Trạng thái | Ai | Việc |
+|---|---|---|
+| `new` | reception / coordinator | Tiếp nhận → `received`; hoặc Phân công → `processing` |
+| `received` | reception / coordinator | Phân công → `processing` |
+| `processing` | specialist | Lưu dự thảo, thêm căn cứ, trình duyệt → `waiting-approval` |
+| `waiting-approval` | leader | Trả sửa → `processing`; Phê duyệt → `answered`; Phê duyệt & công khai → `published` (cần tick ký số mock) |
+| `answered` | leader / coordinator | Xuất bản → `published` (cần ký số mock) |
+| `published` | leader / coordinator | Thu hồi → `answered`, `isPublic=false` |
+| `processing` / `waiting-approval` | specialist / coordinator | Yêu cầu phối hợp đơn vị (không đổi status) |
+| mọi | cán bộ nội bộ | Bút phê / audit note nội bộ |
+
+Mọi chuyển trạng thái qua `WorkflowRepository.canTransition`. AI chỉ gợi ý, không tự chuyển trạng thái.
+
+## Acceptance
+
+- Shared kit cho form (textarea, select, input, checkbox, button).  
+- Toast chỉ kèm mã hồ sơ.  
+- i18n vi/en cho copy.  
+- Timeline ghi actor + mô tả mỗi bước.
+
+## Test
+
+`dossier-detail.component.spec.ts`, `workflow.repository.spec.ts`, `mock-db.service.spec.ts` (assign)
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | G2 đầy đủ action theo role trên chi tiết hồ sơ | 142–161 |
+| 2026-10-20 | Codex | G4 thu hồi / phối hợp / bút phê | 142–161, 176–187 |

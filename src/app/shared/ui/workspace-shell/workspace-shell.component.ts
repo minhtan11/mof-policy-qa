@@ -1,11 +1,178 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
-import { AvatarModule } from 'primeng/avatar';
-import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ToastService } from '../../../core/toast/toast.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { ThemeService } from '../../../core/theme/theme.service';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { WorkspaceShellState } from '../../../core/workspace/workspace-shell.state';
+import { WS_HOME, WS_PROFILE_ROUTE, visibleGroups } from '../../../core/workspace/workspace-nav';
+import { WorkspaceNotificationRepository } from '../../../core/mock-api/workspace-notification.repository';
+import { LangSwitchComponent } from '../lang-switch/lang-switch.component';
+import { MofFiIconComponent } from '../mof-fi-icon/mof-fi-icon.component';
+import { MofIconButtonComponent } from '../mof-icon-button/mof-icon-button.component';
+import { HeaderSearchComponent, SearchShortcut } from '../portal-header/header-search/header-search.component';
+import { HeaderNotificationsComponent } from '../portal-header/header-notifications/header-notifications.component';
+import { HeaderPrefsComponent } from '../portal-header/header-prefs/header-prefs.component';
+import { WorkspaceSidebarComponent } from './workspace-sidebar/workspace-sidebar.component';
 
-@Component({ selector:'app-workspace-shell', imports:[RouterLink,RouterLinkActive,AvatarModule,ButtonModule,TooltipModule], changeDetection:ChangeDetectionStrategy.OnPush, template:`
-  <div class="shell"><aside [class.collapsed]="collapsed()"><a class="shell-brand" routerLink="/workspace"><span><i class="pi pi-building-columns"></i></span><b>MOF<span>PolicyQA</span></b></a><nav><p>NGHIỆP VỤ</p><a routerLink="/workspace" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="pi pi-th-large"></i><span>Tổng quan</span></a><a routerLink="/workspace"><i class="pi pi-inbox"></i><span>Hồ sơ cần xử lý</span><em>18</em></a><a routerLink="/workspace"><i class="pi pi-send"></i><span>Đã gửi xử lý</span></a><a routerLink="/workspace"><i class="pi pi-book"></i><span>Kho tri thức</span></a><p>HỆ THỐNG</p><a routerLink="/admin"><i class="pi pi-cog"></i><span>Quản trị hệ thống</span></a></nav><div class="side-bottom"><p-button icon="pi pi-angle-left" [text]="true" severity="secondary" (onClick)="collapse.emit()" [pTooltip]="collapsed() ? 'Mở rộng menu' : 'Thu gọn menu'"/></div></aside><div class="shell-main"><header><button class="mobile-menu" pButton icon="pi pi-bars" [text]="true" (click)="collapse.emit()"></button><div class="title"><p>{{eyebrow()}}</p><h1>{{title()}}</h1></div><div class="top-actions"><a routerLink="/portal" pTooltip="Cổng công khai"><i class="pi pi-external-link"></i></a><button pButton icon="pi pi-bell" [rounded]="true" [text]="true" pTooltip="Thông báo"></button><div class="profile"><p-avatar [label]="auth.user()?.avatar ?? 'QT'" shape="circle"/><span><b>{{auth.user()?.name ?? 'Khách'}}</b><small>{{auth.user()?.organization}}</small></span></div><button pButton icon="pi pi-sign-out" [text]="true" severity="secondary" pTooltip="Đăng xuất" (click)="logout()"></button></div></header><main class="workspace-content"><ng-content/></main></div></div>
-  `, styles:`.shell{display:flex;min-height:100vh;background:#f5f7fa}.shell aside{position:sticky;top:0;display:flex;flex:0 0 258px;flex-direction:column;width:258px;height:100vh;padding:18px 12px;background:var(--mof-navy-deep);color:#c1d0df;transition:flex-basis var(--mof-medium),width var(--mof-medium)}.shell aside.collapsed{flex-basis:74px;width:74px}.shell-brand{display:flex;align-items:center;gap:9px;height:48px;padding:0 10px;color:white;white-space:nowrap;overflow:hidden}.shell-brand>span{display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;border-radius:8px;background:#e7bd61;color:var(--mof-navy-deep)}.shell-brand b{font-size:.92rem;letter-spacing:-.02em}.shell-brand b span{color:#e9be60}nav{margin-top:24px;overflow:hidden}nav p{margin:20px 10px 7px;color:#748ca5;font-size:.65rem;font-weight:800;letter-spacing:.09em;white-space:nowrap}nav a{display:flex;align-items:center;gap:13px;min-height:43px;margin:2px 0;padding:0 11px;border-radius:9px;color:#b6c6d6;font-size:.84rem;white-space:nowrap;transition:background var(--mof-fast),color var(--mof-fast)}nav a i{width:18px;text-align:center}nav a:hover,nav a.active{background:rgb(255 255 255 / 11%);color:#fff}nav em{margin-left:auto;padding:2px 7px;border-radius:8px;background:#cb9340;color:#fff;font-size:.66rem;font-style:normal}.collapsed .shell-brand b,.collapsed nav span,.collapsed nav p,.collapsed nav em{display:none}.collapsed nav a{justify-content:center;padding-inline:0}.side-bottom{margin-top:auto;text-align:right}.collapsed .side-bottom{text-align:center}.shell-main{min-width:0;flex:1}.shell-main>header{display:flex;align-items:center;min-height:76px;padding:0 30px;border-bottom:1px solid var(--mof-line);background:white}.title p{margin:0 0 2px;color:#74879a;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.title h1{margin:0;font-size:1.2rem;letter-spacing:-.02em}.top-actions{display:flex;align-items:center;gap:12px;margin-left:auto}.top-actions>a{color:#59708a}.profile{display:flex;align-items:center;gap:9px;padding-left:10px;border-left:1px solid var(--mof-line)}.profile b,.profile small{display:block;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile b{font-size:.78rem}.profile small{color:#718499;font-size:.68rem}.workspace-content{padding:26px 30px}.mobile-menu{display:none}@media(max-width:800px){.shell aside{position:fixed;z-index:30;transform:translateX(0);box-shadow:var(--mof-shadow)}.shell aside.collapsed{transform:translateX(-100%)}.shell-main{width:100%}.mobile-menu{display:inline-flex;margin-right:9px}.shell-main>header{padding:0 15px}.workspace-content{padding:18px 15px}.profile span{display:none}.top-actions{gap:4px}}` })
-export class WorkspaceShellComponent { readonly title=input.required<string>(); readonly eyebrow=input('Cổng nghiệp vụ'); readonly collapsed=input(false); readonly collapse=output<void>(); readonly auth=inject(AuthService); private readonly router=inject(Router); logout(){this.auth.logout();this.router.navigateByUrl('/portal');} }
+/** Breakpoint drawer (khớp SCSS). */
+export const WS_DRAWER_QUERY = '(max-width: 1023.98px)';
+
+/**
+ * Khung WORKSPACE dùng chung cho /workspace/** và /admin: header 1 hàng sticky (menu, tìm kiếm pill Ctrl K,
+ * giao diện, chuông, VI/EN, user pill + menu) + sidebar rail/mở rộng (lưu localStorage) + vùng nội dung.
+ * < 1024px: sidebar thành drawer off-canvas (scrim, focus trap, Esc, overflow:clip, focus preventScroll).
+ * Trang chỉ truyền `title`/`eyebrow` + nội dung; KHÔNG thiết kế lại nội dung trang.
+ */
+@Component({
+  selector: 'app-workspace-shell',
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    LangSwitchComponent,
+    MofFiIconComponent,
+    MofIconButtonComponent,
+    HeaderSearchComponent,
+    HeaderNotificationsComponent,
+    HeaderPrefsComponent,
+    WorkspaceSidebarComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './workspace-shell.component.html',
+  styleUrl: './workspace-shell.component.scss',
+  host: { '(window:scroll)': 'onScroll()' },
+})
+export class WorkspaceShellComponent {
+  /** Tiêu đề trang (h1). Rỗng = trang tự dựng page-head riêng (vd. Tổng quan công việc R31). */
+  readonly title = input('');
+  readonly eyebrow = input('Workspace');
+
+  readonly auth = inject(AuthService);
+  readonly theme = inject(ThemeService);
+  readonly state = inject(WorkspaceShellState);
+  readonly notifs = inject(WorkspaceNotificationRepository);
+  private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
+
+  readonly mobile = signal(this.matchDrawer());
+  readonly scrolled = signal(false);
+  readonly userOpen = signal(false);
+  private readonly menuBtn = viewChild<ElementRef<HTMLButtonElement>>('menuBtn');
+  private readonly sideRoot = viewChild<ElementRef<HTMLElement>>('sideRoot');
+
+  readonly shortcuts = computed<SearchShortcut[]>(() => [
+    { labelKey: WS_HOME.labelKey, icon: WS_HOME.icon, route: WS_HOME.route },
+    ...visibleGroups(this.auth.user()?.role ?? null).flatMap((g) =>
+      g.items.map((i) => ({ labelKey: i.labelKey, icon: i.icon, route: i.route, queryParams: i.query })),
+    ),
+  ]);
+
+  /** Hồ sơ cá nhân — chưa có màn, trỏ trang Sắp ra mắt (R30). */
+  readonly profileRoute = WS_PROFILE_ROUTE;
+
+  readonly roleKey = computed(() => `role.${this.auth.user()?.role ?? 'reception'}`);
+
+  constructor() {
+    const mq = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia(WS_DRAWER_QUERY) : null;
+    const onMq = () => {
+      this.mobile.set(!!mq?.matches);
+      if (!mq?.matches) this.closeDrawer(false);
+    };
+    mq?.addEventListener?.('change', onMq);
+    inject(DestroyRef).onDestroy(() => {
+      mq?.removeEventListener?.('change', onMq);
+      document.documentElement.classList.remove('mof-scroll-lock');
+    });
+    this.router.events
+      .pipe(
+        filter((e) => e instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => {
+        this.closeDrawer(false);
+        this.userOpen.set(false);
+      });
+    // Drawer mở → khoá cuộn trang + focus nút đóng (không cuộn container).
+    effect(() => {
+      const open = this.state.drawerOpen();
+      untracked(() => {
+        document.documentElement.classList.toggle('mof-scroll-lock', open);
+        if (open) {
+          setTimeout(() => this.sideRoot()?.nativeElement.querySelector<HTMLElement>('[data-drawer-close]')?.focus({ preventScroll: true }), 0);
+        }
+      });
+    });
+    this.onScroll();
+  }
+
+  /** Nút menu: desktop = rail ↔ mở rộng; mobile = mở drawer. */
+  toggleSidebar(): void {
+    if (this.mobile()) {
+      this.state.drawerOpen.set(true);
+    } else {
+      this.state.toggleCollapsed();
+    }
+  }
+
+  closeDrawer(restoreFocus = true): void {
+    if (!this.state.drawerOpen()) return;
+    this.state.drawerOpen.set(false);
+    if (restoreFocus) this.menuBtn()?.nativeElement.focus({ preventScroll: true });
+  }
+
+  /** Esc đóng; Tab bị giữ trong drawer. */
+  onDrawerKey(e: KeyboardEvent): void {
+    if (!this.mobile() || !this.state.drawerOpen()) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      this.closeDrawer();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const root = this.sideRoot()?.nativeElement;
+    const items = Array.from(
+      root?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? [],
+    ).filter((el) => !el.closest('[inert]') && (el.offsetParent !== null || el === document.activeElement));
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  toggleUser(): void {
+    this.userOpen.update((v) => !v);
+  }
+
+  onUserFocusOut(e: FocusEvent): void {
+    if (!(e.currentTarget as HTMLElement).contains(e.relatedTarget as Node | null)) this.userOpen.set(false);
+  }
+
+  onScroll(): void {
+    const s = typeof window !== 'undefined' && window.scrollY > 4;
+    if (s !== this.scrolled()) this.scrolled.set(s);
+  }
+
+  skipToMain(e: Event): void {
+    e.preventDefault();
+    document.getElementById('ws-main')?.focus({ preventScroll: false });
+  }
+
+  logout(): void {
+    this.userOpen.set(false);
+    this.auth.logout();
+    this.toast.info('toast.loggedOut');
+    void this.router.navigateByUrl('/portal');
+  }
+
+  private matchDrawer(): boolean {
+    return typeof window !== 'undefined' && !!window.matchMedia?.(WS_DRAWER_QUERY).matches;
+  }
+}

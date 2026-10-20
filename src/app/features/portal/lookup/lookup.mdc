@@ -1,0 +1,39 @@
+# PUB-lookup — Tra cứu câu hỏi và hồ sơ (/portal/tra-cuu)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Bỏ scroll-reveal còn lại trên tra cứu — chỉ landing trang chủ dùng appReveal  
+Affected UC: UC-162..UC-165
+
+## Giao diện
+
+- **Hero:** eyebrow KHO HỎI ĐÁP, tiêu đề "Tra cứu **câu hỏi và hồ sơ**" (vế sau màu `--mof-hero-accent`), mô tả, ô tìm kiếm lớn + nút Tìm kiếm. Nền `--mof-lookup-hero-overlay` (xanh đậm trái → trong dần) trên ảnh `hero/mof-hq.jpg`, minh hoạ `illustrations/lookup-docs.svg` (tài liệu, kính lúp, dấu hỏi — chỉ xanh/trắng).
+- **3 cột (≥1280):** bộ lọc sticky | kết quả | cột phải. 1024–1279: bộ lọc | kết quả, cột phải xuống dưới thành lưới 2 cột. < 1024: nút **Bộ lọc** mở bottom sheet (scrim, khoá cuộn, Esc đóng); thẻ xếp chồng.
+- **Bộ lọc:** Lĩnh vực (`mof-select`), Loại câu hỏi (checkbox + số lượng), Trạng thái (Tất cả, Đang xử lý, Đã trả lời, Chờ phê duyệt), Thời gian đăng, Sắp xếp theo; chỉ áp dụng khi bấm **Áp dụng bộ lọc**; **Đặt lại** xoá bộ lọc (giữ từ khoá).
+- **Kết quả:** thanh công cụ (Hiển thị N kết quả phù hợp, sắp xếp áp dụng ngay, chuyển danh sách/lưới), thẻ: ô icon màu theo trạng thái, mã CSTC-2026-xxxxxx, badge (Đang xử lý = warning, Chờ phê duyệt = blue, Đã trả lời = success + check), tiêu đề, meta (lĩnh vực, ngày, lượt xem, phản hồi), trích đoạn trả lời viền trái hoặc ghi chú trạng thái, nút mũi tên mở rộng. **Xem thêm** (6/trang), skeleton khi truy vấn đổi, trạng thái rỗng.
+- **Cột phải:** Chủ đề phổ biến (xếp hạng + số lượng; bấm = lọc lĩnh vực), Câu hỏi nổi bật (3, lượt xem), CTA "Không tìm thấy câu trả lời?" → `/portal/hoi-dap`. Icon lửa dùng `--mof-warning`, sao dùng `--mof-blue`.
+
+## Dữ liệu và URL
+
+- `PublicQaRepository` + fixture `public-qa-fixtures.ts` (24 bản ghi, ngày mốc cố định `QA_FIXTURE_NOW`). Tìm theo mã/tiêu đề/trả lời, không phân biệt hoa thường.
+- Query params là nguồn sự thật: `q`, `topic`, `type` (csv), `status` (csv), `period` (7d/30d/90d/365d), `sort` (oldest/views/replies), `view=grid`, `page`. Giá trị mặc định không ghi lên URL; `replaceUrl`.
+
+## Test mapping
+
+`lookup.component.spec.ts` (parse/serialise params, skeleton + trang đầu, tìm kiếm, áp dụng/đặt lại bộ lọc, sắp xếp, kiểu hiển thị, khôi phục từ URL + trạng thái rỗng), `public-qa.repository.spec.ts`.
+
+## Round 27 — Bề rộng, phân trang, chống nháy
+
+- **Bề rộng:** hero full-bleed; nội dung trong `.wide` = `min(100% - 2*gutter, 96rem)`, gutter `clamp(1rem,2.5vw,2rem)`. Lưới 3 cột `minmax(15rem,17rem) minmax(0,1fr) minmax(16rem,18rem)`; 1024–1279: 2 cột.
+- **Phân trang:** `app-mof-pagination` (shared/ui/mof-pagination) — số trang + dấu …, trước/sau, chọn 6/12/24, "Hiển thị x–y / N". URL: `?page=` (mặc định 1 → bỏ), `?size=` (mặc định 6 → bỏ); page bị kẹp vào [1, pages]. Lọc/sắp xếp/đổi size → về trang 1.
+- **Chống nháy:** không skeleton (dữ liệu client); `@for track r.id`, thẻ không dùng appReveal; đổi lưới/danh sách chỉ đổi class `.grid` trên cùng container (giữ nguyên node). Đổi trang/kiểu xem: View Transition crossfade 180ms (`view-transition-name: qa-list`) khi hỗ trợ và không reduced-motion; giữ `min-height` danh sách trong lúc đổi; chỉ cuộn mượt về toolbar nếu nó ngoài khung nhìn.
+- **Router:** `withViewTransitions` bỏ qua khi cùng route config (đổi query không crossfade cả trang); bỏ `withInMemoryScrolling('top')` — app.ts chỉ cuộn đầu trang khi path đổi. Đổi query không tạo lại component.
+- Nháp bộ lọc chỉ đồng bộ lại khi phần lọc/sort đổi (đổi trang không xoá nháp).
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Thiết kế lại theo mockup: hero, bộ lọc sticky/bottom sheet, kết quả danh sách/lưới, cột phải, đồng bộ query params | UC-162..UC-165 |
+| 2026-10-20 | Grok Bot | Round 27: layout rộng (96rem), mof-pagination + ?page/?size, bỏ skeleton, chống nháy khi đổi lưới/trang/lọc | UC-162..UC-165 |
+| 2026-10-20 | Auto | Gỡ toàn bộ appReveal khỏi PUB-lookup (hero/toolbar/side); content hiện ngay | UC-162..UC-165 |

@@ -1,0 +1,25 @@
+---
+description: Khung workspace (header + sidebar) cho /workspace/** và /admin
+globs: src/app/shared/ui/workspace-shell/**,src/app/core/workspace/**
+---
+# Workspace shell (Round 29)
+
+- Dùng ở: `workspace`, `internal-search`, `dossier-detail`, `admin` (mỗi trang tự bọc `<app-workspace-shell title eyebrow>`).
+- **Sidebar, một component với hai chế độ** (không phải hai sidebar):
+  - Rail `--mof-ws-rail-w` (4.5rem): emblem, icon có tooltip (một tooltip fixed dùng chung), mục active là ô brand đặc, nút tròn » «Mở rộng menu», icon hỗ trợ ở đáy. Bấm icon nhóm thì mở flyout qua `anchorFloating` (`strategy:'portal'`, `placement:'inline-end'`). Flyout hỗ trợ Esc, mũi tên, Tab và click ngoài để đóng.
+  - Mở rộng `--mof-ws-side-w` (15.75rem): header thương hiệu + «, 'Tổng quan' là pill rộng hết cỡ, nhóm có tiêu đề in hoa và chevron, badge đếm lấy từ `MockDbService.activeQueue`, thẻ hỗ trợ `WS_SUPPORT_PHONE`. Menu cuộn riêng, vị trí cuộn được giữ trong state và mục active được cuộn vào tầm nhìn.
+- **State** `WorkspaceShellState` lưu:
+  - `mof.ws.sidebar.collapsed` ('1'/'0')
+  - `mof.ws.sidebar.groups` (JSON)
+  Nhóm chứa route active tự mở. Width chỉ animate khi `animating()`, nên điều hướng giữa các trang không bị nháy.
+- **Dưới 1024px** (`WS_DRAWER_QUERY`): cùng DOM, nhưng thành drawer off-canvas với scrim, `role=dialog`, focus trap, Esc trả focus về nút menu, `html.mof-scroll-lock`, `overflow:clip`, `focus({preventScroll})`.
+- **Nav** `core/workspace/workspace-nav.ts`: chỉ chứa route có thật, lọc theo `roles`. Mục được active theo path + query (`queryDefaults`, `excludeQuery`, `activePrefixes`).
+- **Header 1 hàng (sticky)**: hamburger, header-search dạng pill (Ctrl K, shortcuts lấy từ nav), theme toggle, chuông (`WorkspaceNotificationRepository`), VI/EN, user pill (avatar + tên + đơn vị · vai trò). Dropdown gồm Tuỳ chọn (theme, ngôn ngữ) và Đăng xuất; không có mục Hồ sơ vì chưa có route.
+- Token: `--mof-ws-*` trong `styles-tokens.css` (light/dark). i18n: `wsNav.*`, `ws.*`, `wsNotif.*`.
+- Spec: `workspace-sidebar.component.spec.ts`, `workspace-shell.component.spec.ts`, `workspace-nav.spec.ts`, `workspace-notification.repository.spec.ts`.
+
+## Changelog
+| Ngày | Người cập nhật | Thay đổi | Phạm vi |
+|---|---|---|---|
+| 2026-10-20 | Auto | Nhãn theme trong Tuỳ chọn (header-prefs) và nút theme header đổi sáng ↔ tối theo trạng thái | UC-142..UC-149 |
+| 2026-10-20 | Grok Bot | Tạo mới: redesign khung workspace (rail/mở rộng, flyout, drawer, header 1 hàng) | UC-142..UC-149, UC-18..UC-30 |

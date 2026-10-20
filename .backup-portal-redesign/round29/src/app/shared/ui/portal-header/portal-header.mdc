@@ -1,0 +1,37 @@
+# Shared UI — Portal header (`app-portal-header`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Gỡ mục «Đăng nhập bằng VNeID» khỏi submenu Dịch vụ công (VNeID chỉ còn trên trang đăng nhập)  
+Affected UC: UC-1..UC-8
+
+## Bố cục
+
+- **≥ 1024px — một hàng `--mof-header-h` (4.25rem):** nhận diện gọn (quốc huy ~2.75rem + BỘ TÀI CHÍNH / Cổng thông tin điện tử) | menu chính (Trang chủ có icon, Giới thiệu, Tin tức, Văn bản pháp luật, Dịch vụ công, Công khai ngân sách, Liên hệ; dropdown giữ nguyên; mục đang chọn có gạch chân bo tròn) | nút tròn.
+- **Nút phải:** `app-header-search` (command overlay: Ctrl/⌘+K, Esc đóng + trả focus, Tab giữ trong hộp, gửi → `/portal/tra-cuu?q=`; gợi ý chủ đề → `?topic=`), `app-header-notifications` (badge chưa đọc, dropdown, đánh dấu đã đọc — `PortalNotificationRepository` + fixture `portal-notifications.ts`), pill tài khoản hoặc menu cài đặt + nút Đăng nhập.
+- **Tuỳ chọn (`app-header-prefs`):** ngày, giao diện tối (switch), VI|EN, Sơ đồ cổng, Hỗ trợ — trong menu tài khoản; khi chưa đăng nhập nằm trong menu cài đặt (luôn đổi được ngôn ngữ/giao diện).
+- **Sticky:** blur trên `::before` (KHÔNG đặt backdrop-filter trên header để overlay `position:fixed` bên trong phủ đúng viewport); khi cuộn (`.scrolled`) nền đặc hơn + đổ bóng.
+- **Tràn menu:** `measure()` đo bề rộng mục (ResizeObserver + đổi ngôn ngữ + fonts.ready); mục không vừa được ẩn (`.overflowed`, inert) và hiện trong dropdown **Thêm** — không xuống dòng. 1024–1279: chữ/khoảng cách thu nhỏ bằng clamp, ẩn dòng phụ nhận diện; tên người dùng chỉ hiện ≥ 1440.
+- **Mục đang chọn:** theo `activeFor` / route con (mỗi route chỉ thuộc một mục → không bao giờ 2 submenu cùng sáng). `/portal/tra-cuu`, `/portal/hoi-dap`, … thuộc **Dịch vụ công**; `/portal/huong-dan` thuộc **Giới thiệu**; `/portal/van-ban` thuộc **Văn bản pháp luật** (placeholder Coming soon).
+- **< 1024px:** drawer off-canvas round 16–18 giữ nguyên (hàng chip tiện ích, accordion); thanh trên cao `--mof-header-h` (3.75rem) gồm logo, tìm kiếm, chuông, nút menu.
+
+## Chiều cao
+
+| | Trước (3 tầng) | Sau (1 hàng) |
+|---|---|---|
+| Desktop 1280 | 184px (11.5rem) | 70px (4.38rem) |
+| Mobile 375 | 126px | 57px |
+
+## Test mapping
+
+`portal-header.component.spec.ts` (đăng nhập/đăng xuất, drawer, hàng gọn + Tuỳ chọn, gom "Thêm", một mục sáng), `header-search.component.spec.ts`, `core/mock-api/portal-notification.repository.spec.ts`.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Tách route Hướng dẫn `/portal/huong-dan` và VBPL `/portal/van-ban` (Coming soon) — hết multi-active submenu trên `/portal/tra-cuu` | UC-1..UC-8, UC-162..UC-165 |
+| 2026-10-20 | Auto | Exclusive dropdown: bỏ `:focus-within` giữ submenu cũ; `openNav`/`toggleUser`/`opened` đóng panel còn lại | UC-1..UC-8 |
+| 2026-10-20 | Auto | Gỡ «Đăng nhập bằng VNeID» khỏi submenu Dịch vụ công | UC-1..UC-8 |
+| 2026-10-20 | Grok Bot | Dropdown desktop + drawer: mục cách nhau 0.1875rem, hover tint trung tính (--mof-hover-tint), active = chữ brand 600 + thanh trái + --mof-active-tint, focus ring riêng | UC-1..UC-8 |
+| 2026-10-20 | Grok Bot | Header 1 hàng: tìm kiếm overlay, chuông thông báo, Tuỳ chọn trong menu tài khoản/cài đặt, gom mục thừa vào "Thêm", sticky blur khi cuộn, `activeFor` | UC-1..UC-8, UC-162..UC-165 |

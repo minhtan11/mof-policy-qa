@@ -1,0 +1,19 @@
+<button
+  class="mof-btn"
+  [attr.type]="type()"
+  [class]="['mof-btn', 'is-' + variant(), 'is-' + size(), block() ? 'is-block' : '', !label() && icon() ? 'is-icon' : ''].join(' ')"
+  [disabled]="disabled() || loading()"
+  [attr.aria-label]="ariaLabel() || null"
+>
+  @if (loading()) {
+    <span class="spinner" aria-hidden="true"></span>
+  } @else if (icon() && iconPos() === 'left') {
+    <app-mof-icon [name]="icon()!" />
+  }
+  @if (label()) {
+    <span>{{ label() }}</span>
+  }
+  @if (!loading() && icon() && iconPos() === 'right') {
+    <app-mof-icon [name]="icon()!" />
+  }
+</button>

@@ -1,0 +1,16 @@
+<label class="mof-check" [class.is-disabled]="disabled">
+  <input
+    type="checkbox"
+    class="mof-check__input"
+    [id]="id() || null"
+    [checked]="checked()"
+    [disabled]="disabled"
+    (change)="onNativeChange($event)"
+    (blur)="markTouched()"
+  />
+  <span class="mof-check__box" aria-hidden="true"></span>
+  @if (label()) {
+    <span class="mof-check__label">{{ label() }}</span>
+  }
+  <ng-content />
+</label>

@@ -1,0 +1,531 @@
+<app-workspace-shell
+  [title]="'admin.title' | t"
+  [eyebrow]="'admin.eyebrow' | t"
+  [collapsed]="collapsed()"
+  (collapse)="collapsed.set(!collapsed())"
+>
+  <div class="admin-head">
+    <div>
+      <p class="eyebrow">{{ 'admin.headEyebrow' | t }}</p>
+      <h2>{{ 'admin.headTitle' | t }}</h2>
+      <p>{{ 'admin.headBody' | t }}</p>
+    </div>
+    <app-mof-button [label]="'admin.createConfig' | t" icon="plus" (click)="quickCreateWorkflow()" />
+  </div>
+
+  <nav class="admin-tabs" [attr.aria-label]="'admin.title' | t">
+    @for (tab of tabs; track tab.id) {
+      <button type="button" class="tab" [class.active]="activeTab() === tab.id" (click)="activeTab.set(tab.id)">
+        {{ tab.labelKey | t }}
+      </button>
+    }
+  </nav>
+
+  @if (activeTab() === 'org') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.org.title' | t }}</h3>
+          <p>{{ 'admin.org.hint' | t }}</p>
+        </div>
+      </header>
+      <form class="inline-form" [formGroup]="orgForm" (ngSubmit)="addOrg()">
+        <app-mof-input formControlName="code" [placeholder]="'admin.org.formCode' | t" />
+        <app-mof-input formControlName="name" [placeholder]="'admin.org.formName' | t" />
+        <app-mof-select
+          formControlName="parentId"
+          [options]="parentOrgOptions()"
+          [placeholder]="'admin.org.formParent' | t"
+        />
+        <app-mof-button type="submit" [label]="'admin.org.add' | t" icon="plus" />
+      </form>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin.org.code' | t }}</th>
+              <th>{{ 'admin.org.name' | t }}</th>
+              <th>{{ 'admin.org.parent' | t }}</th>
+              <th>{{ 'admin.org.topics' | t }}</th>
+              <th>{{ 'admin.org.status' | t }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (unit of orgs.units(); track unit.id) {
+              <tr>
+                <td><b>{{ unit.code }}</b></td>
+                <td>{{ unit.name }}</td>
+                <td>{{ parentLabel(unit.parentId) }}</td>
+                <td>{{ topicLabels(unit.intakeTopicIds) }}</td>
+                <td>
+                  <app-mof-badge
+                    [label]="(unit.active ? 'admin.status.active' : 'admin.status.inactive') | t"
+                    [tone]="unit.active ? 'success' : 'neutral'"
+                  />
+                </td>
+                <td>
+                  <app-mof-button
+                    [label]="'admin.org.toggle' | t"
+                    variant="ghost"
+                    size="sm"
+                    (click)="toggleOrg(unit.id)"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'users') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.users.title' | t }}</h3>
+          <p>{{ 'admin.users.hint' | t }}</p>
+        </div>
+      </header>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin.users.user' | t }}</th>
+              <th>{{ 'admin.users.role' | t }}</th>
+              <th>{{ 'admin.users.org' | t }}</th>
+              <th>{{ 'admin.users.status' | t }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of accounts.accounts(); track user.id) {
+              <tr>
+                <td>
+                  <b>{{ user.name }}</b>
+                  <small>{{ accounts.maskEmail(user.email) }}</small>
+                </td>
+                <td><app-mof-badge [label]="roleLabel(user.role)" tone="info" /></td>
+                <td>{{ orgName(user.organizationId) }}</td>
+                <td>
+                  <span [class.online]="user.active" [class.offline]="!user.active">
+                    {{ (user.active ? 'admin.users.active' : 'admin.users.inactive') | t }}
+                  </span>
+                </td>
+                <td>
+                  <app-mof-button
+                    [label]="(user.active ? 'admin.users.lock' : 'admin.users.unlock') | t"
+                    variant="ghost"
+                    size="sm"
+                    (click)="toggleUser(user.id)"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'roles') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.roles.title' | t }}</h3>
+          <p>{{ 'admin.roles.hint' | t }}</p>
+        </div>
+      </header>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin.roles.role' | t }}</th>
+              <th>{{ 'admin.roles.permissions' | t }}</th>
+              <th>{{ 'admin.roles.scope' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of permissions.matrix; track row.role) {
+              <tr>
+                <td><app-mof-badge [label]="roleLabel(row.role)" tone="info" /></td>
+                <td><code class="perm-list">{{ row.permissions.join(' · ') }}</code></td>
+                <td>{{ scopeLabel(row.scope) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'catalog') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.catalog.title' | t }}</h3>
+          <p>{{ 'admin.catalog.hint' | t }}</p>
+        </div>
+      </header>
+      <form class="inline-form" [formGroup]="catalogForm" (ngSubmit)="addCatalog()">
+        <app-mof-select formControlName="type" [options]="catalogTypeOptions" [placeholder]="'admin.catalog.formType' | t" />
+        <app-mof-input formControlName="code" [placeholder]="'admin.catalog.formCode' | t" />
+        <app-mof-input formControlName="label" [placeholder]="'admin.catalog.formLabel' | t" />
+        <app-mof-button type="submit" [label]="'admin.catalog.add' | t" icon="plus" />
+      </form>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin.catalog.code' | t }}</th>
+              <th>{{ 'admin.catalog.type' | t }}</th>
+              <th>{{ 'admin.catalog.label' | t }}</th>
+              <th>{{ 'admin.catalog.status' | t }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entry of catalog.entries(); track entry.id) {
+              <tr>
+                <td><b>{{ entry.code }}</b></td>
+                <td>{{ entry.type }}</td>
+                <td>{{ entry.label }}</td>
+                <td>
+                  <app-mof-badge
+                    [label]="(entry.active ? 'admin.catalog.on' : 'admin.catalog.off') | t"
+                    [tone]="entry.active ? 'success' : 'neutral'"
+                  />
+                </td>
+                <td>
+                  <app-mof-button
+                    [label]="(entry.active ? 'admin.catalog.disable' : 'admin.catalog.enable') | t"
+                    variant="ghost"
+                    size="sm"
+                    (click)="toggleCatalog(entry.id)"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'workflow') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.wf.title' | t }}</h3>
+          <p>{{ 'admin.wf.hint' | t }}</p>
+        </div>
+      </header>
+      <form class="inline-form" [formGroup]="workflowForm" (ngSubmit)="createWorkflow()">
+        <app-mof-input formControlName="name" [placeholder]="'admin.wf.formName' | t" />
+        <app-mof-input formControlName="slaDays" [placeholder]="'admin.wf.formSla' | t" />
+        <app-mof-button type="submit" [label]="'admin.wf.create' | t" icon="plus" variant="secondary" />
+      </form>
+      <form class="inline-form" [formGroup]="slaForm" (ngSubmit)="saveSla()">
+        <app-mof-select
+          formControlName="workflowId"
+          [options]="workflowOptions()"
+          [placeholder]="'admin.wf.name' | t"
+        />
+        <app-mof-input formControlName="slaDays" [placeholder]="'admin.wf.formSla' | t" />
+        <app-mof-button type="submit" [label]="'admin.wf.updateSla' | t" variant="soft" />
+      </form>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin.wf.name' | t }}</th>
+              <th>{{ 'admin.wf.version' | t }}</th>
+              <th>{{ 'admin.wf.sla' | t }}</th>
+              <th>{{ 'admin.wf.status' | t }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of workflow.workflows(); track item.id) {
+              <tr>
+                <td>
+                  <b>{{ item.name }}</b>
+                  <small>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</small>
+                </td>
+                <td>v{{ item.version }}</td>
+                <td>{{ 'admin.wf.days' | t: { n: item.slaDays } }}</td>
+                <td>
+                  <app-mof-badge
+                    [label]="item.status"
+                    [tone]="item.status === 'active' ? 'success' : item.status === 'draft' ? 'warn' : 'neutral'"
+                  />
+                </td>
+                <td>
+                  @if (item.status === 'draft') {
+                    <app-mof-button
+                      [label]="'admin.wf.activate' | t"
+                      variant="ghost"
+                      size="sm"
+                      (click)="activateWorkflow(item.id)"
+                    />
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'legal') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.legal.title' | t }}</h3>
+          <p>{{ 'admin.legal.hint' | t }}</p>
+        </div>
+      </header>
+      <form class="inline-form" [formGroup]="legalForm" (ngSubmit)="addLegal()">
+        <app-mof-input formControlName="query" [placeholder]="'admin.legal.search' | t" />
+        <app-mof-input formControlName="code" [placeholder]="'admin.legal.formCode' | t" />
+        <app-mof-input formControlName="title" [placeholder]="'admin.legal.formTitle' | t" />
+        <app-mof-button type="submit" [label]="'admin.legal.add' | t" icon="plus" />
+      </form>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin.legal.code' | t }}</th>
+              <th>{{ 'admin.legal.name' | t }}</th>
+              <th>{{ 'admin.legal.status' | t }}</th>
+              <th>{{ 'admin.legal.source' | t }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of legal.search(legalQuery()); track item.id) {
+              <tr>
+                <td>
+                  <b>{{ item.code }}</b>
+                  <small>v{{ item.version }} · {{ item.issuer }}</small>
+                </td>
+                <td>{{ item.title }}</td>
+                <td>
+                  <app-mof-badge
+                    [label]="item.status"
+                    [tone]="item.status === 'effective' ? 'success' : item.status === 'draft' ? 'warn' : 'neutral'"
+                  />
+                </td>
+                <td>{{ item.source }}</td>
+                <td>
+                  @if (item.status === 'draft') {
+                    <app-mof-button
+                      [label]="'admin.legal.publish' | t"
+                      variant="ghost"
+                      size="sm"
+                      (click)="publishLegal(item.id)"
+                    />
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'ai') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.ai.title' | t }}</h3>
+          <p>{{ 'admin.ai.hint' | t }}</p>
+        </div>
+        <app-mof-button [label]="'admin.ai.run' | t" icon="sparkles" (click)="runAi()" />
+      </header>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin.ai.model' | t }}</th>
+              <th>{{ 'admin.ai.purpose' | t }}</th>
+              <th>{{ 'admin.ai.version' | t }}</th>
+              <th>{{ 'admin.ai.status' | t }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (model of ops.models(); track model.id) {
+              <tr>
+                <td><b>{{ model.name }}</b></td>
+                <td>{{ model.purpose }}</td>
+                <td>{{ model.version }}</td>
+                <td>
+                  <app-mof-badge
+                    [label]="model.status"
+                    [tone]="model.status === 'online' ? 'success' : model.status === 'degraded' ? 'warn' : 'neutral'"
+                  />
+                </td>
+                <td>
+                  <app-mof-button
+                    [label]="'admin.ai.cycle' | t"
+                    variant="ghost"
+                    size="sm"
+                    (click)="cycleModel(model.id, model.status)"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin.ai.kind' | t }}</th>
+              <th>{{ 'admin.ai.value' | t }}</th>
+              <th>{{ 'admin.ai.confidence' | t }}</th>
+              <th>{{ 'admin.ai.status' | t }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of ai.suggestions(); track item.id) {
+              <tr>
+                <td>{{ item.kind }}</td>
+                <td>{{ item.value }}</td>
+                <td>{{ item.confidence * 100 | number: '1.0-0' }}%</td>
+                <td>
+                  <app-mof-badge
+                    [label]="item.status"
+                    [tone]="item.status === 'accepted' ? 'success' : item.status === 'rejected' ? 'warn' : 'info'"
+                  />
+                </td>
+                <td>
+                  <app-mof-button
+                    [label]="'admin.ai.accept' | t"
+                    variant="ghost"
+                    size="sm"
+                    [disabled]="item.status !== 'suggested'"
+                    (click)="acceptAi(item.id)"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'ops') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.ops.title' | t }}</h3>
+          <p>{{ 'admin.ops.hint' | t }}</p>
+        </div>
+        <div class="panel-actions">
+          <app-mof-button [label]="'admin.ops.backup' | t" icon="plus" variant="secondary" (click)="createBackup()" />
+          <app-mof-button [label]="'admin.ops.reset' | t" variant="ghost" (click)="resetSeed()" />
+        </div>
+      </header>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'admin.ops.job' | t }}</th>
+              <th>{{ 'admin.ops.schedule' | t }}</th>
+              <th>{{ 'admin.ops.lastRun' | t }}</th>
+              <th>{{ 'admin.ops.status' | t }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (job of ops.jobs(); track job.id) {
+              <tr>
+                <td><b>{{ job.name }}</b></td>
+                <td><code>{{ job.schedule }}</code></td>
+                <td>{{ job.lastRunAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td>
+                  <app-mof-badge
+                    [label]="job.status"
+                    [tone]="job.status === 'success' ? 'success' : job.status === 'running' ? 'info' : 'neutral'"
+                  />
+                </td>
+                <td>
+                  <app-mof-button
+                    [label]="'admin.ops.run' | t"
+                    variant="ghost"
+                    size="sm"
+                    [disabled]="job.status === 'running'"
+                    (click)="runJob(job.id)"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="report-grid">
+        @for (bk of ops.backups(); track bk.id) {
+          <article class="report-card">
+            <span>{{ bk.sizeLabel }}</span>
+            <h4>{{ bk.label }}</h4>
+            <p>{{ bk.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+            <small>{{ 'admin.ops.snapshot' | t }}</small>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'reports') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.reports.title' | t }}</h3>
+          <p>{{ 'admin.reports.hint' | t }}</p>
+        </div>
+      </header>
+      <form class="inline-form" [formGroup]="reportForm" (ngSubmit)="generateReport()">
+        <app-mof-select
+          formControlName="reportId"
+          [options]="reportOptions"
+          [placeholder]="'admin.reports.pick' | t"
+        />
+        <app-mof-input formControlName="from" [placeholder]="'admin.reports.from' | t" />
+        <app-mof-input formControlName="to" [placeholder]="'admin.reports.to' | t" />
+        <app-mof-button type="submit" [label]="'admin.reports.generate' | t" icon="book" />
+      </form>
+      <div class="report-grid">
+        @for (report of reports.definitions; track report.id) {
+          <article class="report-card">
+            <span>{{ report.code }}</span>
+            <h4>{{ report.name }}</h4>
+            <p>{{ report.description }}</p>
+            <small>{{ report.category }}</small>
+          </article>
+        }
+      </div>
+      @if (reportResult(); as result) {
+        <div class="report-result">
+          <b>{{ result.report.name }}</b>
+          <span>{{ result.generatedAt }}</span>
+          <div>
+            @for (row of result.rows; track row.labelKey) {
+              <strong>{{ row.labelKey | t }}: {{ row.value }}</strong>
+            }
+          </div>
+          @if (reportChart(); as chart) {
+            <app-mof-chart [options]="chart" />
+          }
+        </div>
+      }
+    </section>
+  }
+</app-workspace-shell>

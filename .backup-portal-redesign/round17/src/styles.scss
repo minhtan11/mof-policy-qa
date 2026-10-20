@@ -1,0 +1,7 @@
+/* Legacy entry kept unused; global styles live in styles.css + styles-tokens.css. */
+
+/* Khóa cuộn trang khi drawer/dialog mở */
+html.mof-scroll-lock,
+html.mof-scroll-lock body {
+  overflow: hidden;
+}

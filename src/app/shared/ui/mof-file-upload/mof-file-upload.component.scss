@@ -1,0 +1,138 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.mof-upload {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.mof-upload.is-disabled {
+  opacity: 0.7;
+}
+
+.mof-upload__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dropzone {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.875rem;
+  padding: clamp(0.875rem, 0.7rem + 0.6vw, 1.25rem);
+  border: 1px dashed color-mix(in srgb, var(--mof-blue) 45%, var(--mof-line));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--mof-blue-soft) 45%, var(--mof-surface));
+  transition: background var(--mof-fast) ease, border-color var(--mof-fast) ease;
+
+  &.is-drag {
+    border-color: var(--mof-blue);
+    background: var(--mof-active-tint);
+  }
+}
+
+.dz-ico {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  background: var(--mof-surface);
+  color: var(--mof-blue);
+  font-size: 1.25rem;
+  line-height: 0;
+  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--mof-navy) 8%, transparent);
+}
+
+.dz-text {
+  display: grid;
+  gap: 0.125rem;
+  min-width: 0;
+
+  strong {
+    color: var(--mof-ink);
+    font-size: var(--mof-text-sm);
+  }
+
+  small {
+    color: var(--mof-muted);
+    font-size: var(--mof-text-xs);
+    line-height: 1.45;
+  }
+}
+
+.chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.625rem;
+  border: 1px solid var(--mof-line);
+  border-radius: 0.75rem;
+  background: var(--mof-surface);
+}
+
+.chip-ico {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  background: var(--mof-blue-soft);
+  color: var(--mof-blue);
+  line-height: 0;
+
+  [data-kind='pdf'] & {
+    background: color-mix(in srgb, var(--mof-danger) 12%, transparent);
+    color: var(--mof-danger);
+  }
+
+  [data-kind='picture'] & {
+    background: color-mix(in srgb, var(--mof-success) 14%, transparent);
+    color: var(--mof-success);
+  }
+}
+
+.chip-text {
+  display: grid;
+  min-width: 0;
+
+  strong {
+    overflow: hidden;
+    color: var(--mof-ink);
+    font-size: var(--mof-text-sm);
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  small {
+    color: var(--mof-muted);
+    font-size: var(--mof-text-xs);
+  }
+}
+
+@media (max-width: 479px) {
+  .dropzone {
+    grid-template-columns: auto minmax(0, 1fr);
+
+    app-mof-button {
+      grid-column: 1 / -1;
+    }
+  }
+}

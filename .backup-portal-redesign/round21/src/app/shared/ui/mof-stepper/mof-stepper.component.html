@@ -1,0 +1,12 @@
+<ol class="mof-stepper" [attr.aria-label]="'Wizard steps'">
+  @for (step of steps(); track step.id; let i = $index) {
+    <li
+      class="mof-stepper__item"
+      [class.is-active]="i === activeIndex()"
+      [class.is-done]="i < activeIndex()"
+    >
+      <span class="mof-stepper__index">{{ i + 1 }}</span>
+      <span class="mof-stepper__label">{{ step.label }}</span>
+    </li>
+  }
+</ol>

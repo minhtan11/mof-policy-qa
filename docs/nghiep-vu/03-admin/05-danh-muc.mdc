@@ -1,0 +1,37 @@
+# Admin — Danh mục và mẫu
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G3 — form thêm danh mục + toggle + activeByType  
+Affected UC: UC-060..UC-074
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Quản trị hệ thống |
+| Route | `/admin` · tab Danh mục |
+| Trạng thái | `mocked` |
+
+## Admin làm gì
+
+1. Thêm danh mục (type/code/label) qua shared kit.  
+2. Bật/tắt; xem trạng thái.  
+3. Form cổng chỉ nên đọc `activeByType` từ repository.
+
+## Acceptance
+
+- Toggle phản ánh ngay trên bảng.  
+- Không hard-code danh mục trong nhiều component.
+
+## Test
+
+`catalog.repository.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Catalog mock | 60–62 |
+| 2026-10-20 | Codex | Chuyển `03-admin`, tiếng Việt | 60–74 |
+| 2026-10-20 | Codex | G3 form thêm + activeByType | 60–74 |

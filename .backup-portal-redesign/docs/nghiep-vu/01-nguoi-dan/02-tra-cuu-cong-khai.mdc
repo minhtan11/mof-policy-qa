@@ -1,0 +1,54 @@
+# Người dân — Tra cứu hỏi–đáp công khai
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Affected UC: UC-162..UC-175
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Người dân, doanh nghiệp (không bắt buộc đăng nhập để đọc công khai) |
+| Route | `/portal/tra-cuu`, từ kết quả vào `/portal/ho-so/:code` |
+| Màn | PUB-lookup; chi tiết PUB-04 |
+| MDC màn | `src/app/features/portal/lookup/`, `public-dossier-detail.mdc` |
+| Trạng thái | `mocked` |
+
+## Người dùng làm gì
+
+1. Nhập từ khóa / mã hồ sơ trên màn tra cứu.  
+2. Xem danh sách kết quả (câu hỏi, trạng thái, ngày).  
+3. Mở chi tiết theo mã để xem timeline / câu trả lời nếu đã công khai.  
+4. Có thể chuyển sang gửi câu hỏi mới nếu không tìm thấy.
+
+## UC liên quan
+
+UC-162..UC-175 — tìm kiếm, lọc, theo dõi, lịch sử tìm (phần cá nhân hóa sâu còn pending).
+
+## Luồng phụ / lỗi
+
+- Không có kết quả → empty state + CTA gửi câu hỏi.  
+- Mã không tồn tại trên chi tiết → màn không tìm thấy.
+
+## Dữ liệu vào / ra
+
+- Vào: từ khóa / mã.  
+- Ra: danh sách dossier từ `MockDbService` (câu trả lời đầy đủ chỉ khi phù hợp quyền công khai).
+
+## Acceptance
+
+- Kết quả công khai không lộ dữ liệu cá nhân thừa.  
+- Theo dõi theo mã hồ sơ trên route chi tiết.  
+- Link từ lookup sang `/portal/ho-so/:code`.
+
+## Test
+
+`mock-db.service.spec.ts` (findByCode); lookup spec (mở rộng sau).
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Ghi nhận luồng tra cứu P0 | 162–175 |
+| 2026-10-20 | Codex | Liên kết chi tiết theo mã; chuyển folder người dân | 165 |

@@ -1,0 +1,62 @@
+# Người dân — Gửi câu hỏi (wizard)
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Affected UC: UC-100..UC-113
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Người dân, doanh nghiệp |
+| Route | `/portal/hoi-dap` |
+| Màn | PUB-02 wizard |
+| MDC màn | `src/app/features/portal/ask-question/ask-question.mdc` |
+| Trạng thái | `mocked` |
+
+## Người dùng làm gì (theo bước)
+
+1. **Nội dung:** chọn lĩnh vực, nhập câu hỏi (≥20 ký tự), mức ưu tiên.  
+2. **Liên hệ:** họ tên, email, tổ chức, đính kèm (mock tên tệp).  
+3. **Xác nhận:** xem tóm tắt, gợi ý câu hỏi tương tự (chỉ tham khảo), tick đồng ý xử lý dữ liệu, gửi.  
+4. **Thành công:** nhận mã hồ sơ + hạn xử lý dự kiến; vào chi tiết / câu hỏi của tôi / trang chủ.
+
+## UC liên quan
+
+UC-100..UC-113 — nhập liệu, lĩnh vực, đính kèm, preview, nháp/sửa/hủy (phần sâu còn mở rộng), ưu tiên, similar, định danh, quét nội dung cấm (mock advisory), cấp mã, thông báo hạn.
+
+## Luồng phụ / lỗi
+
+- Bước chưa hợp lệ không cho Next.  
+- Chưa consent không gửi được.  
+- Similar rỗng vẫn gửi bình thường.
+
+## Dữ liệu vào / ra
+
+- Vào: form Reactive + shared kit.  
+- Ra: `MockDbService.createDossier`; lưu email gửi gần nhất cho “Câu hỏi của tôi”.
+
+## Acceptance
+
+- Wizard chặn bước sai validation.  
+- Consent bắt buộc trước khi tạo hồ sơ.  
+- Similar không tự gửi thay người dùng.  
+- Toast chỉ nêu mã hồ sơ, không đổ PII đầy đủ.
+
+## Test
+
+`ask-question.component.spec.ts`, `mock-db.service.spec.ts`
+
+## Cross-ref
+
+- Tiếp theo hành trình ND: `04-cau-hoi-cua-toi.mdc`, `05-xem-tra-loi-danh-gia.mdc`  
+- Phía cán bộ nhận hồ sơ: `../02-can-bo/01-tiep-nhan-phan-cong.mdc`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Form gửi P0 | 100–113 |
+| 2026-10-20 | Codex | Wizard 3 bước + similar + consent (G1) | 100–113 |
+| 2026-10-20 | Codex | Chuyển `01-nguoi-dan`, tiếng Việt | 100–113 |

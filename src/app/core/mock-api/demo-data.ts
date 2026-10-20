@@ -10,12 +10,12 @@ export const TOPICS: Topic[] = [
 ];
 
 export const USERS: PortalUser[] = [
-  { id: 'u-public', name: 'Nguyễn Minh Anh', email: 'minhanh@example.vn', organization: 'Công ty CP An Phát', role: 'public', avatar: 'MA' },
-  { id: 'u-reception', name: 'Trần Thu Hà', email: 'ha.tt@moj.gov.vn', organization: 'Văn phòng Bộ', role: 'reception', avatar: 'TH' },
-  { id: 'u-specialist', name: 'Lê Quốc Hưng', email: 'hung.lq@moj.gov.vn', organization: 'Vụ Chính sách thuế', role: 'specialist', avatar: 'LH' },
-  { id: 'u-leader', name: 'Phạm Đức Long', email: 'long.pd@moj.gov.vn', organization: 'Vụ Chính sách thuế', role: 'leader', avatar: 'PL' },
-  { id: 'u-coordinator', name: 'Đỗ Bích Ngọc', email: 'ngoc.db@moj.gov.vn', organization: 'Tổ điều phối', role: 'coordinator', avatar: 'BN' },
-  { id: 'u-admin', name: 'Quản trị hệ thống', email: 'admin@moj.gov.vn', organization: 'Trung tâm CNTT', role: 'system-admin', avatar: 'QT' },
+  { id: 'u-public', username: 'minhanh', name: 'Nguyễn Minh Anh', email: 'minhanh@example.vn', organization: 'Công ty CP An Phát', role: 'public', avatar: 'MA' },
+  { id: 'u-reception', username: 'ha.tt', name: 'Trần Thu Hà', email: 'ha.tt@moj.gov.vn', organization: 'Văn phòng Bộ', role: 'reception', avatar: 'TH' },
+  { id: 'u-specialist', username: 'hung.lq', name: 'Lê Quốc Hưng', email: 'hung.lq@moj.gov.vn', organization: 'Vụ Chính sách thuế', role: 'specialist', avatar: 'LH' },
+  { id: 'u-leader', username: 'long.pd', name: 'Phạm Đức Long', email: 'long.pd@moj.gov.vn', organization: 'Vụ Chính sách thuế', role: 'leader', avatar: 'PL' },
+  { id: 'u-coordinator', username: 'ngoc.db', name: 'Đỗ Bích Ngọc', email: 'ngoc.db@moj.gov.vn', organization: 'Tổ điều phối', role: 'coordinator', avatar: 'BN' },
+  { id: 'u-admin', username: 'admin', name: 'Quản trị hệ thống', email: 'admin@moj.gov.vn', organization: 'Trung tâm CNTT', role: 'system-admin', avatar: 'QT' },
 ];
 
 export const DOSSIERS: Dossier[] = [

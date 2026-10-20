@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-hidden="true">
+  <defs>
+    <linearGradient id="b-dial" x1="8" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6E9BF2"/><stop offset="1" stop-color="#1E3FA8"/></linearGradient>
+    <linearGradient id="b-bolt" x1="20" y1="8" x2="30" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFF1B8"/><stop offset=".45" stop-color="#FFC93C"/><stop offset="1" stop-color="#E08A0B"/></linearGradient>
+    <linearGradient id="b-hi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  </defs>
+  <circle cx="24" cy="25" r="17" fill="url(#b-dial)"/>
+  <ellipse cx="24" cy="15.5" rx="12" ry="6.5" fill="url(#b-hi)"/>
+  <circle cx="24" cy="25" r="17" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.5"/>
+  <g stroke="#fff" stroke-opacity=".7" stroke-width="2" stroke-linecap="round"><path d="M24 10.5v2.5M38.5 25H36M24 39.5V37M9.5 25H12"/></g>
+  <rect x="20" y="3" width="8" height="4" rx="2" fill="#FFC93C"/>
+  <path d="M26.5 12 15.5 27.5h7.2L20.8 39 32.5 22.6h-7.4Z" fill="url(#b-bolt)" stroke="#B86A00" stroke-opacity=".35" stroke-width=".8" stroke-linejoin="round"/>
+  <path d="M26.5 12 15.5 27.5h3.6L25 16Z" fill="#fff" opacity=".45"/>
+</svg>

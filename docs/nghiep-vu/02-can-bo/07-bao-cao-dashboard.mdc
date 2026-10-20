@@ -1,0 +1,40 @@
+# Cán bộ — Báo cáo và dashboard
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G3 — dashboard live workspace + sinh báo cáo/chart admin  
+Affected UC: UC-188..UC-203
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Lãnh đạo, điều phối |
+| Route | Workspace overview (ApexCharts); admin reports |
+| Màn | DASH-01..03 (một phần mocked) |
+| Trạng thái | `mocked` (DASH-01 live; 16 báo cáo P2) |
+| MDC màn | `workspace/workspace.mdc`, `admin/admin.mdc` |
+
+## Cán bộ làm gì
+
+1. Xem metric + donut SLA trên `/workspace` (tính từ mock DB).  
+2. Admin mở tab Báo cáo: đủ 16 định nghĩa (RPT-01..16), chọn kỳ, sinh tóm tắt + biểu đồ theo category.
+
+## Acceptance
+
+- Chỉ số bám SLA đặc tả.  
+- Không lộ dữ liệu cá nhân trên dashboard công khai nội bộ vượt scope.
+
+## Test
+
+`report.repository.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Report definitions mock | 188–191 |
+| 2026-10-20 | Codex | Chuyển folder cán bộ, tiếng Việt | 188–203 |
+| 2026-10-20 | Codex | G3 live metrics + generate report chart | 188–203 |
+| 2026-10-20 | Codex | G4 đủ 16 báo cáo + rows theo category | 188–203 |
+| 2026-10-20 | Grok Bot | R31 Tổng quan công việc: KPI theo phạm vi vai trò, donut tiến độ theo tháng, lĩnh vực, hàng đợi cần chú ý đồng bộ URL | 188–203 |

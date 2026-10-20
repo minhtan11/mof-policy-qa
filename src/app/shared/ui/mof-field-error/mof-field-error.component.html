@@ -1,0 +1,11 @@
+<p
+  class="mof-field-error"
+  [class.visible]="!!message()"
+  [attr.id]="id()"
+  [attr.title]="message() || null"
+  [attr.aria-hidden]="!message()"
+  role="alert"
+  aria-live="polite"
+>
+  {{ message() ? message() : shown() }}
+</p>

@@ -1,31 +1,187 @@
-.login-page { display: grid; min-height: 100vh; grid-template-columns: 1.15fr .85fr; }
-.login-aside { display: flex; flex-direction: column; justify-content: space-between; padding: 42px clamp(40px, 7vw, 110px); background: radial-gradient(circle at 80% 25%, #1d6fa9 0, transparent 36%), linear-gradient(135deg, #071f3a, #104f86); color: #fff; }
-.login-brand { display: flex; align-items: center; gap: 10px; color: #fff; }
-.login-brand > i { display: grid; place-items: center; width: 39px; height: 39px; border-radius: 50%; background: #e5bd61; color: #0b3159; }
-.login-brand b, .login-brand small { display: block; }
-.login-brand b { font-size: .87rem; }
-.login-brand small { margin-top: 3px; color: #bed2e4; font-size: .68rem; }
-.login-aside h1 { margin: 0; font-size: clamp(2.3rem, 4vw, 4rem); line-height: 1.12; letter-spacing: -.04em; }
-.login-aside h1 em { color: #edc56a; font-style: normal; }
-.login-aside > div > p:not(.eyebrow) { max-width: 500px; color: #d1e1ef; line-height: 1.65; }
-.login-aside .eyebrow { color: #edc56a; }
-.login-aside footer { color: #b9ccdd; font-size: .74rem; }
-.login-form { display: grid; place-items: center; padding: 30px; background: #f5f8fb; }
-.form-card { width: min(100%, 400px); }
-.back { display: inline-block; margin-bottom: 45px; color: #6a8096; font-size: .8rem; }
-.form-card h2 { margin: 0; font-size: 1.8rem; letter-spacing: -.035em; }
-.form-card > p { line-height: 1.55; font-size: .87rem; }
-.form-card label { display: block; margin: 28px 0 8px; font-size: .84rem; font-weight: 720; }
-.form-card p-select { display: block; width: 100%; }
-.role-note { display: flex; gap: 9px; margin: 14px 0 22px; padding: 12px; border-radius: 9px; background: #e8f2fb; color: #54708c; font-size: .77rem; line-height: 1.45; }
-.role-note i { color: #2472b2; }
-.form-card .p-button { width: 100%; }
+@use '../../../shared/ui/auth-shell/auth-form';
 
-@media (max-width: 760px) {
-  .login-page { grid-template-columns: 1fr; }
-  .login-aside { min-height: 265px; padding: 28px; }
-  .login-aside footer { display: none; }
-  .login-aside h1 { font-size: 2.1rem; }
-  .login-form { padding: 40px 25px; }
-  .back { margin-bottom: 30px; }
+:host {
+  display: block;
+}
+
+/* ---------- Panel trái: ảnh trụ sở + lớp phủ xanh đậm ---------- */
+.ws-brand {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  min-height: 42rem;
+  padding: clamp(1.75rem, 3.5vw, 2.75rem) clamp(1.25rem, 3.5vw, 3rem);
+  /* Giống portal login: nền gradient xanh của portal + ảnh trụ sở ở nửa dưới, mép trên mờ dần (mask);
+     lớp phủ chéo đậm sau chữ (trên-trái), gần trong suốt ở góc dưới-phải để thấy rõ toà nhà. */
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--mof-login-brand-bg);
+  color: var(--mof-on-brand);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &::before {
+    inset: 38% 0 0;
+    background: url('/assets/hero/mof-hq.jpg') 68% 70% / cover no-repeat;
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 34%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 34%);
+  }
+
+  &::after {
+    inset: 0;
+    background: var(--mof-ws-brand-overlay);
+  }
+  text-shadow: 0 1px 0.75rem rgb(4 18 44 / 0.45);
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  strong {
+    display: block;
+    font-size: var(--mof-text-lg);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  small {
+    font-size: var(--mof-text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    opacity: 0.9;
+  }
+}
+
+.emblem {
+  width: clamp(3rem, 4vw, 4rem);
+  height: auto;
+  filter: drop-shadow(0 0.375rem 0.875rem rgb(0 0 0 / 0.3));
+}
+
+.hero {
+  display: grid;
+  gap: 0.875rem;
+  margin-block: auto;
+}
+
+.rule {
+  width: 3rem;
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--mof-gold);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--mof-gold);
+  font-size: var(--mof-text-xs);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+h2 {
+  margin: 0;
+  font-size: clamp(1.75rem, 2.2vw + 1rem, 2.75rem);
+  font-weight: 800;
+  line-height: 1.15;
+
+  em {
+    color: var(--mof-gold);
+    font-style: normal;
+  }
+}
+
+.sub {
+  max-width: 28rem;
+  margin: 0;
+  font-size: var(--mof-text-md);
+  line-height: 1.6;
+  opacity: 0.92;
+}
+
+.features {
+  display: grid;
+  gap: 0.875rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: var(--mof-text-sm);
+    font-weight: 600;
+  }
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: var(--mof-text-xs);
+  opacity: 0.8;
+}
+
+/* ---------- Form ---------- */
+.eyebrow-form {
+  margin: clamp(1.125rem, 3vw, 2rem) 0 0;
+  color: var(--mof-blue);
+  font-size: var(--mof-text-xs);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+h1 {
+  margin-top: 0.375rem;
+}
+
+.demo {
+  display: grid;
+  gap: 0.375rem;
+
+  small {
+    color: var(--mof-muted);
+    font-size: var(--mof-text-xs);
+  }
+}
+
+@media (max-width: 767px) {
+  .ws-brand {
+    &::before {
+      inset: 0;
+      opacity: 0.3;
+      mask-image: linear-gradient(to left, #000 0%, transparent 85%);
+      -webkit-mask-image: linear-gradient(to left, #000 0%, transparent 85%);
+    }
+
+    min-height: 0;
+    gap: 0.75rem;
+    padding: 1.125rem;
+  }
+
+  .hero {
+    gap: 0.5rem;
+  }
+
+  .rule,
+  .sub,
+  .features,
+  .note {
+    display: none;
+  }
+
+  h2 {
+    font-size: var(--mof-text-lg);
+  }
 }

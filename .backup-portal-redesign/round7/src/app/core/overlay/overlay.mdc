@@ -1,0 +1,34 @@
+# Core — định vị phần tử nổi (`core/overlay/floating.ts`)
+
+Changed on: 2026-10-20  
+Changed by: Grok Bot  
+Change reason: Sửa rung panel khi cuộn; tạo lớp định vị dùng chung cho select, menu header, popover/tooltip sau này  
+Affected UC: hạ tầng UI (dùng bởi `shared/ui/mof-select`, `shared/ui/portal-header`)
+
+## Lựa chọn
+
+Tự viết engine nhỏ thay vì `@angular/cdk/overlay`: CDK ghi top/left (gây reflow), cần thêm CSS toàn cục và flip không có hysteresis. Engine này:
+
+- Ghi `transform: translate3d(x, y, 0)` + `will-change: transform`, `position: fixed; top/left: 0`.
+- Một vòng `requestAnimationFrame` chung cho mọi panel; pha đọc (getBoundingClientRect) rồi pha ghi.
+- Nghe `scroll` (capture, passive — bắt mọi container cuộn), `resize`, `ResizeObserver` trên trigger.
+- Kích thước panel đo **một lần** khi mở (`remeasure()` khi nội dung đổi, vd. lọc) → không vòng lặp đo/ghi.
+- Flip có hysteresis (mặc định 24px), clamp ngang trong viewport (padding 8px), `maxHeight` theo chỗ trống.
+- Trigger ra khỏi viewport → ẩn panel và gọi `onReferenceHidden` (select tự đóng).
+- Quy tắc CSS: panel **không** transition/animate `transform/top/left`; hiệu ứng mở chỉ dùng `opacity` + thuộc tính `scale`.
+
+## API
+
+- `attachFloating(reference, floating, { gap, padding, hysteresis, align, matchWidth, minHeight, onReferenceHidden })` → `{ remeasure(), destroy() }`.
+- Directive `[appFloating]="triggerEl" [floatingOpen]="bool" [floatingAlign]` (`shared/ui/overlay`) cho menu/popover giữ nguyên vị trí DOM.
+- Hàm thuần `computeFloating`, `chooseSide`, `clamp` để test.
+
+## Test mapping
+
+- `core/overlay/floating.spec.ts` — đặt dưới, flip lên, hysteresis, ổn định qua nhiều frame, clamp + matchWidth, trigger ra khỏi màn hình.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Tạo core floating; chuyển mof-select và dropdown menu header sang dùng | hạ tầng UI |

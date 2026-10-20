@@ -1,0 +1,51 @@
+# Người dân — Hướng dẫn & Văn bản pháp luật (placeholder)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Tách route khỏi tra cứu để tránh nhiều submenu cùng active; tạm dùng màn Coming soon chung  
+Affected UC: UC-162..UC-165
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Người dân, doanh nghiệp |
+| Route | `/portal/huong-dan`, `/portal/van-ban` |
+| Màn | PUB-soon (`features/portal/coming-soon`) |
+| MDC màn | `src/app/features/portal/coming-soon/coming-soon.mdc` |
+| Trạng thái | `mocked` (placeholder) |
+
+## Người dùng làm gì
+
+1. Chọn **Giới thiệu → Hướng dẫn** hoặc **Văn bản pháp luật** trên header.  
+2. Xem trang “Sắp ra mắt” với tiêu đề/nội dung theo route.  
+3. Quay về trang chủ hoặc sang `/portal/tra-cuu`.
+
+## UC liên quan
+
+UC-162..UC-165 — lối vào cổng; nội dung hướng dẫn / kho VBPL công khai chưa mock đầy đủ.
+
+## Luồng phụ / lỗi
+
+Không có — màn tĩnh, không gọi repository.
+
+## Dữ liệu vào / ra
+
+- Vào: `route.data.titleKey`, `route.data.bodyKey`.  
+- Ra: không.
+
+## Acceptance
+
+- Route Hướng dẫn / VBPL **khác** `/portal/tra-cuu`.  
+- Trên `/portal/tra-cuu` chỉ sáng submenu Tra cứu (Dịch vụ công).  
+- Trên `/portal/huong-dan` chỉ sáng Hướng dẫn; trên `/portal/van-ban` chỉ sáng VBPL.
+
+## Test mapping
+
+`coming-soon.component.spec.ts`, `portal-header.component.spec.ts` (multi-active submenu).
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Thêm route + MDC placeholder Hướng dẫn / VBPL | UC-162..UC-165 |

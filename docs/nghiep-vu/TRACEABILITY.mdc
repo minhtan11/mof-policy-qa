@@ -1,34 +1,45 @@
-# Traceability implementation matrix
+# Ma trận truy vết UC (mockup)
 
-> Cập nhật: 2026-10-20. Đây là trạng thái của mockup Angular, không phải trạng thái tích hợp production.
+> Cập nhật: 2026-10-20. Trạng thái mockup Angular, không phải tích hợp production.
 
 ## Quy ước
 
-- `specified`: đã có đặc tả trong MDC.
+- `specified`: đã có đặc tả trong MDC (tiếng Việt, theo folder actor).
 - `mocked`: đã có màn hình/repository thao tác được bằng dữ liệu cục bộ.
 - `tested`: có test tự động cho logic chính.
-- `integrated`: chỉ dùng khi có adapter/API thật; hiện chưa có UC nào đạt trạng thái này.
-- `blocked`: phụ thuộc hợp đồng tích hợp hoặc quyết định nghiệp vụ chưa được cung cấp.
+- `integrated`: chỉ khi có adapter/API thật — hiện chưa UC nào.
+- `blocked`: chờ hợp đồng tích hợp hoặc quyết định nghiệp vụ.
+
+## Đọc MDC theo hành trình
+
+1. `01-nguoi-dan/` → 2. `02-can-bo/` → 3. `03-admin/`  
+Chi tiết mục lục: `README.mdc`.
 
 ## Phạm vi đã mocked trong source
 
-| Nhóm | UC | Màn hình / thành phần | Trạng thái |
-|---|---:|---|---|
-| Đăng nhập | 1-8 | Public login, VNeID mock, internal role login, session guard | mocked; UC 1, 4 tested |
-| Người dùng / phân quyền | 18-40 | Admin users table, role-aware guards, scope route | mocked |
-| Workflow / SLA | 41-51 | Workflow repository, draft/activate, dossier transition | mocked; transition tested |
-| Danh mục | 60-74 | Catalog repository, toggle/add in admin | mocked |
-| Văn bản pháp luật | 75-83 | Legal repository, search/add draft in admin | mocked; search tested |
-| Gửi câu hỏi | 100-113 | Reactive form, validation, create dossier, tracking code | mocked |
-| Quy trình trả lời | 142-161 | Receive, draft answer, submit approval, publish, timeline | mocked |
-| Tra cứu công khai | 162-175 | Public lookup/search view | mocked |
-| AI hỗ trợ | 127-134 | Suggest/accept/reject advisory flow in dossier/admin | mocked; service tested |
-| Báo cáo | 188-203 | Report definitions and generated summary metrics | mocked |
+| Nhóm | UC | Màn hình / thành phần | MDC | Trạng thái |
+|---|---:|---|---|---|
+| Đăng nhập | 1–8 | Public login, VNeID mock, internal login, guard | `01-nguoi-dan/01-dang-nhap-cong.mdc` | mocked; UC 1, 4 tested |
+| Người dùng / phân quyền | 18–40 | Admin users, guards, scope | `03-admin/02-…`, `03-phan-quyen.mdc` | mocked |
+| Workflow / SLA | 41–51 | Workflow repository, chuyển trạng thái | `03-admin/04-cau-hinh-quy-trinh-sla.mdc` | mocked; transition tested |
+| Danh mục | 60–74 | Catalog admin | `03-admin/05-danh-muc.mdc` | mocked |
+| Văn bản pháp luật | 75–83 | Legal repository | `02-can-bo/05-van-ban-phap-luat.mdc` | mocked; search tested |
+| Gửi câu hỏi | 100–113 | Wizard ask-question | `01-nguoi-dan/03-gui-cau-hoi.mdc` | mocked; step tested |
+| Tương tác ND | 114–126 | Chi tiết công khai, rating/clarify | `01-nguoi-dan/05-xem-tra-loi-danh-gia.mdc` | mocked |
+| Tra cứu công khai | 162–175 | Lookup + `/portal/ho-so/:code` | `01-nguoi-dan/02-tra-cuu-cong-khai.mdc` | mocked |
+| Hướng dẫn / VBPL cổng | 162–165 (lối vào) | Coming soon `/portal/huong-dan`, `/portal/van-ban` | `01-nguoi-dan/06-huong-dan-va-van-ban.mdc` | mocked (placeholder) |
+| Câu hỏi của tôi | 110, 122 | my-questions | `01-nguoi-dan/04-cau-hoi-cua-toi.mdc` | mocked |
+| Quy trình trả lời | 142–161 | Workspace dossier | `02-can-bo/01..03-*.mdc` | mocked |
+| AI hỗ trợ | 127–134 | Suggest/accept/reject | `02-can-bo/06-phan-he-thong-minh.mdc` | mocked; service tested |
+| Báo cáo | 188–203 | 16 báo cáo + chart | `02-can-bo/07-bao-cao-dashboard.mdc` | mocked; generate tested |
+| Tra cứu nội bộ | 176–187 | `/workspace/tra-cuu`, audit notes | `02-can-bo/04-tra-cuu-noi-bo.mdc` | mocked |
+| Vận hành | 84–99 | Jobs/backup/reset seed | `03-admin/07-van-han.mdc` | mocked; ops tested |
+| Thu hồi / phối hợp | 142–161 | dossier-detail | `02-can-bo/02`…`03` | mocked |
 
 ## Chưa đánh dấu hoàn tất
 
-Các UC về SSO/VNeID thật, SMS/email gateway, storage, webhook, OCR/translation provider, audit/backup production, privacy masking, export ký số và API backend vẫn cần adapter hoặc đặc tả tích hợp của khách hàng. Không được coi mockup là production-ready cho các UC này.
+SSO/VNeID thật, SMS/email, storage, webhook, OCR/dịch, backup production, export ký số, API backend — `blocked` / chưa `integrated`.
 
 ## Quy tắc cập nhật
 
-Mỗi thay đổi workflow, trạng thái, quyền, dữ liệu hoặc acceptance criteria phải cập nhật file MDC nhóm tương ứng và mục này; test phải ghi rõ mã UC trong tên/mô tả. Khi có API thật, chuyển trạng thái từng UC từ `mocked` sang `integrated` kèm link adapter và test contract.
+Đổi workflow, trạng thái, quyền, dữ liệu hoặc acceptance → cập nhật file MDC trong folder actor tương ứng + mục này; test ghi rõ mã UC.

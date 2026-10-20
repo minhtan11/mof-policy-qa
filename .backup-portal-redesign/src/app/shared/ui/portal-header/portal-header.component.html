@@ -1,0 +1,37 @@
+<header class="portal-header">
+  <div class="content-width header-row">
+    <a class="brand" routerLink="/portal" [attr.aria-label]="'app.name' | t">
+      <img src="assets/mof-emblem-official.png" alt="" />
+      <span>
+        <strong>{{ 'brand.ministry' | t }}</strong>
+        <small>{{ 'brand.portal' | t }}</small>
+      </span>
+    </a>
+
+    <nav [attr.aria-label]="'app.name' | t">
+      <a routerLink="/portal" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{ 'nav.home' | t }}</a>
+      <a routerLink="/portal/tra-cuu" routerLinkActive="active">{{ 'nav.search' | t }}</a>
+      <a routerLink="/portal/hoi-dap" routerLinkActive="active">{{ 'nav.ask' | t }}</a>
+      <a routerLink="/portal/cau-hoi-cua-toi" routerLinkActive="active">{{ 'nav.myQuestions' | t }}</a>
+      <a class="nav-secondary" routerLink="/portal/tra-cuu">{{ 'nav.topics' | t }}</a>
+      <a class="nav-secondary" routerLink="/portal">{{ 'nav.legal' | t }}</a>
+      <a class="nav-secondary" routerLink="/portal">{{ 'nav.guide' | t }}</a>
+    </nav>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="icon-btn"
+        (click)="theme.toggle()"
+        [attr.aria-label]="theme.theme() === 'light' ? ('action.themeDark' | t) : ('action.themeLight' | t)"
+      >
+        <app-mof-icon [name]="theme.theme() === 'light' ? 'moon' : 'sun'" />
+      </button>
+      <app-lang-switch />
+      <a class="search-link" routerLink="/portal/tra-cuu" [attr.aria-label]="'action.search' | t">
+        <app-mof-icon name="search" />
+      </a>
+      <app-mof-button class="login-btn" [label]="'action.login' | t" icon="arrow-right" iconPos="right" size="sm" (click)="login()" />
+    </div>
+  </div>
+</header>

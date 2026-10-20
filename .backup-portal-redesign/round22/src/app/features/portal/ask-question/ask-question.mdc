@@ -1,0 +1,14 @@
+
+
+## Cập nhật 2026-10-20 — thiết kế lại wizard
+
+- Stepper bấm được (\`app-mof-stepper\` mới: nút, \`aria-current="step"\`, ←/→/Home/End, check khi hoàn thành, đường tiến độ). Lùi luôn được; tiến chỉ khi các bước trước hợp lệ — dừng ở bước lỗi đầu tiên và báo lỗi trong ô giữ chỗ (\`app-mof-field-error\`).
+- Header mỗi bước có icon + "Bước n/3"; bước 1 ghép Lĩnh vực + Ưu tiên 2 cột.
+- Đính kèm: dropzone viền đứt kéo-thả + "Chọn tệp"; chip tệp có icon theo loại, tên, dung lượng, nút xóa \`app-mof-icon-button\` (vuông theo token, icon căn giữa).
+- Xác nhận: 2 thẻ tóm tắt (Nội dung / Liên hệ) với nút "Sửa" nhảy về bước tương ứng.
+- Footer dính đáy (ghi chú bảo mật + nút). Nút cùng chiều cao nhờ token \`--mof-btn-h-*\` trong mof-button.
+- Chuyển bước: fade + translateY nhỏ 260ms; reduced-motion tắt.
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Wizard gửi câu hỏi: stepper bấm được, dropzone, tóm tắt có Sửa, footer dính, nút cùng chiều cao | UC-100..UC-113 |

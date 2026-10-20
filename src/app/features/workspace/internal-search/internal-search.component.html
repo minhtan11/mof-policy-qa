@@ -1,0 +1,78 @@
+<app-workspace-shell
+  [title]="'search.title' | t"
+  [eyebrow]="'search.eyebrow' | t"
+>
+  <section class="surface-card search-panel">
+    <header>
+      <div>
+        <h2>{{ 'search.heading' | t }}</h2>
+        <p>{{ 'search.hint' | t }}</p>
+      </div>
+    </header>
+    <form class="filter-grid" [formGroup]="filterForm" (ngSubmit)="search()">
+      <app-mof-input formControlName="query" [placeholder]="'search.queryPlaceholder' | t" />
+      <app-mof-select
+        formControlName="status"
+        [options]="statusOptions()"
+        [placeholder]="'search.status' | t"
+      />
+      <app-mof-select
+        formControlName="topicId"
+        [options]="topicOptions()"
+        [placeholder]="'search.topic' | t"
+      />
+      <app-mof-select
+        formControlName="sla"
+        [options]="slaOptions()"
+        [placeholder]="'search.sla' | t"
+      />
+      <div class="filter-actions">
+        <app-mof-button type="submit" [label]="'search.submit' | t" icon="search" />
+        <app-mof-button type="button" variant="ghost" [label]="'search.clear' | t" (click)="clear()" />
+      </div>
+    </form>
+  </section>
+
+  <section class="surface-card results">
+    <header>
+      <h3>{{ 'search.results' | t }} ({{ results().length }})</h3>
+    </header>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'workspace.dossier' | t }}</th>
+            <th>{{ 'workspace.status' | t }}</th>
+            <th>{{ 'search.assignee' | t }}</th>
+            <th>{{ 'workspace.due' | t }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of results(); track item.id) {
+            <tr>
+              <td>
+                <b>{{ item.code }}</b>
+                <span>{{ item.question }}</span>
+              </td>
+              <td><app-status-badge [status]="item.status" /></td>
+              <td>{{ item.assignedTo || ('dossier.unassigned' | t) }}</td>
+              <td>
+                <span class="due"><app-mof-icon name="clock" [size]="14" /> {{ item.dueAt | date: 'dd/MM/yyyy' }}</span>
+              </td>
+              <td>
+                <a class="row-link" [routerLink]="['/workspace/ho-so', item.id]">
+                  <app-mof-icon name="arrow-right" />
+                </a>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty">{{ 'search.empty' | t }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</app-workspace-shell>

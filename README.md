@@ -5,8 +5,9 @@ Mockup Angular cho **Cổng Hỏi đáp chính sách tài chính – Bộ Tài c
 ## Công nghệ
 
 - Angular 21, standalone components, lazy routes và View Transitions.
-- PrimeNG 21, PrimeIcons, Chart.js qua `p-chart`.
-- SCSS design tokens, responsive desktop/tablet/mobile, hỗ trợ `prefers-reduced-motion`.
+- Shared UI kit nội bộ (không dùng PrimeNG); design token light/dark; i18n `vi`/`en`.
+- ApexCharts cho biểu đồ dashboard.
+- Tailwind CSS (utility) kết hợp SCSS token; responsive desktop/tablet/mobile; `prefers-reduced-motion`.
 - Mock database tập trung, lưu cục bộ bằng `localStorage`; không có dữ liệu nghiệp vụ rải trong component.
 
 ## Các không gian đã dựng
@@ -39,4 +40,7 @@ npm test -- --run
 
 ## Quy tắc phát triển
 
-Đọc [`AGENTS.md`](AGENTS.md) trước khi thêm màn hình hoặc luồng mới. File quy định bắt buộc về bám MDC, PrimeNG controls, tái sử dụng component, dữ liệu mock tập trung, chuyển động, responsive, comment màn hình và tests.
+Đọc [`AGENTS.md`](AGENTS.md) trước khi thêm màn hình hoặc luồng mới. File quy định bắt buộc về bám MDC, shared UI kit (không PrimeNG), theme sáng/tối, i18n vi/en, dữ liệu mock tập trung, chuyển động, responsive, comment màn hình và tests.
+
+Tài liệu nghiệp vụ (tiếng Việt, theo actor): [`docs/nghiep-vu/README.mdc`](docs/nghiep-vu/README.mdc) — `01-nguoi-dan` / `02-can-bo` / `03-admin`.  
+Tiến độ giai đoạn: [`docs/nghiep-vu/00-ke-hoach-giai-doan-mockup.mdc`](docs/nghiep-vu/00-ke-hoach-giai-doan-mockup.mdc).

@@ -1,0 +1,15 @@
+<select
+  class="mof-field"
+  [id]="id() || null"
+  [value]="value()"
+  [disabled]="disabled"
+  (change)="onSelect($event)"
+  (blur)="markTouched()"
+>
+  @if (placeholder()) {
+    <option value="" disabled [selected]="!value()">{{ placeholder() }}</option>
+  }
+  @for (option of options(); track option.value) {
+    <option [value]="option.value" [selected]="option.value === value()">{{ option.label }}</option>
+  }
+</select>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-hidden="true">
+  <defs>
+    <linearGradient id="p-main" x1="14" y1="10" x2="34" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6E9BF2"/><stop offset="1" stop-color="#1E3FA8"/></linearGradient>
+    <linearGradient id="p-side" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE08A"/><stop offset="1" stop-color="#E0A419"/></linearGradient>
+    <linearGradient id="p-hi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  </defs>
+  <path d="M12 21c4-8 20-8 24 0" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.6" stroke-dasharray="2 3" stroke-linecap="round"/>
+  <circle cx="10" cy="20" r="5" fill="url(#p-side)"/>
+  <path d="M1.5 37c0-6 3.8-10 8.5-10s8.5 4 8.5 10Z" fill="url(#p-side)"/>
+  <circle cx="38" cy="20" r="5" fill="url(#p-side)"/>
+  <path d="M29.5 37c0-6 3.8-10 8.5-10s8.5 4 8.5 10Z" fill="url(#p-side)"/>
+  <circle cx="24" cy="16" r="6.5" fill="url(#p-main)" stroke="#fff" stroke-width="1.5"/>
+  <path d="M12.5 41c0-8 5.2-13 11.5-13s11.5 5 11.5 13Z" fill="url(#p-main)" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+  <ellipse cx="22" cy="13.5" rx="3.5" ry="2.2" fill="url(#p-hi)"/>
+  <path d="M17 34c1.8-3 4.2-4.5 7-4.5" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

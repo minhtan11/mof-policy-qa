@@ -1,0 +1,44 @@
+# Màn PUB-soon — Coming soon (placeholder cổng)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Tách route Hướng dẫn / VBPL khỏi `/portal/tra-cuu` để menu không sáng nhiều submenu cùng lúc; tạm dùng màn placeholder chung  
+Affected UC: UC-162..UC-165  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/06-huong-dan-va-van-ban.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/portal/huong-dan`, `/portal/van-ban` (cùng component) |
+| Actor | Người dân / doanh nghiệp |
+| Quyền | Công khai |
+| Trạng thái | `mocked` (placeholder) |
+
+## Người dùng làm gì
+
+1. Vào menu **Giới thiệu → Hướng dẫn** hoặc **Văn bản pháp luật**.  
+2. Thấy trang “Sắp ra mắt” với tiêu đề theo route `data.titleKey`.  
+3. Có thể về trang chủ hoặc sang tra cứu hỏi đáp.
+
+## Dữ liệu vào / ra
+
+- Vào: `ActivatedRoute.data` — `titleKey`, `bodyKey` (i18n).  
+- Ra: không ghi dữ liệu.
+
+## Acceptance
+
+- `/portal/huong-dan` và `/portal/van-ban` không dùng chung route với tra cứu.  
+- Trên `/portal/tra-cuu` chỉ submenu **Tra cứu hỏi đáp** (Dịch vụ công) sáng — không sáng Hướng dẫn / VBPL.  
+- 2 theme × 2 ngôn ngữ.
+
+## Test mapping
+
+- `coming-soon.component.spec.ts`  
+- `portal-header.component.spec.ts` — tối đa một submenu `.current` trên `/portal/tra-cuu`
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Thêm màn placeholder + route riêng Hướng dẫn / VBPL | UC-162..UC-165 |

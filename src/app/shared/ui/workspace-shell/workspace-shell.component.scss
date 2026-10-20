@@ -1,0 +1,426 @@
+/* Khung workspace (round 29). Grid 2 cột: sidebar | nội dung. Bề rộng sidebar chuyển mượt bằng grid-template-columns.
+   < 1024px: cột sidebar biến mất, sidebar thành drawer off-canvas (cùng DOM). Token + rem. */
+:host {
+  display: block;
+}
+
+.skip {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: calc(var(--mof-z-drawer) + 1);
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.5rem;
+  background: var(--mof-blue);
+  color: var(--mof-on-brand);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-200%);
+
+  &:focus-visible {
+    transform: none;
+  }
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--mof-ws-side-w) minmax(0, 1fr);
+  min-height: 100dvh;
+  background: var(--mof-canvas);
+
+  &.rail {
+    grid-template-columns: var(--mof-ws-rail-w) minmax(0, 1fr);
+  }
+
+  &.anim {
+    transition: grid-template-columns var(--mof-ws-side-dur) var(--mof-drawer-ease);
+  }
+}
+
+/* ---------- Cột sidebar (desktop) ---------- */
+.side-root {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 100dvh;
+  min-width: 0;
+}
+
+.side {
+  display: flex;
+  height: 100%;
+}
+
+.scrim {
+  display: none;
+}
+
+/* ---------- Cột chính ---------- */
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header 1 hàng, sticky; blur trên ::before (overlay fixed bên trong vẫn phủ đúng viewport) */
+.ws-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-bottom: 1px solid color-mix(in srgb, var(--mof-line) 70%, transparent);
+    background: var(--mof-header-glass);
+    backdrop-filter: blur(0.875rem) saturate(1.2);
+    transition: box-shadow 200ms ease;
+  }
+
+  &.scrolled::before {
+    box-shadow: 0 0.375rem 1.5rem color-mix(in srgb, var(--mof-navy) 10%, transparent);
+  }
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1.2vw, 1rem);
+  height: var(--mof-header-h);
+  padding-inline: clamp(0.75rem, 2vw, 1.75rem);
+}
+
+.menu-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--mof-icon-btn-lg);
+  height: var(--mof-icon-btn-lg);
+  border: 1px solid var(--mof-line);
+  border-radius: 999px;
+  background: var(--mof-surface);
+  color: var(--mof-ink);
+  cursor: pointer;
+  transition: border-color var(--mof-fast) ease, color var(--mof-fast) ease;
+
+  &:hover {
+    color: var(--mof-blue);
+    border-color: color-mix(in srgb, var(--mof-blue) 40%, var(--mof-line));
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mof-blue);
+    outline-offset: 2px;
+  }
+}
+
+.search {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 34rem;
+}
+
+.actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-inline-start: auto;
+}
+
+/* User pill */
+.user-menu {
+  position: relative;
+}
+
+.user-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mof-user-pill-gap);
+  max-width: 17rem;
+  padding: var(--mof-user-pill-inset) var(--mof-user-pill-pad-end) var(--mof-user-pill-inset) var(--mof-user-pill-inset);
+  border: 1px solid color-mix(in srgb, var(--mof-line) 80%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mof-surface) 85%, transparent);
+  color: var(--mof-ink);
+  font: inherit;
+  font-size: var(--mof-user-pill-font);
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--mof-fast) ease, border-color var(--mof-fast) ease;
+
+  &:hover,
+  &:focus-visible {
+    border-color: color-mix(in srgb, var(--mof-blue) 45%, var(--mof-line));
+    background: var(--mof-blue-soft);
+  }
+
+  &:focus-visible {
+    outline: 0.125rem solid var(--mof-blue);
+    outline-offset: 0.125rem;
+  }
+
+  .chev {
+    flex: none;
+    color: var(--mof-muted);
+    font-size: 0.85em;
+    transition: transform 180ms ease;
+  }
+}
+
+.user-menu.open .user-btn .chev {
+  transform: rotate(180deg);
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--mof-avatar-size);
+  height: var(--mof-avatar-size);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--mof-blue), var(--mof-navy));
+  color: var(--mof-on-brand);
+  font-size: var(--mof-avatar-font);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 0 var(--mof-avatar-ring) var(--mof-surface);
+}
+
+.who {
+  display: grid;
+  min-width: 0;
+
+  b,
+  small {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  b {
+    font-weight: 700;
+  }
+
+  small {
+    color: var(--mof-muted);
+    font-size: var(--mof-text-xs);
+  }
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: var(--mof-z-dropdown);
+  display: grid;
+  gap: 0.125rem;
+  width: 18rem;
+  max-width: calc(100vw - 1.5rem);
+  padding: 0.375rem;
+  border: 1px solid var(--mof-line);
+  border-radius: 0.875rem;
+  background: var(--mof-surface);
+  box-shadow: var(--mof-shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.25rem) scale(0.98);
+  transform-origin: top right;
+  transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 180ms;
+
+  .open & {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+
+  .who-full {
+    display: grid;
+    padding: 0.5rem 0.625rem;
+
+    strong {
+      color: var(--mof-navy);
+      font-size: var(--mof-text-sm);
+    }
+
+    small {
+      overflow: hidden;
+      color: var(--mof-muted);
+      font-size: var(--mof-text-xs);
+      text-overflow: ellipsis;
+    }
+
+    .role {
+      color: var(--mof-blue);
+      font-weight: 600;
+    }
+  }
+
+  hr {
+    width: 100%;
+    margin: 0.25rem 0;
+    border: 0;
+    border-top: 1px solid var(--mof-line);
+  }
+
+  > button,
+  > a.profile {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.375rem 0.625rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: none;
+    color: var(--mof-ink);
+    font: inherit;
+    font-size: var(--mof-text-sm);
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--mof-blue-soft);
+      color: var(--mof-danger);
+    }
+  }
+
+  > a.profile {
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--mof-blue);
+    }
+
+    .soon-tag {
+      margin-inline-start: auto;
+      padding: 0.0625rem 0.4rem;
+      border: 1px dashed color-mix(in srgb, var(--mof-blue) 40%, var(--mof-border));
+      border-radius: 999px;
+      color: var(--mof-muted);
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+/* ---------- Nội dung ---------- */
+.ws-content {
+  flex: 1;
+  min-width: 0;
+  padding: clamp(1rem, 2.2vw, 1.75rem) clamp(0.875rem, 2.2vw, 1.875rem) clamp(1.5rem, 3vw, 2.5rem);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.page-head {
+  margin-bottom: clamp(0.875rem, 1.6vw, 1.25rem);
+
+  .eyebrow {
+    margin: 0 0 0.125rem;
+    color: var(--mof-muted);
+    font-size: var(--mof-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--mof-ink);
+    font-size: var(--mof-text-xl);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* ---------- Ẩn bớt khi hẹp ---------- */
+@media (max-width: 1279px) {
+  .who {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .lang,
+  .theme {
+    display: none;
+  }
+}
+
+/* ---------- Drawer (< 1024) ---------- */
+@media (max-width: 1023.98px) {
+  .shell,
+  .shell.rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Root fixed = đúng viewport; overflow:clip + contain:paint để drawer ẩn ngoài trái không nới vùng cuộn. */
+  .side-root {
+    position: fixed;
+    inset: 0;
+    z-index: var(--mof-z-drawer);
+    height: auto;
+    overflow: clip;
+    contain: paint;
+    visibility: hidden;
+    transition: visibility 0s linear var(--mof-drawer-dur);
+
+    &.open {
+      visibility: visible;
+      transition: none;
+    }
+  }
+
+  .scrim {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--mof-navy-deep) 55%, transparent);
+    backdrop-filter: blur(0.125rem);
+    opacity: 0;
+    transition: opacity var(--mof-drawer-dur) var(--mof-drawer-ease);
+
+    .open & {
+      opacity: 1;
+    }
+  }
+
+  .side {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: min(var(--mof-ws-side-w) + 2rem, 88vw);
+    height: 100dvh;
+    box-shadow: 1.5rem 0 3rem color-mix(in srgb, var(--mof-navy-deep) 28%, transparent);
+    transform: translate3d(-100%, 0, 0);
+    transition: transform var(--mof-drawer-dur) var(--mof-drawer-ease);
+    will-change: transform;
+    overscroll-behavior: contain;
+
+    .open & {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell.anim,
+  .side,
+  .scrim,
+  .user-dropdown,
+  .user-btn .chev {
+    transition: none !important;
+  }
+}

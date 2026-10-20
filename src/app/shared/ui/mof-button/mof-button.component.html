@@ -1,0 +1,33 @@
+<button
+  class="mof-btn"
+  [attr.type]="type()"
+  [class]="['mof-btn', 'is-' + variant(), 'is-' + size(), block() ? 'is-block' : '', !label() && icon() ? 'is-icon' : '', active() ? 'is-active' : '', loading() ? 'is-loading' : ''].join(' ')"
+  [disabled]="disabled() || loading()"
+  [attr.aria-label]="ariaLabel() || null"
+  [attr.aria-busy]="loading() || null"
+>
+  <!-- Spinner thay đúng vị trí icon (cùng kích thước) → nút không đổi kích thước khi loading. -->
+  @if (icon() && iconPos() === 'left') {
+    <span class="icon-slot">
+      @if (loading()) {
+        <span class="spinner" aria-hidden="true"></span>
+      } @else {
+        <app-mof-icon [name]="icon()!" />
+      }
+    </span>
+  } @else if (loading() && !icon()) {
+    <span class="spinner overlay" aria-hidden="true"></span>
+  }
+  @if (label()) {
+    <span class="label">{{ label() }}</span>
+  }
+  @if (icon() && iconPos() === 'right') {
+    <span class="icon-slot">
+      @if (loading()) {
+        <span class="spinner" aria-hidden="true"></span>
+      } @else {
+        <app-mof-icon [name]="icon()!" />
+      }
+    </span>
+  }
+</button>

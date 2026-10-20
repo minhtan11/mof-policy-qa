@@ -1,0 +1,42 @@
+# Shared UI — Toast (\`ToastService\` + \`app-mof-toaster\`)
+
+Changed on: 2026-10-20  
+Changed by: Grok Bot  
+Change reason: Bổ sung toast toàn cục để người dùng không nghĩ trang bị treo  
+Affected UC: UC-1..UC-8, UC-100..UC-113, workspace/admin
+
+## API (\`core/toast/toast.service.ts\`; \`shared/ui/toast/toast.service.ts\` re-export)
+
+\`\`\`ts
+toast.success('khoa.i18n' | 'chữ', { title?, duration?, action?: { label, run }, params? });
+toast.error(...); toast.warning(...); toast.info(...);
+toast.dismiss(id); toast.clear(); toast.pause(id); toast.resume(id);
+toast.show({ severity, summary, detail?, life? }); // API cũ, vẫn dùng được
+\`\`\`
+
+- Mặc định 4 s (error 6 s); \`duration: 0\` = không tự đóng. Tối đa 3 toast (bỏ cái cũ nhất). Toast trùng (loại + tiêu đề + nội dung) được làm mới thay vì nhân bản.
+- \`app-mof-toaster\` mount một lần ở \`App\`. Desktop: trên-phải dưới header (\`--mof-toast-top\`, safe-area); < 768px: trên-giữa full-width.
+- Mỗi toast: icon theo loại, tiêu đề, nội dung, nút đóng \`app-mof-icon-button\`, thanh tiến độ; hover/focus tạm dừng.
+- A11y: error → \`role=alert\`, \`aria-live=assertive\`; còn lại \`role=status\`, \`polite\`.
+- Motion: vào/ra bằng transform + opacity; reduced-motion: không animation, ẩn thanh tiến độ.
+
+## Đang dùng
+
+| Nơi | Toast |
+|---|---|
+| Đăng nhập cổng | form lỗi → warning "Vui lòng kiểm tra các trường được đánh dấu"; sai tài khoản → error (kèm lỗi inline); thành công → "Chào mừng, {name}" |
+| VNeID | từ chối / hết hạn → warning; thành công → welcome |
+| Đăng xuất (header cổng, workspace) | info |
+| Gửi câu hỏi | chặn bước → warning nêu tên bước; thiếu đồng ý / lỗi khi gửi → warning; gửi xong → success kèm mã hồ sơ; tệp sai loại/quá 10 MB → error |
+| Đăng nhập nội bộ | chưa chọn vai trò → warning; thành công → welcome |
+| Workspace / admin | các toast sẵn có (API \`show\`) giữ nguyên |
+
+## Test mapping
+
+\`core/toast/toast.service.spec.ts\` (giới hạn 3, gộp trùng, tự đóng, tạm dừng, API cũ), \`mof-toaster.component.spec.ts\` (role/aria-live, hover, đóng), \`public-login.component.spec.ts\`, \`ask-question.component.spec.ts\`, \`mof-file-upload.component.spec.ts\`.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Toast toàn cục (thay toast-host cũ), tích hợp đăng nhập/VNeID/đăng xuất/gửi câu hỏi | UC-1..UC-8, UC-100..UC-113 |

@@ -1,0 +1,111 @@
+<app-page-backdrop />
+<main class="public-login">
+  <div class="login-shell" appReveal>
+    <aside class="brand-panel">
+      <div class="brand-top">
+        <img class="emblem" src="assets/mof-emblem-transparent.png" alt="" width="96" height="96" />
+        <strong>{{ 'brand.ministry' | t }}</strong>
+        <small>{{ 'portal.brand.sub' | t }}</small>
+        <p class="tagline">{{ 'login.tagline' | t }}</p>
+        <ul class="features">
+          @for (f of features; track f.key; let i = $index) {
+            <li appReveal [revealDelay]="120 + i * 80">
+              <span class="feature-icon"><img [src]="f.art" alt="" width="30" height="30" /></span>
+              <span>{{ f.key | t }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+      <div class="building" aria-hidden="true"></div>
+    </aside>
+
+    <section class="form-panel">
+      <a routerLink="/portal" class="back"><app-mof-fi-icon name="arrow-left" /> {{ 'login.back' | t }}</a>
+
+      <h1 appReveal [revealDelay]="60">{{ 'login.heading' | t }}</h1>
+      <p class="subtitle" appReveal [revealDelay]="100">{{ 'login.eyebrow' | t }}</p>
+      <p class="intro" appReveal [revealDelay]="140">{{ 'login.introLong' | t }}</p>
+
+      <div class="tabs" role="tablist" [attr.aria-label]="'login.accountType' | t" appReveal [revealDelay]="180">
+        <app-mof-button
+          role="tab"
+          variant="tab"
+          [active]="accountType() === 'citizen'"
+          [attr.aria-selected]="accountType() === 'citizen'"
+          icon="user"
+          [label]="'login.tabCitizen' | t"
+          (click)="accountType.set('citizen')"
+        />
+        <app-mof-button
+          role="tab"
+          variant="tab"
+          [active]="accountType() === 'business'"
+          [attr.aria-selected]="accountType() === 'business'"
+          icon="building"
+          [label]="'login.tabBusiness' | t"
+          (click)="accountType.set('business')"
+        />
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="login()" novalidate appReveal [revealDelay]="220">
+        <div class="field">
+          <label for="login-id">{{ (accountType() === 'citizen' ? 'login.identifier' : 'login.identifierBusiness') | t }}</label>
+          <app-mof-input
+            id="login-id"
+            formControlName="identifier"
+            prefixIcon="envelope"
+            autocomplete="username"
+            [placeholder]="(accountType() === 'citizen' ? 'login.identifierPlaceholder' : 'login.identifierBusinessPlaceholder') | t"
+            [invalid]="!!errorOf('identifier')"
+            describedBy="login-id-err"
+          />
+          <app-mof-field-error id="login-id-err" [message]="errorOf('identifier') ? (errorOf('identifier')! | t) : null" />
+        </div>
+
+        <div class="field">
+          <label for="login-pw">{{ 'login.password' | t }}</label>
+          <app-mof-input
+            id="login-pw"
+            type="password"
+            formControlName="password"
+            prefixIcon="lock"
+            autocomplete="current-password"
+            [revealable]="true"
+            [placeholder]="'login.passwordPlaceholder' | t"
+            [invalid]="!!errorOf('password')"
+            describedBy="login-pw-err"
+          />
+          <app-mof-field-error id="login-pw-err" [message]="errorOf('password') ? (errorOf('password')! | t) : null" />
+        </div>
+
+        <div class="row">
+          <app-mof-checkbox formControlName="remember" [label]="'login.remember' | t" />
+          <a routerLink="/portal/login" fragment="quen-mat-khau" class="forgot">{{ 'login.forgot' | t }}</a>
+        </div>
+
+        <app-mof-button
+          class="submit"
+          type="submit"
+          variant="gradient"
+          size="lg"
+          [block]="true"
+          icon="arrow-right"
+          iconPos="right"
+          [loading]="loading()"
+          [label]="'login.submit' | t"
+        />
+      </form>
+
+      <div class="divider" appReveal [revealDelay]="260"><span>{{ 'login.orWith' | t }}</span></div>
+
+      <a class="vneid-card" routerLink="/portal/login/vneid" appReveal [revealDelay]="300">
+        <img src="assets/vneid-logo.png" alt="" width="48" height="48" />
+        <span class="vneid-text">
+          <strong>{{ 'login.vneidTitle' | t }}</strong>
+          <small>{{ 'login.vneidSub' | t }}</small>
+        </span>
+        <app-mof-fi-icon class="chev" name="angle-small-right" />
+      </a>
+    </section>
+  </div>
+</main>

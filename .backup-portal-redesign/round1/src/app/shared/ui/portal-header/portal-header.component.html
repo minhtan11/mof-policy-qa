@@ -1,0 +1,69 @@
+<header class="portal-header">
+  <div class="util-bar">
+    <div class="content-width util-row">
+      <span class="util-date"><app-mof-fi-icon name="calendar" /> {{ today() }}</span>
+      <nav class="util-links" [attr.aria-label]="'portal.util.label' | t">
+        <a routerLink="/portal" fragment="lien-he"><app-mof-fi-icon name="sitemap" />{{ 'portal.util.sitemap' | t }}</a>
+        <a routerLink="/portal/tra-cuu"><app-mof-fi-icon name="interrogation" />{{ 'portal.util.help' | t }}</a>
+        <a routerLink="/portal/login"><app-mof-fi-icon name="user" />{{ 'action.login' | t }}</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="brand-bar">
+    <div class="content-width brand-row">
+      <a class="brand" routerLink="/portal" [attr.aria-label]="'app.name' | t">
+        <img src="assets/mof-emblem-official.png" alt="" width="56" height="56" />
+        <span>
+          <strong>{{ 'brand.ministry' | t }}</strong>
+          <small>{{ 'brand.portal' | t }}</small>
+        </span>
+      </a>
+
+      <div class="search" role="search" (keyup.enter)="search()">
+        <app-mof-input
+          type="search"
+          [placeholder]="'portal.searchPlaceholder' | t"
+          [ngModel]="keyword()"
+          (ngModelChange)="keyword.set($event)"
+        />
+        <button type="button" class="search-btn" (click)="search()" [attr.aria-label]="'action.search' | t">
+          <app-mof-icon name="search" />
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <button
+          type="button"
+          class="icon-btn"
+          (click)="theme.toggle()"
+          [attr.aria-label]="theme.theme() === 'light' ? ('action.themeDark' | t) : ('action.themeLight' | t)"
+        >
+          <app-mof-icon [name]="theme.theme() === 'light' ? 'moon' : 'sun'" />
+        </button>
+        <app-lang-switch />
+      </div>
+    </div>
+  </div>
+
+  <nav class="main-nav" [attr.aria-label]="'portal.nav.label' | t">
+    <div class="content-width nav-scroll">
+      @for (item of navItems; track item.key) {
+        @if (item.fragment) {
+          <a [routerLink]="item.route" [fragment]="item.fragment">{{ item.key | t }}</a>
+        } @else {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: !!item.exact }"
+          >
+            @if (item.exact) {
+              <app-mof-fi-icon name="home" />
+            }
+            {{ item.key | t }}
+          </a>
+        }
+      }
+    </div>
+  </nav>
+</header>

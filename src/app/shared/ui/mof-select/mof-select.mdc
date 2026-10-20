@@ -1,0 +1,40 @@
+# Shared UI — `app-mof-select`
+
+Changed on: 2026-10-20  
+Changed by: Grok Bot  
+Change reason: Thiết kế lại select dùng chung (combobox/listbox tùy biến, tìm kiếm, bàn phím, panel nổi không bị cắt)  
+Affected UC: dùng ở mọi form có chọn danh mục (UC-100..UC-113 gửi câu hỏi, UC-162..UC-165 trang chủ, tra cứu nội bộ, quản trị)
+
+## API
+
+| Input | Mặc định | Ghi chú |
+|---|---|---|
+| `options` | `[]` | `{ label, value, disabled? }` |
+| `placeholder` | i18n `select.placeholder` | giữ tương thích cũ |
+| `id` | tự sinh | gắn cho trigger |
+| `label` | rỗng | hiển thị nhãn phía trên (tùy chọn) |
+| `searchable` | `false` | ô tìm kiếm đầu panel, lọc không dấu |
+| `size` | `md` | `sm` (36px) / `md` (44px) |
+| `disabled` | `false` | hoặc qua Reactive Forms `disable()` |
+
+ControlValueAccessor: dùng được với `formControlName`, `[formControl]`, `ngModel`.
+
+## Hành vi
+
+- Panel neo qua core `anchorFloating` (xem `src/app/core/overlay/overlay.mdc`): mặc định absolute trong wrapper → cuộn native, đồng bộ tuyệt đối với trigger; flip tính lúc mở/resize; bị overflow cắt → CSS anchor hoặc portal (đóng khi cuộn container). Cuộn trong list không cuộn trang.
+- Bàn phím: ↑/↓ (bỏ qua mục disabled), Home/End, Enter/Space chọn, Esc đóng, Tab đóng, gõ ký tự để nhảy/lọc.
+- Click ra ngoài đóng panel. Rỗng → "Không có kết quả" (i18n).
+- ARIA: `role=combobox`, `aria-expanded`, `aria-controls`, `aria-activedescendant`, `role=listbox/option`, `aria-selected`.
+- Motion: mở 200ms, chevron xoay 200ms; tắt khi `prefers-reduced-motion`. Màu chỉ dùng token (light/dark).
+
+## Test mapping
+
+- `mof-select.component.spec.ts` — CVA ghi/đọc giá trị, lọc không dấu + empty state, điều hướng bàn phím bỏ qua disabled, Esc, disabled từ form.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Thay `<select>` native bằng combobox tùy biến; thêm `searchable`, `size`, `label` | xem trên |
+| 2026-10-20 | Grok Bot | Chuyển định vị sang core floating (sửa rung khi cuộn); animation mở chỉ opacity/scale | xem trên |
+| 2026-10-20 | Grok Bot | Bỏ định vị theo scroll; chiến lược anchored/in-flow mặc định | xem trên |

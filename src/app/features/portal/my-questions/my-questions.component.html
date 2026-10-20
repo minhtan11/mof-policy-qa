@@ -1,0 +1,134 @@
+<app-page-backdrop />
+<app-portal-header />
+
+<main class="mine">
+  <!-- Hero sáng tràn viền: ảnh trụ sở bên phải mờ dần + minh hoạ tài liệu/kính lúp (không vàng) -->
+  <section class="hero">
+    <div class="wide hero-inner" appReveal>
+      <div class="hero-text">
+        <nav class="crumbs" [attr.aria-label]="'nav.breadcrumb' | t">
+          <ol>
+            <li><a routerLink="/portal">{{ 'portal.nav.services' | t }}</a></li>
+            <li aria-current="page">{{ 'nav.myQuestions' | t }}</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">{{ 'my.eyebrow' | t }}</p>
+        <h1>{{ 'my.titleBefore' | t }}<span class="accent">{{ 'my.titleAccent' | t }}</span>{{ 'my.titleAfter' | t }}</h1>
+        <p class="sub">{{ 'my.intro' | t }}</p>
+      </div>
+      <img class="art" src="assets/illustrations/lookup-docs.svg" alt="" width="320" height="240" />
+    </div>
+  </section>
+
+  <div class="wide body">
+    <!-- Thẻ tra cứu email -->
+    <form class="card lookup" (ngSubmit)="load()" novalidate>
+      <span class="tile" aria-hidden="true"><app-mof-fi-icon name="envelope" /></span>
+      <div class="field">
+        <label for="my-email">{{ 'my.email' | t }}</label>
+        <div class="row">
+          <app-mof-input
+            id="my-email"
+            type="email"
+            autocomplete="email"
+            [formControl]="emailCtrl"
+            [invalid]="!!emailError()"
+            describedBy="my-email-hint my-email-error"
+          />
+          <app-mof-button type="submit" icon="search" [label]="'my.load' | t" />
+        </div>
+        <small id="my-email-hint" class="hint">{{ 'my.emailHint' | t }}@if (signedIn()) { · {{ 'my.signedInHint' | t }} }</small>
+        <app-mof-field-error id="my-email-error" [message]="emailError()" />
+      </div>
+    </form>
+
+    <!-- Bảng hồ sơ -->
+    <section class="card results" [attr.aria-label]="'my.title' | t">
+      <div class="toolbar" #toolbar id="mine-toolbar">
+        <p class="total" aria-live="polite">{{ 'my.totalLabel' | t }} <strong>{{ results().length }}</strong> {{ 'my.totalUnit' | t }}</p>
+        <div class="filters">
+          <app-mof-select class="f" size="sm" icon="filter" [ariaLabel]="'my.status' | t" [options]="statusOptions()" [ngModel]="state().status ?? ''" (ngModelChange)="setStatus($event)" />
+          <app-mof-select class="f" size="sm" icon="category" [ariaLabel]="'my.topic' | t" [options]="topicOptions()" [ngModel]="state().topic ?? ''" (ngModelChange)="setTopic($event)" />
+          <app-mof-select class="f" size="sm" icon="sort-alt" [ariaLabel]="'my.sortLabel' | t" [options]="sortOptions()" [ngModel]="state().sort" (ngModelChange)="setSort($event)" />
+        </div>
+      </div>
+
+      <div class="table-area" #table [style.min-height.px]="holdHeight()">
+        @if (visible().length) {
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'my.code' | t }}</th>
+                <th scope="col">{{ 'my.question' | t }}</th>
+                <th scope="col">{{ 'my.status' | t }}</th>
+                <th scope="col">{{ 'my.received' | t }}</th>
+                <th scope="col">{{ 'my.due' | t }}</th>
+                <th scope="col" class="act-h">{{ 'my.actions' | t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of visible(); track r.id) {
+                <tr [attr.data-id]="r.id" [attr.data-status]="r.status">
+                  <td class="code" [attr.data-label]="'my.code' | t">
+                    <span class="file" aria-hidden="true"><app-mof-fi-icon name="document" /></span>
+                    <a [routerLink]="['/portal/ho-so', r.code]">{{ r.code }}</a>
+                  </td>
+                  <td class="q" [attr.data-label]="'my.question' | t">
+                    <span class="clamp" [title]="r.question">{{ r.question }}</span>
+                    <small class="topic">{{ r.topicName }}</small>
+                  </td>
+                  <td class="st" [attr.data-label]="'my.status' | t">
+                    <span class="pill" [attr.data-tone]="r.status"><app-mof-fi-icon [name]="statusIcon[r.status]" />{{ 'my.st.' + r.status | t }}</span>
+                  </td>
+                  <td class="date" [attr.data-label]="'my.received' | t">{{ r.receivedAt | date: 'dd/MM/yyyy' }}</td>
+                  <td class="date due" [attr.data-label]="'my.due' | t" [attr.data-due]="r.due">
+                    @if (r.due === 'done') {
+                      <span aria-hidden="true">-</span>
+                    } @else {
+                      <span>{{ r.dueAt | date: 'dd/MM/yyyy' }}</span>
+                      @if (r.due !== 'ok') {
+                        <small class="due-flag">{{ (r.due === 'overdue' ? 'my.overdue' : 'my.near') | t }}</small>
+                      }
+                    }
+                  </td>
+                  <td class="act" [attr.data-label]="'my.actions' | t">
+                    <a class="view" [routerLink]="['/portal/ho-so', r.code]" [attr.aria-label]="'my.viewAria' | t: { code: r.code }">
+                      {{ 'my.view' | t }} <app-mof-fi-icon name="arrow-small-right" />
+                    </a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <div class="empty">
+            <img src="assets/illustrations/lookup-docs.svg" alt="" width="160" height="120" />
+            @if (all().length && hasFilters()) {
+              <p>{{ 'my.filteredEmpty' | t }}</p>
+              <app-mof-button variant="soft" size="sm" icon="close" [label]="'my.clearFilters' | t" (click)="clearFilters()" />
+            } @else {
+              <h2>{{ 'my.emptyTitle' | t }}</h2>
+              <p>{{ 'my.emptyBody' | t }}</p>
+              <app-mof-button [label]="'nav.ask' | t" icon="send" (click)="goAsk()" />
+            }
+          </div>
+        }
+      </div>
+
+      @if (results().length) {
+        <app-mof-pagination
+          class="foot"
+          layout="per-page"
+          [page]="page()"
+          [total]="results().length"
+          [pageSize]="state().size"
+          [pageSizes]="pageSizes"
+          (pageChange)="goPage($event)"
+          (pageSizeChange)="setSize($event)"
+        />
+      }
+    </section>
+  </div>
+</main>
+
+<app-portal-footer />

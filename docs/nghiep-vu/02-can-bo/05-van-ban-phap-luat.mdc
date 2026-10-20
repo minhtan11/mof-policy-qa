@@ -1,0 +1,42 @@
+# Cán bộ — Kho văn bản pháp luật
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Affected UC: UC-075..UC-083
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Chuyên viên (tra cứu khi soạn); admin (quản trị kho) |
+| Route | Admin VBPL + gắn căn cứ trên dossier |
+| Trạng thái | `mocked` (search/add draft) |
+
+## Cán bộ làm gì
+
+1. Tìm VBPL theo số hiệu / tiêu đề / hiệu lực.  
+2. Xem phiên bản, trạng thái hiệu lực.  
+3. Gắn căn cứ vào dự thảo trả lời.  
+4. Admin: thêm bản nháp / đồng bộ nguồn (mock).
+
+## Cross-ref
+
+- Dùng khi soạn: `02-soan-tra-loi.mdc`  
+- Quản trị liên quan: `../03-admin/`
+
+## Acceptance
+
+- Hiển thị rõ hiệu lực / hết hiệu lực / thay thế.  
+- Tìm kiếm deterministic trên mock.
+
+## Test
+
+`legal-document.repository.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Repository VBPL mock | 75–83 |
+| 2026-10-20 | Codex | Chuyển folder cán bộ, tiếng Việt | 75–83 |

@@ -1,13 +1,29 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { TagModule } from 'primeng/tag';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { DossierStatus } from '../../../core/models/domain.models';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { MofBadgeComponent } from '../mof-badge/mof-badge.component';
 
 @Component({
-  selector: 'app-status-badge', imports: [TagModule], changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<p-tag [value]=\"label()\" [severity]=\"severity()\" [rounded]=\"true\" />`,
+  selector: 'app-status-badge',
+  imports: [MofBadgeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './status-badge.component.html',
 })
 export class StatusBadgeComponent {
+  private readonly i18n = inject(I18nService);
   readonly status = input.required<DossierStatus>();
-  readonly label = computed(() => ({ new: 'Mới tiếp nhận', received: 'Đã tiếp nhận', processing: 'Đang xử lý', 'waiting-approval': 'Chờ phê duyệt', answered: 'Đã trả lời', published: 'Đã công khai' })[this.status()]);
-  readonly severity = computed(() => ({ new: 'info', received: 'info', processing: 'warn', 'waiting-approval': 'contrast', answered: 'success', published: 'success' })[this.status()] as 'info' | 'warn' | 'contrast' | 'success');
+
+  readonly label = computed(() => this.i18n.t(`status.${this.status()}`));
+  readonly tone = computed(() => {
+    const map: Record<DossierStatus, 'info' | 'success' | 'warn' | 'neutral'> = {
+      new: 'info',
+      received: 'info',
+      processing: 'warn',
+      'waiting-approval': 'neutral',
+      answered: 'success',
+      published: 'success',
+      rejected: 'neutral',
+    };
+    return map[this.status()];
+  });
 }

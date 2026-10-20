@@ -1,0 +1,58 @@
+# Màn PUB-home — Trang chủ cổng công khai
+
+Changed on: 2026-10-20  
+Changed by: Grok Bot (theo yêu cầu tân trần)  
+Change reason: Thiết kế lại trang chủ theo mockup Cổng thông tin điện tử Bộ Tài chính (banner, lối vào dịch vụ, tin tức, thông báo, số liệu ngân sách, tiện ích nhanh, footer navy)  
+Affected UC: UC-162..UC-165  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/02-tra-cuu-cong-khai.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/portal` (anchor `#tin-tuc`, `#ngan-sach`, `#lien-he`) |
+| Actor | Người dân / doanh nghiệp (ẩn danh) |
+| Quyền | Công khai, không cần đăng nhập |
+| Trạng thái | `mocked` |
+
+## Bố cục
+
+1. Header dùng chung (bám sát mockup: thanh tiện ích mảnh canh phải có nút theme nhỏ; quốc huy lớn + "BỘ TÀI CHÍNH / CỔNG THÔNG TIN ĐIỆN TỬ"; ô tìm kiếm bo tròn có nút xanh bên trong; VI | EN + cờ; menu trải đều có dropdown, "Dịch vụ công" chứa Gửi câu hỏi / Tra cứu / Câu hỏi của tôi / VNeID; dưới 1024px là panel dọc). Mô tả cũ: `shared/ui/portal-header`: thanh tiện ích (ngày theo locale, sơ đồ, hỗ trợ, đăng nhập), nhận diện + ô tìm kiếm (`mof-input`) → `/portal/tra-cuu?q=`, toggle theme, VI/EN, menu chính (cuộn ngang trên mobile).
+2. Banner hero carousel 3 slide (ảnh Nhà hát Lớn Hà Nội — Wikimedia Commons CC BY-SA 4.0, lưu tại `public/assets/portal-hero.jpg`; overlay `--mof-hero-overlay-lr`; chấm điều hướng + nút mũi tên; không autoplay). Thẻ dịch vụ đè nhẹ mép dưới hero. Mô tả cũ: (ảnh Unsplash, overlay token `--mof-hero-overlay`), CTA → tra cứu.
+3. 4 thẻ dịch vụ: Gửi câu hỏi, Tra cứu, Công khai ngân sách (anchor), Câu hỏi của tôi.
+4. Tin tức & sự kiện (1 tin nổi bật + 3 tin) và Thông báo mới (5 mục, mới nhất trước).
+5. Số liệu ngân sách: chọn năm (`mof-select`), tab Tổng quan/Thu/Chi/Cân đối (`mof-button`), 4 KPI; biểu đồ cột nhóm thu–chi theo quý (`mof-chart`, màu từ token, tự đổi khi đổi theme).
+6. Tiện ích nhanh: tra cứu, gửi câu hỏi, câu hỏi của tôi, VNeID, đăng nhập, ngân sách, liên hệ.
+7. Footer dùng chung `shared/ui/portal-footer` (`#lien-he`).
+
+## Dữ liệu
+
+- Vào: `core/mock-api/portal-home-fixtures.ts` qua `PortalHomeRepository` (nội dung song ngữ `{ vi, en }`).
+- Số liệu ngân sách là **dữ liệu mẫu**, có dòng cảnh báo trên UI.
+
+## Luồng phụ / lỗi
+
+- Ảnh ngoài không tải được → nền token (navy / blue-soft) giữ nguyên bố cục.
+- Năm không có dữ liệu → KPI rỗng, chart rỗng (repository trả `[]`/`null`).
+
+## Acceptance
+
+- Hiển thị đúng 2 theme × 2 ngôn ngữ; không tràn ngang ở 320/480/768/1024/1280/1440.
+- Mọi liên kết dẫn tới route portal hiện có hoặc anchor trên trang.
+- `prefers-reduced-motion` tắt animation.
+
+## Test mapping
+
+- `core/mock-api/portal-home.repository.spec.ts` — tin nổi bật, sắp xếp thông báo, lọc KPI theo tab/năm, đủ 4 quý.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Thiết kế lại trang chủ theo mockup; thêm `PortalHomeRepository`, `portal-footer` | UC-162..UC-165 |
+| 2026-10-20 | Grok Bot | Chỉnh header/menu/hero bám sát mockup; carousel; thẻ dịch vụ đè mép hero; anchor `#thong-bao` | UC-162..UC-165 |
+| 2026-10-20 | Grok Bot | Giãn khoảng cách theo mockup (hero 2 dòng, thẻ dịch vụ thành hàng riêng); thêm motion: route view-transition, scroll-reveal (`shared/ui/reveal`), hover lift, crossfade slide; `lang-switch` dùng chung hiển thị cờ theo ngôn ngữ, đổi ngôn ngữ không nhảy layout | UC-162..UC-165 |
+| 2026-10-20 | Grok Bot | Nền xanh nhạt có sóng (token light/dark); header có khoảng thở; thanh nhấn tiêu đề bo tròn; bố cục ngân sách: 4 KPI một hàng, tab segmented, chọn năm cùng hàng tiêu đề, 2 card cao bằng nhau, chart lấp đầy card | UC-162..UC-165 |
+| 2026-10-20 | Grok Bot | Ngân sách chia 1:1, KPI 2×2 có sparkline/progress, đơn vị chart thành caption; nền mờ xanh cố định toàn trang; scroll-reveal mọi khối; slider 3 ảnh thật (docs/credits-anh.md) tự chạy 6s, dừng khi hover/focus/tab ẩn, tắt khi reduced-motion | UC-162..UC-165 |
+| 2026-10-20 | Grok Bot | Bộ chọn năm dùng `app-mof-select size="sm"` (bỏ override ::ng-deep); xem `shared/ui/mof-select/mof-select.mdc` | UC-162..UC-165 |
+| 2026-10-20 | Grok Bot | Dropdown menu header định vị qua core floating (`core/overlay/overlay.mdc`) | UC-162..UC-165 |

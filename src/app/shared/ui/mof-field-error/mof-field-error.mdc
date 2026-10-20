@@ -1,0 +1,29 @@
+# Shared UI — `app-mof-field-error`
+
+Changed on: 2026-10-20  
+Changed by: Grok Bot  
+Change reason: Chống layout shift khi hiện lỗi validation (AGENTS §4.5)  
+Affected UC: mọi form dùng Reactive Forms (đầu tiên: PUB-login UC-1..UC-8)
+
+## Dùng
+
+```html
+<app-mof-input id="x" formControlName="x" [invalid]="!!err" describedBy="x-err" />
+<app-mof-field-error id="x-err" [message]="err ? (err | t) : null" />
+```
+
+- Luôn render, cao cố định `--mof-field-error-h` (18px) → hiện/ẩn lỗi không đổi chiều cao form.
+- Hiệu ứng: opacity + translateY 140ms; tắt khi reduced-motion. Giữ chữ cũ khi fade-out.
+- Một dòng, dài → ellipsis, full text ở `title`. `role=alert`, `aria-live=polite`, `aria-hidden` khi trống.
+- Lỗi cấp form: dùng toast, không chèn banner đẩy nội dung.
+
+## Test mapping
+
+- `mof-field-error.component.spec.ts` — slot luôn tồn tại, chỉ đổi visibility, giữ chữ khi ẩn.
+- `public-login.component.spec.ts` — số slot lỗi không đổi khi submit lỗi.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Tạo component; áp dụng cho trang đăng nhập; mof-button giữ kích thước khi loading | UC-1..UC-8 |

@@ -1,0 +1,245 @@
+.form-page {
+  min-height: calc(100vh - 74px);
+  padding: 30px 0 70px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--mof-blue-soft) 55%, transparent) 0, var(--mof-canvas) 240px);
+}
+
+.narrow {
+  max-width: 880px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mof-muted);
+  font-size: 0.8rem;
+}
+
+.page-heading {
+  margin: 28px 0 20px;
+}
+
+.page-heading h1,
+.success-card h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  letter-spacing: -0.03em;
+}
+
+.page-heading p:not(.eyebrow) {
+  margin: 10px 0 0;
+  color: var(--mof-muted);
+  line-height: 1.55;
+}
+
+app-mof-stepper {
+  margin-bottom: 18px;
+}
+
+.question-form {
+  overflow: hidden;
+}
+
+.question-form section {
+  padding: 30px 34px;
+}
+
+.step-head {
+  margin-bottom: 8px;
+}
+
+.step-head h2 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.step-head p {
+  margin: 0;
+  color: var(--mof-muted);
+  font-size: 0.86rem;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.field label {
+  font-size: 0.86rem;
+  font-weight: 720;
+}
+
+.field label b {
+  color: var(--mof-danger);
+}
+
+.field small,
+.muted,
+.empty-hint {
+  color: var(--mof-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 17px;
+}
+
+.summary {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--mof-line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--mof-blue-soft) 35%, var(--mof-surface));
+}
+
+.summary small {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--mof-muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary strong,
+.summary p {
+  margin: 0;
+  color: var(--mof-ink);
+  line-height: 1.5;
+}
+
+.similar {
+  margin-top: 22px;
+}
+
+.similar h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.similar ul {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.similar li {
+  margin-bottom: 8px;
+}
+
+.similar a {
+  color: var(--mof-blue);
+  font-size: var(--mof-text-sm);
+  font-weight: 650;
+}
+
+.consent-block {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border: 1px solid var(--mof-line);
+  border-radius: 14px;
+  background: var(--mof-surface);
+}
+
+.form-error {
+  margin: 0;
+  padding: 0 34px 12px;
+  color: var(--mof-danger);
+  font-size: var(--mof-text-sm);
+  font-weight: 650;
+}
+
+.question-form footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 34px;
+  background: color-mix(in srgb, var(--mof-canvas) 80%, transparent);
+  color: var(--mof-muted);
+  font-size: 0.78rem;
+}
+
+.question-form footer > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.success-card {
+  max-width: 650px;
+  margin: 54px auto;
+  padding: 50px;
+  text-align: center;
+}
+
+.success-icon {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 23px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--mof-success) 16%, transparent);
+  color: var(--mof-success);
+}
+
+.success-card p:not(.eyebrow) {
+  margin: 12px auto;
+  max-width: 470px;
+  color: var(--mof-muted);
+  line-height: 1.6;
+}
+
+.code-box {
+  margin: 24px auto;
+  padding: 14px;
+  border: 1px dashed color-mix(in srgb, var(--mof-blue) 40%, var(--mof-line));
+  border-radius: 10px;
+  background: var(--mof-blue-soft);
+  color: var(--mof-blue-strong);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.success-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+@media (max-width: 600px) {
+  .question-form section,
+  .question-form footer,
+  .form-error {
+    padding-inline: 20px;
+  }
+
+  .question-form footer,
+  .success-actions,
+  .two-col {
+    flex-direction: column;
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .success-card {
+    padding: 35px 20px;
+  }
+}

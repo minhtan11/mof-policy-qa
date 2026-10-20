@@ -1,0 +1,46 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--mof-page-bg);
+  pointer-events: none;
+}
+
+span {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--mof-blob);
+  filter: blur(80px);
+  opacity: 0.9;
+}
+
+span:nth-child(1) {
+  top: -12vh;
+  left: -8vw;
+  width: 55vw;
+  height: 55vh;
+}
+
+span:nth-child(2) {
+  top: 10vh;
+  right: -12vw;
+  width: 50vw;
+  height: 60vh;
+  background: var(--mof-blob-2);
+}
+
+span:nth-child(3) {
+  bottom: -18vh;
+  left: 18vw;
+  width: 60vw;
+  height: 50vh;
+  background: var(--mof-blob-2);
+}
+
+span:nth-child(4) {
+  top: 45vh;
+  left: -15vw;
+  width: 40vw;
+  height: 40vh;
+}

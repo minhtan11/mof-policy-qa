@@ -1,0 +1,32 @@
+# Màn W-03 — Tra cứu nội bộ
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G4 — tra cứu theo mã/từ khóa/trạng thái/SLA  
+Affected UC: UC-176..UC-187  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/04-tra-cuu-noi-bo.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/tra-cuu` |
+| Actor | Cán bộ nội bộ |
+| Trạng thái | `mocked` |
+
+## Luồng
+
+1. Nhập từ khóa / chọn trạng thái / lĩnh vực / SLA.  
+2. Xem kết quả từ `MockDbService.searchInternal`.  
+3. Mở `/workspace/ho-so/:id`.
+
+## Acceptance
+
+- Không lộ PII ngoài phạm vi cột cần thiết.  
+- Empty state khi không có kết quả.
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | G4 màn tra cứu nội bộ | 176–187 |

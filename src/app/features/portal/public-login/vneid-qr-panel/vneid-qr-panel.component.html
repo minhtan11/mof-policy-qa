@@ -1,0 +1,87 @@
+<div class="vq" [attr.data-status]="vneid.status()">
+  <button type="button" class="back" (click)="back.emit()">
+    <app-mof-fi-icon name="arrow-left" /> {{ 'vneid.backToPassword' | t }}
+  </button>
+
+  <div class="head">
+    <img src="assets/vneid-logo.png" alt="" width="44" height="44" />
+    <div>
+      <h2>{{ 'login.vneidTitle' | t }}</h2>
+      <p>{{ 'login.vneidSub' | t }}</p>
+    </div>
+  </div>
+
+  <div class="qr-frame">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <app-mof-qr class="qr" [class.dim]="vneid.status() !== 'waiting'" [payload]="vneid.session()?.qrPayload ?? ''" [label]="'vneid.qrAlt' | t" />
+    <div class="qr-state" [class.show]="vneid.status() !== 'waiting' && vneid.status() !== 'idle'" aria-live="polite">
+      @switch (vneid.status()) {
+        @case ('scanning') {
+          <span class="spin" aria-hidden="true"></span>
+          <strong>{{ 'vneid.scanning' | t }}</strong>
+        }
+        @case ('scanned') {
+          <span class="phone-ico" aria-hidden="true"><app-mof-fi-icon name="mobile-notch" /><span class="spin sm"></span></span>
+          <strong>{{ 'vneid.scanned' | t }}</strong>
+        }
+        @case ('confirming') {
+          <span class="spin" aria-hidden="true"></span>
+          <strong>{{ 'vneid.confirming' | t }}</strong>
+        }
+        @case ('success') {
+          <span class="badge ok" aria-hidden="true"><app-mof-fi-icon name="check" /></span>
+          <strong>{{ 'vneid.success' | t }}</strong>
+          <small>{{ 'vneid.successSub' | t }}</small>
+        }
+        @case ('denied') {
+          <span class="badge bad" aria-hidden="true"><app-mof-fi-icon name="cross" /></span>
+          <strong>{{ 'vneid.denied' | t }}</strong>
+          <app-mof-button size="sm" variant="primary" [label]="'vneid.retry' | t" (click)="vneid.refresh()" />
+        }
+        @case ('expired') {
+          <span class="badge bad" aria-hidden="true"><app-mof-fi-icon name="clock" /></span>
+          <strong>{{ 'vneid.expired' | t }}</strong>
+          <app-mof-button size="sm" variant="primary" [label]="'vneid.retry' | t" (click)="vneid.refresh()" />
+        }
+      }
+    </div>
+  </div>
+
+  <p class="hint">{{ 'vneid.scanHint' | t }}</p>
+  <button type="button" class="refresh" [disabled]="!canRefresh()" (click)="vneid.refresh()">
+    <app-mof-fi-icon name="refresh" /> {{ 'vneid.refresh' | t }} ({{ vneid.remaining() }}s)
+  </button>
+  <small class="note">{{ 'vneid.illustrative' | t }}</small>
+
+  <ol class="steps" [attr.aria-label]="'vneid.steps' | t">
+    @for (s of steps; track s; let i = $index) {
+      <li [class.done]="i < step() || vneid.status() === 'success'" [class.current]="i === step() && vneid.status() !== 'success'" [class.failed]="failed() && i === step()">
+        <span class="dot" aria-hidden="true">{{ i + 1 }}</span>
+        <span>{{ s | t }}</span>
+      </li>
+    }
+  </ol>
+
+  <div class="demo">
+    <app-mof-button variant="soft" [block]="true" icon="send" [disabled]="!canSimulate()" [label]="'vneid.simulate' | t" (click)="simulate()" />
+    <small>{{ 'vneid.demoNote' | t }}</small>
+  </div>
+
+  <!-- Hộp thoại mô phỏng ứng dụng VNeID trên điện thoại (chỉ khi đã quét) -->
+  <div class="phone-overlay" [class.show]="vneid.status() === 'scanned'" [attr.inert]="vneid.status() === 'scanned' ? null : ''" (keydown.escape)="vneid.deny()">
+    <div class="phone" role="dialog" aria-modal="true" aria-labelledby="vneid-app-title" [attr.aria-label]="'vneid.phoneLabel' | t">
+      <div class="phone-bar">{{ 'vneid.appTitle' | t }}</div>
+      <div class="phone-screen">
+        <app-mof-qr class="phone-qr" [payload]="vneid.session()?.qrPayload ?? ''" [label]="'vneid.qrAlt' | t" />
+        <div class="app-dialog">
+          <strong id="vneid-app-title">{{ 'vneid.appDialogTitle' | t }}</strong>
+          <p>{{ 'vneid.appDialogMsg' | t }}</p>
+          <div class="app-actions">
+            <app-mof-button variant="secondary" [block]="true" [label]="'vneid.appClose' | t" (click)="vneid.deny()" />
+            <app-mof-button variant="primary" [block]="true" [label]="'vneid.appConfirm' | t" (click)="vneid.confirm()" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

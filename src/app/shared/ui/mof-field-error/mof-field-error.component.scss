@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  min-height: var(--mof-field-error-h);
+}
+
+.mof-field-error {
+  height: var(--mof-field-error-h);
+  margin: 0;
+  overflow: hidden;
+  color: var(--mof-danger);
+  font-size: var(--mof-text-xs);
+  line-height: var(--mof-field-error-h);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition:
+    opacity var(--mof-fast) ease,
+    transform var(--mof-fast) ease;
+
+  &.visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mof-field-error {
+    transform: none;
+    transition: none;
+  }
+}

@@ -1,0 +1,37 @@
+# Admin — Cấu hình quy trình và SLA
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G3 — tạo nháp, kích hoạt, cập nhật SLA trên admin  
+Affected UC: UC-041..UC-051
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Quản trị hệ thống |
+| Route | `/admin` · tab Workflow |
+| Trạng thái | `mocked` |
+
+## Admin làm gì
+
+1. Tạo workflow nháp với SLA (ngày).  
+2. Cập nhật SLA cho bản chưa archived.  
+3. Kích hoạt bản nháp (bản active cũ → archived).
+
+## Điều kiện
+
+- `canTransition` vẫn kiểm soát hồ sơ nghiệp vụ.  
+- Chỉ workflow `active` là nguồn chuẩn cho hồ sơ mới (mock).
+
+## Test
+
+`workflow.repository.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Workflow repository mock | 41–44 |
+| 2026-10-20 | Codex | Chuyển `03-admin`, tiếng Việt | 41–51 |
+| 2026-10-20 | Codex | G3 create/activate/updateSla E2E UI | 41–51 |

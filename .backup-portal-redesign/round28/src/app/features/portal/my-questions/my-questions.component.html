@@ -1,0 +1,54 @@
+<app-portal-header />
+<section class="page">
+  <div class="content-width">
+    <div class="page-heading">
+      <p class="eyebrow">{{ 'my.eyebrow' | t }}</p>
+      <h1>{{ 'my.title' | t }}</h1>
+      <p>{{ 'my.intro' | t }}</p>
+    </div>
+
+    <form class="filter surface-card" [formGroup]="form" (ngSubmit)="load()">
+      <div class="field">
+        <label for="my-email">{{ 'my.email' | t }}</label>
+        <app-mof-input id="my-email" type="email" formControlName="email" />
+        <small>{{ 'my.emailHint' | t }}</small>
+      </div>
+      <app-mof-button type="submit" [label]="'my.load' | t" icon="search" />
+    </form>
+
+    @if (items().length) {
+      <div class="table-wrap surface-card">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'my.code' | t }}</th>
+              <th>{{ 'my.question' | t }}</th>
+              <th>{{ 'my.status' | t }}</th>
+              <th>{{ 'my.received' | t }}</th>
+              <th>{{ 'my.due' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track item.id) {
+              <tr>
+                <td>
+                  <a [routerLink]="['/portal/ho-so', item.code]">{{ item.code }}</a>
+                </td>
+                <td>{{ item.question }}</td>
+                <td><app-status-badge [status]="item.status" /></td>
+                <td>{{ item.receivedAt | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ item.dueAt | date: 'dd/MM/yyyy' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="empty surface-card">
+        <h2>{{ 'my.emptyTitle' | t }}</h2>
+        <p>{{ 'my.emptyBody' | t }}</p>
+        <a routerLink="/portal/hoi-dap"><app-mof-button [label]="'nav.ask' | t" icon="send" /></a>
+      </div>
+    }
+  </div>
+</section>

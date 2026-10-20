@@ -1,0 +1,39 @@
+# Admin — Quản lý người dùng
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G3 — AdminAccountRepository, che email, khóa/mở tài khoản  
+Affected UC: UC-018..UC-030
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Quản trị hệ thống |
+| Route | `/admin` · tab Người dùng |
+| Trạng thái | `mocked` |
+
+## Admin làm gì
+
+1. Xem tài khoản nội bộ (email đã che).  
+2. Khóa / mở khóa truy cập.  
+3. Xem role và đơn vị gắn.
+
+## Acceptance
+
+- Không hiện mật khẩu / email đầy đủ trên UI.  
+- Guard đăng nhập vẫn độc lập với bảng admin.
+
+## Test
+
+`admin-account.repository.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Users table mock | 18–20 |
+| 2026-10-20 | Codex | Chuyển `03-admin`, tiếng Việt | 18–30 |
+| 2026-10-20 | Codex | G3 mask email + toggle active | 18–30 |
+| 2026-10-20 | Grok Bot | R29 khung workspace: sidebar rail/mở rộng + flyout, drawer < 1024, header 1 hàng (tìm kiếm Ctrl K, chuông, VI/EN, user pill). Hàng đợi đồng bộ `?filter=`; admin đồng bộ `?tab=`; tra cứu nội bộ đọc `?q=` | 18–30 |
+| 2026-10-20 | Grok Bot | R30: menu workspace hiển thị các mục mockup chưa có màn (tag «Sắp có», route `/workspace/<slug>` tới trang Sắp ra mắt); ma trận vai trò `WS_ROLE_MATRIX` | 18–30 |

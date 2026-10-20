@@ -1,0 +1,23 @@
+<app-portal-header />
+<app-page-backdrop />
+<section class="soon-page">
+  <div class="content-width narrow">
+    <nav class="breadcrumb" [attr.aria-label]="'comingSoon.breadcrumb' | t">
+      <a routerLink="/portal">{{ 'nav.home' | t }}</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">{{ titleKey() | t }}</span>
+    </nav>
+
+    <div class="panel" role="status">
+      <span class="icon" aria-hidden="true"><app-mof-fi-icon name="time-past" /></span>
+      <p class="eyebrow">{{ 'comingSoon.eyebrow' | t }}</p>
+      <h1>{{ titleKey() | t }}</h1>
+      <p class="body">{{ bodyKey() | t }}</p>
+      <div class="actions">
+        <a routerLink="/portal"><app-mof-button [label]="'comingSoon.backHome' | t" icon="arrow-left" /></a>
+        <a routerLink="/portal/tra-cuu"><app-mof-button variant="secondary" [label]="'nav.search' | t" icon="search" /></a>
+      </div>
+    </div>
+  </div>
+</section>
+<app-portal-footer />

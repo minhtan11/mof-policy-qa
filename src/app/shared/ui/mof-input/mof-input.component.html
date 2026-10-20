@@ -1,0 +1,30 @@
+<div class="mof-input" [class.has-prefix]="!!prefixIcon()" [class.has-suffix]="revealable() && type() === 'password'" [class.is-invalid]="invalid()">
+  @if (prefixIcon()) {
+    <app-mof-fi-icon class="affix prefix" [name]="prefixIcon()!" aria-hidden="true" />
+  }
+  <input
+    class="mof-field"
+    [id]="id() || null"
+    [type]="effectiveType()"
+    [placeholder]="placeholder()"
+    [value]="value()"
+    [disabled]="isDisabled"
+    [attr.autocomplete]="autocomplete()"
+    [attr.aria-invalid]="invalid() || null"
+    [attr.aria-describedby]="describedBy()"
+    (input)="onInput($event)"
+    (blur)="markTouched()"
+  />
+  @if (revealable() && type() === 'password') {
+    <button
+      type="button"
+      class="affix suffix"
+      [attr.aria-label]="(revealed() ? 'input.hidePassword' : 'input.showPassword') | t"
+      [attr.aria-pressed]="revealed()"
+      [disabled]="isDisabled"
+      (click)="toggleReveal()"
+    >
+      <app-mof-fi-icon [name]="revealed() ? 'eye-crossed' : 'eye'" />
+    </button>
+  }
+</div>

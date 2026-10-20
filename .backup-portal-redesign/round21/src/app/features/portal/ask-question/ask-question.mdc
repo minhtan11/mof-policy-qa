@@ -1,0 +1,53 @@
+# Màn PUB-02 — Gửi câu hỏi (wizard)
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Viết tiếng Việt; trỏ MDC nhóm theo folder người dân  
+Affected UC: UC-100..UC-113  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/03-gui-cau-hoi.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/portal/hoi-dap` |
+| Actor | Người dân / doanh nghiệp |
+| Quyền | Gửi công khai (mock) |
+| Trạng thái | `mocked` |
+
+## Luồng chính
+
+1. Bước 0 — lĩnh vực, câu hỏi (≥20 ký tự), mức ưu tiên.  
+2. Bước 1 — họ tên, email, tổ chức, đính kèm (chỉ tên tệp).  
+3. Bước 2 — tóm tắt, câu hỏi tương tự (tham khảo), bắt buộc đồng ý xử lý dữ liệu, gửi.  
+4. Thành công — mã hồ sơ + hạn xử lý; liên kết chi tiết / câu hỏi của tôi / trang chủ.
+
+## Luồng phụ / lỗi
+
+- Bước không hợp lệ → không Next, hiện thông báo i18n.  
+- Chưa consent → không gửi.  
+- Similar rỗng → vẫn gửi được.
+
+## Dữ liệu
+
+- Vào: Reactive Forms + shared kit (`mof-stepper`, `mof-checkbox`, `mof-file-upload`, …).  
+- Ra: `MockDbService.createDossier`; lưu email gửi gần nhất.
+
+## Acceptance
+
+- Wizard chỉ qua bước khi validation đạt.  
+- Consent bắt buộc trước khi tạo hồ sơ.  
+- Similar chỉ gợi ý, không tự gửi.  
+- Toast chỉ có mã hồ sơ.
+
+## Test
+
+- `ask-question.component.spec.ts`  
+- `mock-db.service.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Đổi form phẳng → wizard 3 bước + similar + consent | 100–113 |
+| 2026-10-20 | Codex | Viết lại tiếng Việt; path MDC nhóm mới | 100–113 |

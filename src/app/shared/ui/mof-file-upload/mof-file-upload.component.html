@@ -1,0 +1,42 @@
+<div class="mof-upload" [class.is-disabled]="disabled">
+  <input
+    #fileInput
+    class="mof-upload__input"
+    type="file"
+    [id]="id() || null"
+    [accept]="accept()"
+    [multiple]="multiple()"
+    [disabled]="disabled"
+    (change)="onFilesSelected($event)"
+  />
+
+  <div class="dropzone" [class.is-drag]="dragging()" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+    <span class="dz-ico" aria-hidden="true"><app-mof-fi-icon name="cloud-upload-alt" /></span>
+    <div class="dz-text">
+      @if (dropLabel()) {
+        <strong>{{ dropLabel() }}</strong>
+      }
+      @if (hint()) {
+        <small>{{ hint() }}</small>
+      }
+    </div>
+    <app-mof-button type="button" variant="soft" icon="plus" [label]="buttonLabel()" [disabled]="disabled" (click)="openPicker()" />
+  </div>
+
+  @if (files().length) {
+    <ul class="chips">
+      @for (name of files(); track name) {
+        <li class="chip" [attr.data-kind]="kind(name)">
+          <span class="chip-ico" aria-hidden="true"><app-mof-fi-icon [name]="iconFor(name)" /></span>
+          <span class="chip-text">
+            <strong [attr.title]="name">{{ name }}</strong>
+            @if (sizeLabel(name)) {
+              <small>{{ sizeLabel(name) }}</small>
+            }
+          </span>
+          <app-mof-icon-button class="chip-remove" icon="close" size="sm" variant="danger" [label]="removeAria(name)" [disabled]="disabled" (click)="remove(name)" />
+        </li>
+      }
+    </ul>
+  }
+</div>

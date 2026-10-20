@@ -1,0 +1,266 @@
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 23px;
+}
+
+.welcome h2 {
+  margin: 0;
+  font-size: 1.45rem;
+  letter-spacing: -0.025em;
+}
+
+.welcome p:not(.eyebrow) {
+  margin: 6px 0 0;
+  color: var(--mof-muted);
+  font-size: 0.85rem;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid var(--mof-line);
+  border-radius: 14px;
+  background: var(--mof-surface);
+}
+
+.metric > span {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border-radius: 10px;
+}
+
+.metric p,
+.metric small {
+  display: block;
+  margin: 0;
+  color: var(--mof-muted);
+  font-size: 0.72rem;
+}
+
+.metric strong {
+  display: block;
+  margin: 2px 0;
+  font-size: 1.55rem;
+}
+
+.metric.blue > span {
+  background: var(--mof-blue-soft);
+  color: var(--mof-blue);
+}
+
+.metric.green > span {
+  background: color-mix(in srgb, var(--mof-success) 16%, transparent);
+  color: var(--mof-success);
+}
+
+.metric.amber > span {
+  background: color-mix(in srgb, var(--mof-warning) 16%, transparent);
+  color: var(--mof-warning);
+}
+
+.metric.violet > span {
+  background: #f0eaff;
+  color: #7551bd;
+}
+
+[data-theme='dark'] .metric.violet > span {
+  background: #2a2440;
+  color: #b9a4f0;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 0.7fr);
+  gap: 18px;
+
+  /* Round 29 (khung mới): con grid được co lại → bảng cuộn trong .table-wrap thay vì tràn trang */
+  > * {
+    min-width: 0;
+  }
+}
+
+.queue header,
+.chart-card header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  padding: 20px 21px 15px;
+}
+
+.queue h3,
+.chart-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.queue header p,
+.chart-card header p {
+  margin: 4px 0 0;
+  color: var(--mof-muted);
+  font-size: 0.75rem;
+}
+
+.queue header a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--mof-blue);
+  font-size: 0.77rem;
+  font-weight: 700;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--mof-line);
+  text-align: left;
+  font-size: 0.78rem;
+}
+
+th {
+  background: color-mix(in srgb, var(--mof-canvas) 80%, transparent);
+  color: var(--mof-muted);
+  font-size: 0.71rem;
+  font-weight: 700;
+}
+
+td b,
+td span {
+  display: block;
+}
+
+td b {
+  color: var(--mof-blue);
+  font-size: 0.75rem;
+}
+
+td > span:not(.due) {
+  max-width: 260px;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--mof-ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.due {
+  display: inline-flex !important;
+  gap: 5px;
+  align-items: center;
+  color: var(--mof-muted);
+}
+
+.row-link {
+  color: var(--mof-blue);
+}
+
+.chart-card {
+  padding-bottom: 18px;
+}
+
+.chart-card header {
+  display: block;
+}
+
+.legend {
+  display: grid;
+  gap: 7px;
+  padding: 0 20px 8px;
+  color: var(--mof-muted);
+  font-size: 0.74rem;
+}
+
+.legend i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+
+.blue {
+  background: #2d75b7;
+}
+
+.amber {
+  background: #d89a35;
+}
+
+.red {
+  background: #c75151;
+}
+
+@media (max-width: 1050px) {
+  .metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .welcome {
+    flex-direction: column;
+    align-items: start;
+    gap: 15px;
+  }
+
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 0 4px;
+}
+
+.filter-tabs button {
+  padding: 8px 12px;
+  border: 1px solid var(--mof-line);
+  border-radius: 999px;
+  background: var(--mof-surface);
+  color: var(--mof-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--mof-text-xs);
+  font-weight: 650;
+  transition:
+    background var(--mof-fast),
+    color var(--mof-fast),
+    border-color var(--mof-fast);
+}
+
+.filter-tabs button.active {
+  border-color: color-mix(in srgb, var(--mof-blue) 40%, var(--mof-line));
+  background: var(--mof-blue-soft);
+  color: var(--mof-blue-strong);
+}

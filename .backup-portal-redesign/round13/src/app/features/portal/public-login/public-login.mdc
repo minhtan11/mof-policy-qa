@@ -1,0 +1,62 @@
+# Màn PUB-login — Đăng nhập cổng công khai
+
+Changed on: 2026-10-20  
+Changed by: Grok Bot  
+Change reason: Thiết kế lại theo mockup (card 2 cột, tab Tài khoản/Doanh nghiệp, Reactive Forms + validation i18n, VNeID card)  
+Affected UC: UC-1..UC-8  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/01-dang-nhap-cong.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/portal/login` (VNeID: `/portal/login/vneid`) |
+| Actor | Người dân / doanh nghiệp |
+| Quyền | Công khai |
+| Trạng thái | `mocked` |
+
+## Luồng chính
+
+1. Chọn loại tài khoản (Tài khoản / Doanh nghiệp) — đổi nhãn + placeholder trường định danh.
+2. Nhập định danh (bắt buộc, ≥3 ký tự) và mật khẩu (bắt buộc, ≥6 ký tự; nút hiện/ẩn).
+3. Ghi nhớ đăng nhập (mock), Đăng nhập → loading → `AuthService.loginAs('public')` → `/portal/hoi-dap`.
+4. Hoặc "Đăng nhập bằng VNeID" → `/portal/login/vneid`.
+
+## Luồng phụ / lỗi
+
+- Form không hợp lệ → không gửi, hiện lỗi i18n dưới trường qua `app-mof-field-error` (ô giữ chỗ 1 dòng, fade 140ms, ellipsis + title) → card không nhảy. Nút giữ kích thước khi loading (spinner thay vị trí icon).
+- Lỗi cấp form (vd. sai thông tin khi có API thật) phải dùng toast (`toast-host`) hoặc ô giữ chỗ, không chèn banner đẩy nội dung.
+- "Quên mật khẩu?" — chưa có luồng (mock, giữ trên trang).
+
+## Dữ liệu
+
+- Vào: Reactive Forms `identifier`, `password`, `remember`. Ra: phiên mock role `public`.
+- UI: `mof-input` (`prefixIcon`, `revealable`, `invalid`), `mof-checkbox`, `mof-button` (`variant="gradient" | "tab"`), `app-page-backdrop`, `appReveal`.
+- Ảnh: `assets/hero/mof-hq.jpg`, `assets/vneid-logo.png` (cắt từ `assets/vneid.png` có sẵn).
+
+## Acceptance
+
+- 2 theme × 2 ngôn ngữ; ≤767px panel trái thành banner gọn phía trên; reduced-motion tắt animation.
+
+## Test mapping
+
+- `public-login.component.spec.ts` — chặn gửi khi trống, lỗi mật khẩu ngắn, loading khi hợp lệ, đổi loại tài khoản.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Thiết kế lại trang đăng nhập; thêm Reactive Forms + validation | UC-1..UC-8 |
+| 2026-10-20 | Grok Bot | Chống layout shift: ô lỗi giữ chỗ dùng chung, nút loading giữ kích thước | UC-1..UC-8 |
+| 2026-10-20 | Grok Bot | Quốc huy nền trong suốt (mof-emblem-transparent.png); 3 minh hoạ SVG đa sắc trong ô kính mờ | UC-1 |
+
+## VNeID QR trong card (không chuyển trang)
+
+- Bấm thẻ "Đăng nhập bằng VNeID" → panel phải chuyển sang `app-vneid-qr-panel` (cùng ô grid với form → chiều cao card cố định, fade/slide 220ms, reduced-motion tắt).
+- QR minh hoạ (`shared/ui/mof-qr`, không quét được), đếm ngược "Làm mới mã QR (60s)", tự làm mới khi hết hạn lúc chờ quét.
+- Bước: Chờ quét → Đã quét → Xác nhận → Thành công; lỗi: Từ chối (Đóng) / Hết hạn → Thử lại.
+- Demo: nút "Mô phỏng quét bằng điện thoại" → 1,2s → hộp thoại điện thoại mô phỏng app VNeID (Đóng / Xác nhận). Xác nhận → 0,9s → đăng nhập user `u-public` (Nguyễn Minh Anh) → chuyển `/portal/hoi-dap`.
+- Logic ở `core/auth/vneid-auth.adapter.ts` (`VneidAuthAdapter` trừu tượng + `MockVneidAuthAdapter`), cấu hình ở `core/mock-api/vneid-fixtures.ts`. Route cũ `/portal/login/vneid` giữ nguyên.
+- Header: đã đăng nhập → avatar (chữ viết tắt / ảnh) + tên + menu (Câu hỏi của tôi, Đăng xuất).
+
+| 2026-10-20 | Grok Bot | VNeID QR trong card, adapter mock, menu tài khoản trên header | UC-1..UC-8 |

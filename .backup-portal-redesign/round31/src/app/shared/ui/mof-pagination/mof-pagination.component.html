@@ -1,0 +1,38 @@
+<nav class="pager" [attr.aria-label]="'pagination.label' | t">
+  @if (layout() === 'per-page') {
+    <div class="per-page">
+      <span>{{ 'pagination.showing' | t }}</span>
+      <app-mof-select class="size" size="sm" [options]="sizeNumbers()" [ngModel]="pageSize() + ''" (ngModelChange)="pageSizeChange.emit(+$event)" [attr.aria-label]="'pagination.size' | t" />
+      <span>{{ 'pagination.perPageSuffix' | t }}</span>
+      <span class="sr-only" aria-live="polite">{{ from() }}–{{ to() }} / {{ total() }}</span>
+    </div>
+  } @else {
+    <p class="range" aria-live="polite">
+      {{ 'pagination.showing' | t }} <strong>{{ from() }}–{{ to() }}</strong> / {{ total() }}
+    </p>
+  }
+  <ul class="pages">
+    <li>
+      <button type="button" class="pg nav" [disabled]="current() === 1" [attr.aria-label]="'pagination.prev' | t" (click)="go(current() - 1)">
+        <app-mof-fi-icon name="angle-small-left" />
+      </button>
+    </li>
+    @for (it of items(); track it) {
+      <li>
+        @if (isNum(it)) {
+          <button type="button" class="pg" [class.on]="it === current()" [attr.aria-current]="it === current() ? 'page' : null" [attr.aria-label]="'pagination.page' | t: { n: it }" (click)="go(it)">{{ it }}</button>
+        } @else {
+          <span class="gap" aria-hidden="true">…</span>
+        }
+      </li>
+    }
+    <li>
+      <button type="button" class="pg nav" [disabled]="current() === pages()" [attr.aria-label]="'pagination.next' | t" (click)="go(current() + 1)">
+        <app-mof-fi-icon name="angle-small-right" />
+      </button>
+    </li>
+  </ul>
+  @if (layout() === 'range') {
+    <app-mof-select class="size" size="sm" [options]="sizeOptions()" [ngModel]="pageSize() + ''" (ngModelChange)="pageSizeChange.emit(+$event)" [attr.aria-label]="'pagination.size' | t" />
+  }
+</nav>

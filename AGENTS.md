@@ -17,18 +17,28 @@
 4. Quyền gồm ba lớp: route guard, permission hành động và data scope. Ẩn nút không thay thế việc kiểm tra quyền.
 5. Mỗi hồ sơ hỏi–đáp dùng cùng một domain model và màn hình chi tiết dùng chung; hành động hiển thị theo permission/trạng thái.
 
-## 3. PrimeNG và design system
+## 3. Design system và shared UI (không dùng PrimeNG)
 
-1. Dùng PrimeNG cho mọi interactive control: button, input, select, table, dialog, drawer, tabs, timeline, upload, editor, toast, confirm, skeleton, progress, chart và menu.
-2. Không dùng control HTML thô để thay thế control PrimeNG. Có thể dùng HTML semantic cho cấu trúc, nhưng control tương tác phải là PrimeNG hoặc shared wrapper của PrimeNG.
-3. Không dùng giao diện/theme PrimeNG mặc định nguyên bản. Tất cả phải đi qua design token và shared styles của dự án.
-4. Tái sử dụng shared UI trước khi tạo component mới: `data-table`, `status-badge`, `sla-badge`, `filter-bar`, `timeline`, `empty-state`, `loading-state`, `page-header`, `confirm-dialog`, `file-upload`.
-5. Không tạo CSS rải rác để ghi đè tùy hứng. Dùng token cho màu, spacing, radius, typography, elevation, z-index và motion.
+1. Không dùng PrimeNG, PrimeIcons hay theme Aura/Lara. Interactive control phải thuộc shared kit nội bộ (`mof-button`, `mof-input`, `mof-select`, `mof-textarea`, `mof-checkbox`, `mof-stepper`, `mof-file-upload`, `mof-badge`, `mof-toast`, …) hoặc wrapper dùng chung trên design token.
+2. Không dùng control HTML thô rải rác để thay shared kit. HTML semantic được phép cho cấu trúc; control tương tác phải qua shared UI.
+3. **Form nghiệp vụ bắt buộc dùng shared kit thống nhất.** Cấm `input` / `select` / `textarea` / `checkbox` / `file` HTML thô trong feature form. Control mới phải được thêm vào `src/app/shared/ui/` trước, rồi mới dùng ở mọi form.
+4. Phong cách: Linear-soft × nhận diện Bộ Tài chính — hiện đại, mềm, ít màu mè; navy/xanh Bộ, trắng/xám xanh nhạt; đỏ/cam/xanh lá chỉ cho trạng thái nghiệp vụ. Không dùng dark-purple SaaS làm nhận diện chính.
+5. Biểu đồ dùng ApexCharts qua wrapper shared (`mof-chart`), không kéo lại thư viện UI full-suite.
+6. Tái sử dụng shared UI trước khi tạo component mới: `data-table`, `status-badge`, `sla-badge`, `filter-bar`, `timeline`, `empty-state`, `loading-state`, `page-header`, `confirm-dialog`, `file-upload`, `checkbox`, `stepper`.
+7. Không tạo CSS rải rác để ghi đè tùy hứng. Dùng token cho màu, spacing, radius, typography, elevation, z-index và motion (light và dark).
+
+## 3.1. Theme sáng/tối và i18n bắt buộc
+
+1. Mọi màn hình và form mới phải hỗ trợ **song song** theme `light` và `dark` (token CSS/`data-theme`), không hard-code màu chỉ cho một theme.
+2. Mọi copy người dùng nhìn thấy (label, placeholder, nút, toast, empty, validation, nav) phải đi qua i18n **Tiếng Việt (`vi`) và English (`en`)**. Không hard-code chuỗi UI trong template/component.
+3. Form mới chỉ được coi là xong khi đã kiểm tra đủ 2 theme × 2 ngôn ngữ.
+4. Toggle theme và ngôn ngữ đặt ở shell (portal/workspace), lưu preference vào `localStorage`.
+5. `prefers-reduced-motion` vẫn bắt buộc; dark mode không được giảm độ tương phản dưới mức đọc được.
 
 ## 4. Quy tắc UI/UX và motion bắt buộc
 
 1. Mọi trang phải thống nhất header, sidebar, page header, action bar, form layout, validation, empty/loading/error state, table, badge trạng thái và SLA.
-2. Responsive bắt buộc trên desktop, laptop, tablet/iPad và mobile. Cổng công khai ưu tiên mobile; workspace/admin ưu tiên desktop nhưng phải dùng được ở tablet.
+2. Responsive bắt buộc trên **mọi breakpoint thiết kế**: mobile (≥320px), mobile lớn / phablet (~480px), tablet / iPad dọc (~768px), tablet ngang / laptop nhỏ (~1024px), desktop (~1280px), desktop lớn / 2K (≥1440px). Cổng công khai ưu tiên mobile-first; workspace/admin ưu tiên desktop nhưng phải dùng được ở tablet. Font-size dùng fluid/`clamp` theo viewport — không để chữ quá nhỏ trên mobile hay quá lớn trên màn rộng. Layout, grid, nav, form, table, dialog phải không vỡ/overflow ngang ở các breakpoint trên.
 3. Animation phục vụ phản hồi và định hướng, không trang trí quá mức:
    - hover/focus: 120–160ms;
    - click/pressed: 100–140ms;
@@ -59,20 +69,26 @@
 
 ## 7. Chất lượng và an toàn
 
-1. Form dùng Reactive Forms, validation nhất quán và thông báo lỗi dễ hiểu.
+1. Form dùng Reactive Forms, validation nhất quán và thông báo lỗi dễ hiểu (i18n).
 2. Không hard-code permission, trạng thái, danh mục, color mapping hoặc route trong nhiều component; đưa vào constants/config/domain service.
 3. Không đưa dữ liệu cá nhân đầy đủ vào toast, URL, log hoặc dữ liệu công khai. Dữ liệu mock vẫn phải che/mã hóa mô phỏng theo role.
 4. Chạy `npm run build` và test phù hợp sau các thay đổi quan trọng.
 
 ## 8. Theo dõi nghiệp vụ và cập nhật MDC bắt buộc
 
-1. Mỗi nhóm nghiệp vụ phải có một file MDC riêng trong `docs/nghiep-vu/`; tên file bắt đầu bằng số thứ tự và slug nghiệp vụ.
-2. Mọi thay đổi liên quan đến thao tác, trạng thái, quyền, dữ liệu, điều kiện chuyển bước, SLA hoặc thông báo phải cập nhật file MDC của nhóm đó trong cùng thay đổi code.
-3. Mỗi file MDC nghiệp vụ phải có: phạm vi UC, actor/permission, precondition, main flow, alternate/error flow, state transition, dữ liệu vào/ra, acceptance criteria, test mapping và changelog.
+1. Tài liệu nghiệp vụ nằm trong `docs/nghiep-vu/`, **viết tiếng Việt**, tổ chức theo folder actor rồi thứ tự thao tác:
+   - `01-nguoi-dan/` — cổng công khai (đăng nhập → tra cứu → gửi hỏi → theo dõi → đánh giá);
+   - `02-can-bo/` — workspace (tiếp nhận → soạn → phê duyệt/xuất bản → tra cứu nội bộ → VBPL/AI/báo cáo);
+   - `03-admin/` — cấu hình nền (tổ chức, user, quyền, quy trình, danh mục, tích hợp, vận hành, dữ liệu).
+   Mục lục: `docs/nghiep-vu/README.mdc`. Số file trong folder = thứ tự hành trình, **không** đổi mã UC đặc tả.
+2. Mọi thay đổi thao tác, trạng thái, quyền, dữ liệu, điều kiện chuyển bước, SLA hoặc thông báo phải cập nhật file MDC nhóm (trong folder actor đúng) trong cùng thay đổi code.
+3. Mỗi file MDC nghiệp vụ phải có: ai/màn hình/route, bước người dùng, UC, luồng phụ/lỗi, điều kiện chuyển (nếu có), dữ liệu vào/ra, acceptance, test mapping và changelog tiếng Việt.
 4. Không được sửa code nghiệp vụ mà không cập nhật `Changed on`, `Changed by`, `Change reason` và `Affected UC` trong changelog của file MDC tương ứng.
-5. Khi một nghiệp vụ liên quan nhiều nhóm, cập nhật tất cả file bị ảnh hưởng và ghi cross-reference hai chiều.
+5. Khi một nghiệp vụ liên quan nhiều nhóm/folder, cập nhật tất cả file bị ảnh hưởng và ghi cross-reference hai chiều.
 6. Mỗi use case phải có trạng thái traceability: `specified`, `mocked`, `tested`, `integrated` hoặc `blocked`; không đánh dấu `integrated` nếu chưa có adapter/API thật.
-7. File spec/test phải tham chiếu mã UC và acceptance criteria trong MDC, để khi thay đổi nghiệp vụ có thể truy ngược test bị ảnh hưởng.
+7. File spec/test phải tham chiếu mã UC và acceptance trong MDC.
+8. Tiến độ giai đoạn mockup: `docs/nghiep-vu/00-ke-hoach-giai-doan-mockup.mdc`.
+9. **MDC cạnh feature (bắt buộc, tiếng Việt):** mỗi folder màn hình/form có `*.mdc` cùng thư mục, cross-ref file trong `docs/nghiep-vu/01-nguoi-dan|02-can-bo|03-admin/…`.
 
 ## 9. Cấu trúc component bắt buộc
 
@@ -80,4 +96,4 @@
 2. Mỗi component phải tách thành ba file: `*.component.ts`, `*.component.html`, `*.component.scss`; không viết template hoặc style inline trong TypeScript.
 3. Component TypeScript chỉ giữ state, dependency injection, event handler và điều phối nghiệp vụ; HTML chỉ giữ markup/binding; SCSS chỉ giữ style của màn hình.
 4. Tài nguyên dùng chung đặt trong `src/app/shared/`; không sao chép markup/style dùng chung giữa các feature.
-5. Khi tách hoặc thêm component, phải cập nhật router, comment Screen/UC đầu file TypeScript, test tương ứng và MDC router nếu route/role thay đổi.
+5. Khi tách hoặc thêm component, phải cập nhật router, comment Screen/UC đầu file TypeScript, test tương ứng, MDC cạnh feature và MDC nhóm/`docs` nếu route/role/nghiệp vụ thay đổi.

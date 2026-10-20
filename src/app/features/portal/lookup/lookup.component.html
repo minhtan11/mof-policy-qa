@@ -1,0 +1,213 @@
+<app-page-backdrop />
+<app-portal-header />
+
+<main class="lookup">
+  <!-- Hero: ảnh trụ sở bên phải hoà vào gradient xanh + minh hoạ tài liệu/kính lúp/dấu hỏi -->
+  <section class="hero">
+    <div class="wide hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">{{ 'lookup.eyebrow' | t }}</p>
+        <h1>{{ 'lookup.title1' | t }} <span class="accent">{{ 'lookup.title2' | t }}</span></h1>
+        <p class="sub">{{ 'lookup.subtitle' | t }}</p>
+        <form class="search" role="search" (submit)="search($event)">
+          <app-mof-fi-icon class="lead" name="search" />
+          <input
+            type="search"
+            name="q"
+            [attr.aria-label]="'action.search' | t"
+            [placeholder]="'lookup.placeholder' | t"
+            [ngModel]="keyword()"
+            (ngModelChange)="keyword.set($event)"
+          />
+          <app-mof-button type="submit" variant="gradient" icon="arrow-right" iconPos="right" [label]="'action.search' | t" />
+        </form>
+      </div>
+      <img class="art" src="assets/illustrations/lookup-docs.svg" alt="" width="320" height="240" />
+    </div>
+  </section>
+
+  <div class="wide layout">
+    <!-- Bộ lọc: card sticky (≥1024) / bottom sheet (<1024). KHÔNG đặt trong phần tử reveal (transform phá fixed). -->
+    <div class="sheet-scrim" [class.open]="sheetOpen()" (click)="closeSheet()" aria-hidden="true"></div>
+    <aside
+      class="filters"
+      [class.open]="sheetOpen()"
+      [attr.role]="sheetOpen() ? 'dialog' : null"
+      [attr.aria-modal]="sheetOpen() ? 'true' : null"
+      [attr.aria-label]="'lookup.filters' | t"
+    >
+      <div class="card filter-card">
+        <div class="card-head">
+          <h2><app-mof-fi-icon name="filter" /> {{ 'lookup.filters' | t }}</h2>
+          <button type="button" class="link" (click)="reset()">{{ 'lookup.reset' | t }}</button>
+          <app-mof-icon-button class="sheet-close" icon="close" [label]="'toast.close' | t" (click)="closeSheet()" />
+        </div>
+
+        <div class="group">
+          <app-mof-select
+            [label]="'lookup.topic' | t"
+            [options]="topicOptions()"
+            [ngModel]="draftTopic() ?? ''"
+            (ngModelChange)="draftTopic.set($event || null)"
+          />
+        </div>
+
+        <fieldset class="group">
+          <legend>{{ 'lookup.type' | t }}</legend>
+          @for (t of types; track t) {
+            <div class="check-row">
+              <app-mof-checkbox [label]="'lookup.type.' + t | t" [ngModel]="draftTypes().includes(t)" (ngModelChange)="toggleType(t, $event)" />
+              <span class="count">{{ typeCounts[t] }}</span>
+            </div>
+          }
+        </fieldset>
+
+        <fieldset class="group">
+          <legend>{{ 'lookup.status' | t }}</legend>
+          <div class="check-row">
+            <app-mof-checkbox [label]="'lookup.statusAll' | t" [ngModel]="!draftStatuses().length" (ngModelChange)="toggleStatus('all', $event)" />
+          </div>
+          @for (s of statusList; track s) {
+            <div class="check-row">
+              <app-mof-checkbox [label]="'lookup.st.' + s | t" [ngModel]="draftStatuses().includes(s)" (ngModelChange)="toggleStatus(s, $event)" />
+            </div>
+          }
+        </fieldset>
+
+        <div class="group">
+          <app-mof-select [label]="'lookup.periodLabel' | t" [options]="periodOptions()" [ngModel]="draftPeriod()" (ngModelChange)="draftPeriod.set($event)" />
+        </div>
+        <div class="group">
+          <app-mof-select [label]="'lookup.sortLabel' | t" [options]="sortOptions()" [ngModel]="draftSort()" (ngModelChange)="draftSort.set($event)" />
+        </div>
+
+        <app-mof-button class="apply" variant="gradient" [block]="true" [label]="'lookup.apply' | t" (click)="applyFilters()" />
+      </div>
+    </aside>
+
+    <!-- Kết quả -->
+    <section class="results-col">
+      <div class="toolbar card" #toolbar>
+        <app-mof-button class="filter-btn" variant="ghost" [label]="('lookup.filterBtn' | t) + (activeFilterCount() ? ' (' + activeFilterCount() + ')' : '')" (click)="openSheet()" />
+        <p class="count" aria-live="polite">
+          {{ 'lookup.showing' | t }} <strong>{{ results().length }}</strong> {{ 'lookup.matching' | t }}
+        </p>
+        <div class="tools">
+          <app-mof-select class="sort" size="sm" [options]="sortOptions()" [ngModel]="state().sort" (ngModelChange)="setSort($event)" />
+          <div class="view-toggle" role="group" [attr.aria-label]="'lookup.view' | t">
+            <button type="button" [class.on]="state().view === 'list'" [attr.aria-pressed]="state().view === 'list'" [attr.aria-label]="'lookup.viewList' | t" [attr.title]="'lookup.viewList' | t" (click)="setView('list')">
+              <app-mof-fi-icon name="list" />
+            </button>
+            <button type="button" [class.on]="state().view === 'grid'" [attr.aria-pressed]="state().view === 'grid'" [attr.aria-label]="'lookup.viewGrid' | t" [attr.title]="'lookup.viewGrid' | t" (click)="setView('grid')">
+              <app-mof-fi-icon name="apps" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+        <!-- Cùng một DOM cho list/grid (chỉ đổi class); track theo id; KHÔNG reveal từng thẻ (tránh nháy khi đổi trang/kiểu xem) -->
+        <div class="list" #list [class.grid]="state().view === 'grid'" [style.min-height.px]="holdHeight()">
+          @for (r of visible(); track r.id) {
+            <article class="card qa" [attr.data-status]="r.status" [attr.data-id]="r.id">
+              <span class="tile" aria-hidden="true"><app-mof-fi-icon name="document" /></span>
+              <div class="qa-body">
+                <div class="qa-top">
+                  <span class="code">{{ r.code }}</span>
+                  <span class="badge" [attr.data-status]="r.status"><app-mof-fi-icon [name]="statusIcon(r.status)" /> {{ 'lookup.st.' + r.status | t }}</span>
+                </div>
+                <h3>{{ r.title }}</h3>
+                <p class="meta">
+                  <span><app-mof-fi-icon name="folder" /> {{ repo.topicName(r.topicId) }}</span>
+                  <span><app-mof-fi-icon name="calendar" /> {{ r.postedAt | date: 'dd/MM/yyyy' }}</span>
+                  <span><app-mof-fi-icon name="eye" /> {{ r.views | number }}</span>
+                  <span><app-mof-fi-icon name="comment" /> {{ r.replies }}</span>
+                </p>
+                @if (r.answer) {
+                  <blockquote class="excerpt" [class.full]="expanded().has(r.id)">
+                    <span class="clamp"><strong>{{ 'lookup.answer' | t }}</strong> {{ r.answer }}</span>
+                  </blockquote>
+                } @else {
+                  <p class="note"><app-mof-fi-icon [name]="statusIcon(r.status)" /> {{ r.note }}</p>
+                }
+              </div>
+              <app-mof-icon-button
+                class="chev"
+                [fi]="expanded().has(r.id) ? 'angle-small-down' : 'angle-small-right'"
+                variant="outline"
+                [label]="'lookup.toggleDetail' | t"
+                [expanded]="expanded().has(r.id)"
+                (click)="toggleExpand(r.id)"
+              />
+            </article>
+          } @empty {
+            <div class="card empty">
+              <span class="empty-ico"><app-mof-fi-icon name="search" /></span>
+              <h3>{{ 'lookup.emptyTitle' | t }}</h3>
+              <p>{{ 'lookup.emptyBody' | t }}</p>
+              <div class="empty-actions">
+                <app-mof-button variant="ghost" [label]="'lookup.reset' | t" (click)="reset(); keyword.set(''); search()" />
+                <app-mof-button variant="gradient" (click)="goAsk()" [label]="'lookup.askNew' | t" />
+              </div>
+            </div>
+          }
+        </div>
+        @if (results().length) {
+          <app-mof-pagination
+            class="pagination card"
+            [page]="page()"
+            [total]="results().length"
+            [pageSize]="state().size"
+            [pageSizes]="pageSizes"
+            (pageChange)="goPage($event)"
+            (pageSizeChange)="setSize($event)"
+          />
+        }
+    </section>
+
+    <!-- Cột phải -->
+    <aside class="side">
+      <section class="card">
+        <div class="card-head">
+          <h2><app-mof-fi-icon class="flame" name="flame" /> {{ 'lookup.popular' | t }}</h2>
+          <button type="button" class="link" (click)="reset()">{{ 'lookup.viewAll' | t }}</button>
+        </div>
+        <ol class="rank">
+          @for (tp of popular; track tp.id; let i = $index) {
+            <li>
+              <button type="button" (click)="pickTopic(tp.id)" [class.on]="state().topic === tp.id">
+                <span class="no">{{ i + 1 }}</span>
+                <span class="name">{{ tp.name }}</span>
+                <span class="cnt">{{ tp.count | number }}</span>
+              </button>
+            </li>
+          }
+        </ol>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2><app-mof-fi-icon class="star" name="star" /> {{ 'lookup.featured' | t }}</h2>
+        </div>
+        <ul class="feat">
+          @for (f of featured; track f.id) {
+            <li>
+              <button type="button" (click)="keyword.set(f.code); search()">
+                <span class="ft">{{ f.title }}</span>
+                <small><app-mof-fi-icon name="eye" /> {{ f.views | number }} {{ 'lookup.views' | t }}</small>
+              </button>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <section class="card cta">
+        <span class="cta-ico" aria-hidden="true"><app-mof-fi-icon name="comment-question" /></span>
+        <h2>{{ 'lookup.ctaTitle' | t }}</h2>
+        <p>{{ 'lookup.ctaBody' | t }}</p>
+        <app-mof-button variant="gradient" [block]="true" (click)="goAsk()" icon="arrow-right" iconPos="right" [label]="'lookup.ctaBtn' | t" />
+      </section>
+    </aside>
+  </div>
+</main>
+
+<app-portal-footer />

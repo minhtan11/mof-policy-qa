@@ -1,0 +1,180 @@
+:host {
+  display: inline-flex;
+}
+
+.mof-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition:
+    transform var(--mof-fast) ease,
+    background var(--mof-fast) ease,
+    border-color var(--mof-fast) ease,
+    box-shadow var(--mof-fast) ease,
+    color var(--mof-fast) ease;
+}
+
+.mof-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.mof-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.mof-btn:not(:disabled):active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.is-sm {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 0.78rem;
+}
+
+.is-md {
+  min-height: 42px;
+  padding: 0 16px;
+  font-size: 0.84rem;
+}
+
+.is-lg {
+  min-height: 48px;
+  padding: 0 18px;
+  font-size: 0.9rem;
+}
+
+.is-icon {
+  width: 42px;
+  padding: 0;
+}
+
+.is-block {
+  width: 100%;
+}
+
+.is-primary {
+  background: var(--mof-blue);
+  color: #fff;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--mof-blue) 24%, transparent);
+}
+
+.is-primary:not(:disabled):hover {
+  background: var(--mof-blue-strong);
+}
+
+.is-secondary {
+  background: var(--mof-surface);
+  border-color: var(--mof-line);
+  color: var(--mof-ink);
+}
+
+.is-secondary:not(:disabled):hover {
+  background: var(--mof-canvas);
+}
+
+.is-soft {
+  background: var(--mof-blue-soft);
+  color: var(--mof-blue-strong);
+}
+
+.is-ghost {
+  background: transparent;
+  color: var(--mof-muted);
+}
+
+.is-ghost:not(:disabled):hover {
+  background: var(--mof-canvas);
+  color: var(--mof-ink);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Nút chính dạng pill gradient (CTA lớn, vd. đăng nhập) */
+.is-gradient {
+  border-radius: 999px;
+  background: var(--mof-btn-gradient);
+  color: var(--mof-on-brand);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--mof-blue) 32%, transparent);
+}
+
+.is-gradient:not(:disabled):hover {
+  box-shadow: 0 16px 32px color-mix(in srgb, var(--mof-blue) 40%, transparent);
+  filter: brightness(1.05);
+}
+
+/* Tab trong segmented control: pill trắng + gạch chân xanh khi active */
+.is-tab {
+  position: relative;
+  width: 100%;
+  min-height: 46px;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--mof-muted);
+}
+
+.is-tab:not(:disabled):hover {
+  transform: none;
+  color: var(--mof-navy);
+}
+
+.is-tab.is-active {
+  background: var(--mof-surface);
+  color: var(--mof-blue);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mof-navy) 8%, transparent);
+}
+
+.is-tab.is-active::after {
+  content: '';
+  position: absolute;
+  right: 18%;
+  bottom: 0;
+  left: 18%;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--mof-blue);
+}
+
+/* Ô icon cố định 18px: icon và spinner thay nhau, không đổi kích thước nút */
+.icon-slot {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.mof-btn {
+  position: relative;
+}
+
+/* Nút không có icon: spinner phủ giữa, nhãn ẩn bằng opacity (giữ nguyên bề rộng) */
+.spinner.overlay {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+
+.is-loading:not(:has(.icon-slot)) .label {
+  opacity: 0;
+}

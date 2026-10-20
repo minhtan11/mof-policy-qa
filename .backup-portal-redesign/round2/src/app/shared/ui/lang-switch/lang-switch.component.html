@@ -1,0 +1,37 @@
+<div class="lang-switch" role="group" [attr.aria-label]="'action.langVi' | t">
+  <button
+    type="button"
+    class="lang-opt"
+    [class.active]="i18n.locale() === 'vi'"
+    (click)="setVi()"
+    [attr.aria-pressed]="i18n.locale() === 'vi'"
+    [attr.title]="'action.langVi' | t"
+  >
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true">
+      <rect width="30" height="20" fill="#da251d" />
+      <polygon
+        fill="#ff0"
+        points="15,3.2 16.6,8.2 21.8,8.2 17.6,11.3 19.2,16.3 15,13.2 10.8,16.3 12.4,11.3 8.2,8.2 13.4,8.2"
+      />
+    </svg>
+    <span class="code">VI</span>
+  </button>
+  <button
+    type="button"
+    class="lang-opt"
+    [class.active]="i18n.locale() === 'en'"
+    (click)="setEn()"
+    [attr.aria-pressed]="i18n.locale() === 'en'"
+    [attr.title]="'action.langEn' | t"
+  >
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true">
+      <rect width="30" height="20" fill="#012169" />
+      <path stroke="#fff" stroke-width="3" d="M0,0 30,20 M30,0 0,20" />
+      <path stroke="#c8102e" stroke-width="1.5" d="M0,0 30,20 M30,0 0,20" />
+      <path stroke="#fff" stroke-width="5" d="M15,0 v20 M0,10 h30" />
+      <path stroke="#c8102e" stroke-width="3" d="M15,0 v20 M0,10 h30" />
+    </svg>
+    <span class="code">EN</span>
+  </button>
+  <span class="thumb" [class.is-en]="i18n.locale() === 'en'" aria-hidden="true"></span>
+</div>

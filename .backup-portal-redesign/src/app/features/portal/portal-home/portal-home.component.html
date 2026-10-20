@@ -1,0 +1,199 @@
+<div class="portal-home">
+  <app-portal-header />
+
+  <section class="hero reveal" style="--delay: 0ms">
+    <div class="hero-overlay"></div>
+    <div class="content-width hero-copy">
+      <span class="pill">
+        <app-mof-fi-icon name="sparkles" />
+        {{ 'home.pill' | t }}
+      </span>
+      <h1>{{ 'home.title' | t }}</h1>
+      <p>{{ 'home.subtitle' | t }}</p>
+
+      <div class="search-box">
+        <app-mof-fi-icon name="search" />
+        <input
+          type="search"
+          [placeholder]="'home.searchPlaceholder' | t"
+          [ngModel]="keyword()"
+          (ngModelChange)="keyword.set($event)"
+          (keyup.enter)="search()"
+        />
+        <app-mof-button icon="arrow-right" [ariaLabel]="'action.search' | t" (click)="search()" />
+      </div>
+
+      <div class="quick-links">
+        <span>{{ 'home.popular' | t }}</span>
+        @for (term of popular; track term) {
+          <button type="button" (click)="usePopular(term)">{{ term }}</button>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-band reveal" style="--delay: 80ms">
+    <div class="content-width">
+      <div class="stats-grid">
+        @for (stat of stats; track stat.key) {
+          <article class="stat-card" [attr.data-tone]="stat.tone">
+            <span class="stat-icon"><app-mof-fi-icon [name]="stat.icon" weight="sr" /></span>
+            <div>
+              <strong>{{ stat.value }}</strong>
+              <p>{{ stat.key | t }}</p>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-highlights reveal" style="--delay: 120ms">
+    <div class="content-width">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">{{ 'home.highlightsEyebrow' | t }}</p>
+          <h2>{{ 'home.highlightsTitle' | t }}</h2>
+        </div>
+      </div>
+      <div class="highlight-grid">
+        @for (item of highlights; track item.title; let i = $index) {
+          <article class="highlight-card" [attr.data-tone]="item.tone" [style.--i]="i">
+            <span class="highlight-icon"><app-mof-fi-icon [name]="item.icon" weight="sr" /></span>
+            <h3>{{ item.title | t }}</h3>
+            <p>{{ item.body | t }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-topics reveal" style="--delay: 160ms">
+    <div class="content-width">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">{{ 'home.topicsEyebrow' | t }}</p>
+          <h2>{{ 'home.topicsTitle' | t }}</h2>
+        </div>
+        <a class="text-link" routerLink="/portal/hoi-dap">
+          {{ 'action.viewAll' | t }}
+          <app-mof-fi-icon name="arrow-right" />
+        </a>
+      </div>
+
+      <div class="topic-grid">
+        @for (topic of db.topics; track topic.id; let i = $index) {
+          <a
+            class="topic-card"
+            routerLink="/portal/hoi-dap"
+            [queryParams]="{ topic: topic.id }"
+            [attr.data-tone]="topicMetaOf(topic.id).tone"
+            [style.--i]="i"
+          >
+            <span class="topic-icon">
+              <app-mof-fi-icon [name]="topicMetaOf(topic.id).icon" weight="sr" />
+            </span>
+            <div class="topic-body">
+              <h3>{{ topic.name }}</h3>
+              <p>{{ topic.description }}</p>
+              <small>{{ 'home.topicCount' | t: { count: topic.count } }}</small>
+            </div>
+            <span class="topic-arrow"><app-mof-fi-icon name="arrow-up-right" /></span>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="answers-band reveal" style="--delay: 200ms">
+    <div class="content-width split-section">
+      <div class="split-copy">
+        <p class="eyebrow">{{ 'home.answersEyebrow' | t }}</p>
+        <h2>{{ 'home.answersTitle' | t }}</h2>
+        <p class="muted intro">{{ 'home.answersIntro' | t }}</p>
+        <a class="text-link" routerLink="/portal/tra-cuu">
+          {{ 'home.answersLink' | t }}
+          <app-mof-fi-icon name="arrow-right" />
+        </a>
+      </div>
+
+      <div class="answer-list">
+        @for (item of published(); track item.id; let i = $index) {
+          <article class="answer-item" [style.--i]="i">
+            <div class="answer-top">
+              <app-mof-badge [label]="topicName(item.topicId)" tone="info" />
+              <span class="answer-date">
+                <app-mof-fi-icon name="calendar" />
+                {{ item.receivedAt | date: 'dd/MM/yyyy' }}
+              </span>
+            </div>
+            <h3>{{ item.question }}</h3>
+            <p>{{ item.answer }}</p>
+            <a class="answer-cta" routerLink="/portal/tra-cuu">
+              {{ 'action.viewDetail' | t }}
+              <app-mof-fi-icon name="arrow-right" />
+            </a>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="callout reveal" style="--delay: 240ms">
+    <div class="content-width callout-row">
+      <div>
+        <p class="eyebrow">{{ 'home.calloutEyebrow' | t }}</p>
+        <h2>{{ 'home.calloutTitle' | t }}</h2>
+        <p>{{ 'home.calloutBody' | t }}</p>
+      </div>
+      <a routerLink="/portal/hoi-dap">
+        <app-mof-button [label]="'action.askNow' | t" icon="send" iconPos="right" size="lg" />
+      </a>
+    </div>
+  </section>
+
+  <footer class="site-footer reveal" style="--delay: 280ms">
+    <div class="content-width footer-grid">
+      <div class="footer-brand">
+        <div class="brand-row">
+          <img src="assets/mof-emblem-official.png" alt="" />
+          <div>
+            <strong>{{ 'brand.ministry' | t }}</strong>
+            <small>{{ 'brand.portal' | t }}</small>
+          </div>
+        </div>
+        <p>{{ 'home.footerAboutBody' | t }}</p>
+        <p class="attr">
+          Uicons by
+          <a href="https://www.flaticon.com/uicons" target="_blank" rel="noopener">Flaticon</a>
+        </p>
+      </div>
+
+      <div>
+        <h4>{{ 'home.footerLinks' | t }}</h4>
+        <a routerLink="/portal">{{ 'nav.home' | t }}</a>
+        <a routerLink="/portal/tra-cuu">{{ 'nav.search' | t }}</a>
+        <a routerLink="/portal/hoi-dap">{{ 'nav.ask' | t }}</a>
+        <a routerLink="/portal">{{ 'nav.guide' | t }}</a>
+      </div>
+
+      <div>
+        <h4>{{ 'home.footerSupport' | t }}</h4>
+        <a routerLink="/portal/login/vneid">{{ 'login.vneid' | t }}</a>
+        <a routerLink="/workspace">{{ 'nav.workspace' | t }}</a>
+        <a routerLink="/portal">{{ 'nav.legal' | t }}</a>
+      </div>
+
+      <div>
+        <h4>{{ 'home.footerContact' | t }}</h4>
+        <p>{{ 'home.footerAddress' | t }}</p>
+        <p>{{ 'home.footerEmail' | t }}</p>
+        <p>{{ 'home.footerPhone' | t }}</p>
+      </div>
+    </div>
+    <div class="content-width footer-bottom">
+      <span>{{ 'home.footer' | t }}</span>
+      <span>{{ 'home.footerRights' | t }}</span>
+    </div>
+  </footer>
+</div>

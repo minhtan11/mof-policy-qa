@@ -1,0 +1,10 @@
+<textarea
+  class="mof-field"
+  [id]="id() || null"
+  [rows]="rows()"
+  [placeholder]="placeholder()"
+  [value]="value()"
+  [disabled]="disabled"
+  (input)="onInput($event)"
+  (blur)="markTouched()"
+></textarea>

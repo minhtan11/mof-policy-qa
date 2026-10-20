@@ -1,35 +1,72 @@
-# Business specification index
+# Mục lục nghiệp vụ MOF-PolicyQA
 
-Router, màn hình và tài khoản mock theo role được mô tả tại `../router-va-tai-khoan-theo-role.mdc`.
+Tài liệu nghiệp vụ **tiếng Việt**, xếp theo **ai thao tác** rồi theo **thứ tự hành trình** (không xếp theo số UC gốc).
 
-This directory is the change-controlled business source for the 203 use cases. The consolidated specification remains the baseline at `../dac-ta-he-thong-hoi-dap-cstc.mdc`.
+Đặc tả gốc: `../dac-ta-he-thong-hoi-dap-cstc.mdc`  
+Router / tài khoản demo: `../router-va-tai-khoan-theo-role.mdc`  
+Kế hoạch giai đoạn: `00-ke-hoach-giai-doan-mockup.mdc`  
+Ma trận UC: `TRACEABILITY.mdc`
 
-Every file below owns a contiguous UC range. Code changes must update its acceptance criteria and changelog before tests are changed.
+## Cách đọc
 
-| File | UC range | Primary area |
-|---|---:|---|
-| 01-quan-ly-dang-nhap.mdc | 1-8 | Internal/public authentication, VNeID, session, 2FA |
-| 02-to-chuc-don-vi.mdc | 9-17 | Organization tree and routing |
-| 03-nguoi-dung.mdc | 18-30 | Internal/external user accounts |
-| 04-phan-quyen.mdc | 31-40 | Roles, permissions, scopes |
-| 05-quy-trinh.mdc | 41-51 | Configurable workflow and SLA |
-| 06-tich-hop.mdc | 52-59 | VNeID, messaging, storage, webhooks |
-| 07-danh-muc.mdc | 60-74 | Catalogues and templates |
-| 08-van-ban-phap-luat.mdc | 75-83 | Legal document library and validity |
-| 09-van-hanh.mdc | 84-99 | Operations, security, backup, AI operations |
-| 10-gui-cau-hoi.mdc | 100-113 | Public question submission |
-| 11-tuong-tac.mdc | 114-126 | Notifications, feedback, history |
-| 12-phan-he-thong-minh.mdc | 127-134 | Classification, suggestions, OCR, translation |
-| 13-du-lieu-backend.mdc | 135-141 | Search index, quality, privacy processing |
-| 14-quy-trinh-tra-loi.mdc | 142-161 | Internal answer lifecycle |
-| 15-tra-cuu-cong-khai.mdc | 162-175 | Public search and tracking |
-| 16-tra-cuu-noi-bo.mdc | 176-187 | Staff search and audit |
-| 17-bao-cao-thong-ke.mdc | 188-203 | Mandatory reports and dashboards |
+1. **`01-nguoi-dan/`** — cổng công khai: đăng nhập → tra cứu → gửi hỏi → theo dõi → đánh giá/làm rõ.  
+2. **`02-can-bo/`** — workspace: tiếp nhận → soạn trả lời → phê duyệt/xuất bản → tra cứu nội bộ → VBPL/AI/báo cáo.  
+3. **`03-admin/`** — cấu hình nền: tổ chức, người dùng, quyền, quy trình, danh mục, tích hợp, vận hành.
 
-## Traceability status
+Số `01, 02…` trong mỗi folder = **thứ tự thao tác**, không phải mã UC. Mã UC (UC-100…) giữ nguyên theo đặc tả 203 UC.
 
-`specified` means documented; `mocked` means executable with local mock data; `tested` means covered by a spec; `integrated` is reserved for a real adapter/API; `blocked` requires customer/API clarification.
+## Cấu trúc thư mục
 
-## Change protocol
+### 01 — Người dân / Doanh nghiệp
 
-Update the owning file's `Changed on`, `Changed by`, `Change reason`, `Affected UC`, and `Changelog` before merging code. Update cross-referenced files when a transition crosses business groups.
+| File | Thao tác chính | UC |
+|---|---|---|
+| `01-dang-nhap-cong.mdc` | Đăng nhập VNeID / tài khoản công khai, phiên | 1–8 (cổng public) |
+| `02-tra-cuu-cong-khai.mdc` | Tìm hỏi–đáp công khai, mở chi tiết | 162–175 |
+| `03-gui-cau-hoi.mdc` | Wizard gửi câu hỏi, similar, consent | 100–113 |
+| `04-cau-hoi-cua-toi.mdc` | Danh sách hồ sơ theo email, theo dõi | 110, 122, 165 |
+| `05-xem-tra-loi-danh-gia.mdc` | Xem trả lời, đánh giá, làm rõ, thông báo | 114–126 |
+| `06-huong-dan-va-van-ban.mdc` | Hướng dẫn / VBPL công khai (Coming soon) | 162–165 (lối vào) |
+
+### 02 — Cán bộ nội bộ
+
+| File | Thao tác chính | UC |
+|---|---|---|
+| `01-tiep-nhan-phan-cong.mdc` | Tiếp nhận, phân loại, phân công, trả lại | 142–149 (+ AI 127–130) |
+| `02-soan-tra-loi.mdc` | Soạn trả lời, căn cứ, phối hợp, trình duyệt | 142–161 |
+| `03-phe-duyet-xuat-ban.mdc` | Phê duyệt, ký số mock, xuất bản, thu hồi | 142–161 |
+| `04-tra-cuu-noi-bo.mdc` | Tra cứu / audit nội bộ | 176–187 |
+| `05-van-ban-phap-luat.mdc` | Kho VBPL khi soạn / quản trị | 75–83 |
+| `06-phan-he-thong-minh.mdc` | Gợi ý AI (advisory) | 127–134 |
+| `07-bao-cao-dashboard.mdc` | Báo cáo, dashboard | 188–203 |
+
+### 03 — Quản trị hệ thống
+
+| File | Thao tác chính | UC |
+|---|---|---|
+| `01-to-chuc-don-vi.mdc` | Cây đơn vị, định tuyến | 9–17 |
+| `02-nguoi-dung.mdc` | Tài khoản nội bộ / ngoài | 18–30 |
+| `03-phan-quyen.mdc` | Vai trò, quyền, phạm vi dữ liệu | 31–40 |
+| `04-cau-hinh-quy-trinh-sla.mdc` | Workflow, SLA | 41–51 |
+| `05-danh-muc.mdc` | Danh mục, mẫu | 60–74 |
+| `06-tich-hop.mdc` | VNeID, email/SMS, storage, webhook | 52–59 |
+| `07-van-han.mdc` | ATTT, backup, job, AI ops | 84–99 |
+| `08-du-lieu-backend.mdc` | Index, chất lượng, ẩn danh | 135–141 |
+
+## MDC cạnh màn hình (feature)
+
+Mỗi folder màn hình nghiệp vụ có thêm `*.mdc` cạnh code (ví dụ `src/app/features/portal/ask-question/ask-question.mdc`), viết tiếng Việt, cross-ref file trong thư mục này.
+
+## Quy ước trạng thái UC
+
+| Trạng thái | Ý nghĩa |
+|---|---|
+| `specified` | Đã mô tả trong MDC |
+| `mocked` | Thao tác được bằng mock cục bộ |
+| `tested` | Có test tự động cho logic chính |
+| `integrated` | Có adapter/API thật (chưa dùng khi còn mock) |
+| `blocked` | Chờ tích hợp / quyết định khách hàng |
+
+## Nghi thức cập nhật
+
+Sửa nghiệp vụ (thao tác, trạng thái, quyền, SLA, dữ liệu) → cập nhật **cùng lúc**: file MDC nhóm trong folder actor + MDC màn hình (nếu có) + `TRACEABILITY.mdc` + changelog (`Changed on`, `Changed by`, `Change reason`, `Affected UC`).

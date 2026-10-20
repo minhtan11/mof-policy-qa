@@ -1,0 +1,39 @@
+# Màn PUB-04 — Chi tiết hồ sơ / theo dõi công khai
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Viết tiếng Việt; trỏ MDC nhóm theo folder người dân  
+Affected UC: UC-114..UC-118, UC-165  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/05-xem-tra-loi-danh-gia.mdc`, `docs/nghiep-vu/01-nguoi-dan/02-tra-cuu-cong-khai.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/portal/ho-so/:code` |
+| Actor | Người dân / doanh nghiệp |
+| Trạng thái | `mocked` |
+
+## Luồng chính
+
+1. Tải hồ sơ theo mã.  
+2. Hiện timeline + trạng thái.  
+3. Nếu đã công bố có trả lời: hiện nội dung/căn cứ; cho đánh giá và yêu cầu làm rõ (shared kit).
+
+## Luồng phụ
+
+- Mã không tồn tại → empty không tìm thấy.  
+- Chưa công khai / chưa trả lời → thông báo đang xử lý; không hiện form đánh giá.
+
+## Acceptance
+
+- Toast chỉ kèm mã hồ sơ (không PII đầy đủ).  
+- Đánh giá / làm rõ lưu qua `MockDbService`.  
+- Làm rõ thêm sự kiện timeline.
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Chi tiết công khai + rating/clarify (G1) | 114–118, 165 |
+| 2026-10-20 | Codex | Viết lại tiếng Việt; path MDC nhóm mới | 114–118, 165 |

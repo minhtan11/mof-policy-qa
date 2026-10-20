@@ -1,0 +1,44 @@
+# Admin — Tổ chức / đơn vị
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G3 — OrganizationRepository + tab Tổ chức trên `/admin`  
+Affected UC: UC-009..UC-017
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Quản trị hệ thống |
+| Route | `/admin` · tab Tổ chức |
+| MDC màn | `src/app/features/admin/admin/admin.mdc` |
+| Trạng thái | `mocked` |
+
+## Admin làm gì
+
+1. Xem cây / danh sách đơn vị Bộ và đơn vị trực thuộc.  
+2. Thêm đơn vị (mã, tên, đơn vị cha).  
+3. Bật/tắt đơn vị; xem lĩnh vực tiếp nhận gắn sẵn.
+
+## Dữ liệu
+
+- Repository: `OrganizationRepository`  
+- Seed: `ORGANIZATIONS` trong `domain-fixtures.ts`  
+- Quan hệ: `AdminAccount.organizationId` → đơn vị
+
+## Acceptance
+
+- Cây đơn vị nhất quán với user → role → scope.  
+- Toggle không xóa liên kết tài khoản hiện có.
+
+## Test
+
+`organization.repository.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Khởi tạo MDC | 9–17 |
+| 2026-10-20 | Codex | Chuyển `03-admin`, tiếng Việt | 9–17 |
+| 2026-10-20 | Codex | G3 mock CRUD nhẹ + toggle | 9–17 |

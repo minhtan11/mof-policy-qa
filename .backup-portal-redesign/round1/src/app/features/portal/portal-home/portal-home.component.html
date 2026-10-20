@@ -1,0 +1,140 @@
+<div class="portal-home">
+  <app-portal-header />
+
+  <main>
+    <section class="content-width hero reveal" style="--delay: 0ms" [style.--hero-img]="'url(' + repo.heroImage + ')'">
+      <div class="hero-copy">
+        <p class="hero-eyebrow">{{ 'portal.hero.eyebrow' | t }}</p>
+        <h1>{{ 'portal.hero.title' | t }}</h1>
+        <p class="hero-sub">{{ 'portal.hero.subtitle' | t }}</p>
+        <a routerLink="/portal/tra-cuu">
+          <app-mof-button variant="secondary" [label]="'portal.hero.cta' | t" icon="arrow-right" iconPos="right" />
+        </a>
+      </div>
+      <p class="hero-motto" aria-hidden="true">{{ 'portal.hero.motto' | t }}</p>
+    </section>
+
+    <section class="content-width services reveal" style="--delay: 60ms" [attr.aria-label]="'portal.services.label' | t">
+      @for (card of repo.serviceCards; track card.id) {
+        <a class="service-card" [routerLink]="card.route" [fragment]="card.fragment">
+          <span class="service-icon"><app-mof-fi-icon [name]="card.icon" weight="sr" /></span>
+          <span class="service-arrow"><app-mof-fi-icon name="angle-small-right" /></span>
+          <h3>{{ card.titleKey | t }}</h3>
+          <p>{{ card.bodyKey | t }}</p>
+        </a>
+      }
+    </section>
+
+    <section class="content-width news-row reveal" style="--delay: 120ms" id="tin-tuc">
+      <div class="panel news-panel">
+        <header class="panel-head">
+          <h2>{{ 'portal.news.title' | t }}</h2>
+          <a class="more" routerLink="/portal/tra-cuu">{{ 'action.viewAll' | t }} <app-mof-fi-icon name="arrow-right" /></a>
+        </header>
+        <div class="news-grid">
+          @if (news.featured; as item) {
+            <article class="news-featured">
+              <div class="thumb">
+                <img [src]="item.image" alt="" loading="lazy" />
+                <span class="tag">{{ 'portal.news.featured' | t }}</span>
+              </div>
+              <time [attr.datetime]="item.publishedAt"><app-mof-fi-icon name="calendar" /> {{ formatDate(item.publishedAt) }}</time>
+              <h3>{{ text(item.title) }}</h3>
+              <p>{{ text(item.summary) }}</p>
+            </article>
+          }
+          <ul class="news-list">
+            @for (item of news.others; track item.id) {
+              <li>
+                <img [src]="item.image" alt="" loading="lazy" />
+                <div>
+                  <time [attr.datetime]="item.publishedAt"><app-mof-fi-icon name="calendar" /> {{ formatDate(item.publishedAt) }}</time>
+                  <h4>{{ text(item.title) }}</h4>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <aside class="panel notice-panel">
+        <header class="panel-head">
+          <h2><app-mof-fi-icon name="bell" /> {{ 'portal.notice.title' | t }}</h2>
+          <a class="more" routerLink="/portal/tra-cuu">{{ 'action.viewAll' | t }} <app-mof-fi-icon name="arrow-right" /></a>
+        </header>
+        <ul class="notice-list">
+          @for (item of notices; track item.id) {
+            <li>
+              <a routerLink="/portal/tra-cuu">
+                <span>
+                  <time [attr.datetime]="item.publishedAt">{{ formatDate(item.publishedAt) }}</time>
+                  {{ text(item.title) }}
+                </span>
+                <app-mof-fi-icon name="angle-small-right" />
+              </a>
+            </li>
+          }
+        </ul>
+      </aside>
+    </section>
+
+    <section class="content-width budget-row reveal" style="--delay: 180ms" id="ngan-sach">
+      <div class="panel">
+        <header class="panel-head">
+          <h2>{{ 'portal.budget.title' | t }}</h2>
+          <app-mof-select class="year-select" [options]="yearOptions" [ngModel]="year()" (ngModelChange)="year.set($event)" />
+        </header>
+        <div class="tabs" role="tablist">
+          @for (item of repo.budgetTabs; track item) {
+            <app-mof-button
+              role="tab"
+              size="sm"
+              [attr.aria-selected]="tab() === item"
+              [variant]="tab() === item ? 'soft' : 'ghost'"
+              [label]="'portal.budget.tab.' + item | t"
+              (click)="tab.set(item)"
+            />
+          }
+        </div>
+        <div class="kpi-grid">
+          @for (kpi of kpis(); track kpi.id) {
+            <article class="kpi" [attr.data-tone]="kpi.tone">
+              <span class="kpi-icon"><app-mof-fi-icon [name]="kpi.icon" weight="sr" /></span>
+              <p class="kpi-label">{{ kpi.labelKey | t }}</p>
+              <strong>{{ formatNumber(kpi.value) }}{{ kpi.id === 'disbursement' ? '%' : '' }}</strong>
+              <small>{{ kpi.unitKey | t }}</small>
+              @if (kpi.delta !== null) {
+                <p class="kpi-delta"><app-mof-fi-icon name="arrow-trend-up" /> {{ formatNumber(kpi.delta) }}% <span>{{ 'portal.budget.yoy' | t }}</span></p>
+              } @else if (kpi.noteKey) {
+                <p class="kpi-note">{{ kpi.noteKey | t: { value: formatNumber(kpi.noteValue ?? 0) } }}</p>
+              }
+            </article>
+          }
+        </div>
+        <p class="disclaimer">{{ 'portal.budget.disclaimer' | t }}</p>
+      </div>
+
+      <div class="panel chart-panel">
+        <header class="panel-head">
+          <h2>{{ 'portal.budget.chartTitle' | t }}</h2>
+          <app-mof-select class="year-select" [options]="yearOptions" [ngModel]="chartYear()" (ngModelChange)="chartYear.set($event)" />
+        </header>
+        <app-mof-chart [options]="chartOptions()" />
+      </div>
+    </section>
+
+    <section class="content-width panel quick reveal" style="--delay: 240ms">
+      <header class="panel-head"><h2>{{ 'portal.quick.title' | t }}</h2></header>
+      <div class="quick-grid">
+        @for (link of repo.quickLinks; track link.id) {
+          <a class="quick-item" [routerLink]="link.route" [fragment]="link.fragment">
+            <span><app-mof-fi-icon [name]="link.icon" /></span>
+            {{ link.labelKey | t }}
+          </a>
+        }
+      </div>
+    </section>
+  </main>
+
+  <app-portal-footer />
+</div>

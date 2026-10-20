@@ -1,0 +1,575 @@
+/* Sidebar workspace — rail ↔ mở rộng. Chỉ token + rem. Bề rộng do shell (grid column) quyết định. */
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--mof-ws-side-bg);
+  border-inline-end: 1px solid var(--mof-line);
+  color: var(--mof-ink);
+}
+
+/* ---------- Đầu: emblem + chữ + nút « ---------- */
+.side-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--mof-header-h);
+  padding: 0 0.75rem 0 calc((var(--mof-ws-rail-w) - 2.5rem) / 2);
+  border-bottom: 1px solid color-mix(in srgb, var(--mof-line) 70%, transparent);
+}
+
+.brand {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 0.75rem;
+
+  &:focus-visible {
+    outline: 2px solid var(--mof-blue);
+    outline-offset: 2px;
+  }
+}
+
+.emblem {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+}
+
+.brand-text {
+  display: grid;
+  min-width: 0;
+  line-height: 1.2;
+
+  b {
+    color: var(--mof-ws-brand-ink);
+    font-size: var(--mof-text-md);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  small {
+    color: var(--mof-blue);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+}
+
+.head-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--mof-line);
+  border-radius: 999px;
+  background: var(--mof-surface);
+  color: var(--mof-muted);
+  cursor: pointer;
+  transition: color var(--mof-fast) ease, border-color var(--mof-fast) ease, background var(--mof-fast) ease;
+
+  &:hover {
+    color: var(--mof-blue);
+    border-color: color-mix(in srgb, var(--mof-blue) 40%, var(--mof-line));
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mof-blue);
+    outline-offset: 2px;
+  }
+
+  &.close {
+    width: var(--mof-touch);
+    height: var(--mof-touch);
+  }
+}
+
+/* Nút » nổi ở mép rail */
+.edge-toggle {
+  position: absolute;
+  top: calc(var(--mof-header-h) - 0.875rem);
+  inset-inline-end: -0.875rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--mof-line);
+  border-radius: 999px;
+  background: var(--mof-surface);
+  color: var(--mof-blue);
+  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--mof-navy) 14%, transparent);
+  cursor: pointer;
+  font-size: 0.8rem;
+
+  &:hover {
+    background: var(--mof-blue);
+    color: var(--mof-on-brand);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mof-blue);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------- Menu (cuộn độc lập) ---------- */
+.menu {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 0.875rem 0.75rem;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 2.625rem;
+  padding: 0 0.75rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--mof-ink);
+  font: inherit;
+  font-size: var(--mof-text-sm);
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--mof-fast) ease, color var(--mof-fast) ease;
+
+  .ico {
+    flex: none;
+    width: 1.25rem;
+    color: var(--mof-muted);
+    font-size: 1.05rem;
+    text-align: center;
+    transition: color var(--mof-fast) ease;
+  }
+
+  &:hover {
+    background: var(--mof-hover-tint);
+
+    .ico {
+      color: var(--mof-blue);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mof-blue);
+    outline-offset: -2px;
+  }
+
+  &.active {
+    background: var(--mof-active-tint);
+    color: var(--mof-blue-strong);
+    font-weight: 700;
+
+    .ico {
+      color: var(--mof-blue);
+    }
+  }
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+:host(.anim) :is(.label, .g-title, .s-txt, .brand-text) {
+  animation: label-in var(--mof-ws-side-dur) ease both;
+}
+
+@keyframes label-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Tổng quan = pill đặc màu thương hiệu khi active */
+.home {
+  margin-bottom: 0.5rem;
+
+  &.active {
+    background: var(--mof-btn-gradient);
+    color: var(--mof-on-brand);
+    box-shadow: 0 0.5rem 1rem color-mix(in srgb, var(--mof-blue) 28%, transparent);
+
+    .ico {
+      color: inherit;
+    }
+  }
+}
+
+.badge {
+  flex: none;
+  min-width: 1.5rem;
+  padding: 0.0625rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mof-blue) 14%, transparent);
+  color: var(--mof-blue-strong);
+  font-size: var(--mof-text-xs);
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+
+  .active & {
+    background: var(--mof-blue);
+    color: var(--mof-on-brand);
+  }
+}
+
+/* Mục chưa có màn: tag "Sắp có" nhẹ (R30). */
+.soon-tag {
+  flex: none;
+  margin-inline-start: auto;
+  padding: 0.0625rem 0.4rem;
+  border: 1px dashed color-mix(in srgb, var(--mof-blue) 40%, var(--mof-border));
+  border-radius: 999px;
+  color: var(--mof-muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  .active & {
+    border-color: currentColor;
+    color: inherit;
+  }
+}
+
+/* ---------- Nhóm ---------- */
+.group + .group {
+  margin-top: 0.375rem;
+}
+
+.g-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.25rem 0.25rem 0.75rem;
+}
+
+.g-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--mof-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.g-toggle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--mof-muted);
+  cursor: pointer;
+
+  app-mof-fi-icon {
+    transition: transform var(--mof-ws-side-dur) var(--mof-drawer-ease);
+  }
+
+  .group:not(.open) & app-mof-fi-icon {
+    transform: rotate(-90deg);
+  }
+
+  &:hover {
+    background: var(--mof-hover-tint);
+    color: var(--mof-blue);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mof-blue);
+    outline-offset: 1px;
+  }
+}
+
+/* Gập/mở mượt bằng grid-rows 0fr↔1fr (không đo chiều cao bằng JS) */
+.g-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--mof-ws-side-dur) var(--mof-drawer-ease);
+
+  > ul {
+    min-height: 0;
+    overflow: hidden;
+    display: grid;
+    gap: 0.125rem;
+  }
+
+  .open > & {
+    grid-template-rows: 1fr;
+  }
+}
+
+/* ---------- Chân: thẻ hỗ trợ ---------- */
+.side-foot {
+  flex: none;
+  padding: 0.75rem;
+  border-top: 1px solid color-mix(in srgb, var(--mof-line) 70%, transparent);
+}
+
+.support-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.875rem;
+  background: var(--mof-blue-soft);
+  overflow: hidden;
+}
+
+.s-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  background: var(--mof-surface);
+  color: var(--mof-blue);
+}
+
+.s-txt {
+  display: grid;
+  min-width: 0;
+  line-height: 1.3;
+  white-space: nowrap;
+
+  small {
+    color: var(--mof-muted);
+    font-size: var(--mof-text-xs);
+  }
+
+  a {
+    color: var(--mof-blue-strong);
+    font-weight: 800;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* ---------- Rail ---------- */
+:host(.rail) {
+  .side-head {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .brand {
+    flex: none;
+  }
+
+  .brand-text,
+  .home .label {
+    display: none;
+  }
+
+  .menu {
+    padding-inline: calc((var(--mof-ws-rail-w) - 2.75rem) / 2);
+  }
+
+  .item {
+    justify-content: center;
+    width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    margin-inline: auto;
+
+    .ico {
+      font-size: 1.15rem;
+    }
+
+    &.active {
+      background: var(--mof-blue);
+      color: var(--mof-on-brand);
+      box-shadow: 0 0.375rem 0.875rem color-mix(in srgb, var(--mof-blue) 30%, transparent);
+
+      .ico {
+        color: inherit;
+      }
+    }
+
+    &.open:not(.active) {
+      background: var(--mof-active-tint);
+    }
+  }
+
+  .home.active {
+    background: var(--mof-blue);
+  }
+
+  .rail-list {
+    display: grid;
+    gap: 0.375rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--mof-line) 70%, transparent);
+  }
+
+  .side-foot {
+    padding-inline: 0;
+  }
+}
+
+.dot {
+  position: absolute;
+  top: 0.45rem;
+  inset-inline-end: 0.45rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 2px solid var(--mof-ws-side-bg);
+  border-radius: 999px;
+  background: var(--mof-danger);
+}
+
+/* ---------- Tooltip (fixed, dùng chung) ---------- */
+.tip {
+  position: fixed;
+  z-index: var(--mof-z-dropdown);
+  translate: 0 -50%;
+  max-width: 16rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.5rem;
+  background: var(--mof-ws-tip-bg);
+  color: var(--mof-ws-tip-ink);
+  font-size: var(--mof-text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 0.5rem 1.25rem color-mix(in srgb, var(--mof-navy-deep) 25%, transparent);
+  animation: tip-in 120ms ease both;
+}
+
+@keyframes tip-in {
+  from {
+    opacity: 0;
+    translate: -0.25rem -50%;
+  }
+}
+
+/* ---------- Flyout (portal → body, core overlay đặt bên phải) ---------- */
+.flyout {
+  z-index: var(--mof-z-dropdown);
+  display: grid;
+  gap: 0.125rem;
+  width: 15rem;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--mof-line);
+  border-radius: 0.875rem;
+  background: var(--mof-surface);
+  color: var(--mof-ink);
+  box-shadow: var(--mof-shadow);
+  animation: fly-in 140ms ease both;
+}
+
+@keyframes fly-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.fly-title {
+  margin: 0.25rem 0.5rem 0.375rem;
+  color: var(--mof-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fly-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.5rem;
+  padding: 0 0.625rem;
+  border-radius: 0.625rem;
+  color: var(--mof-ink);
+  font-size: var(--mof-text-sm);
+  text-decoration: none;
+
+  .ico {
+    color: var(--mof-muted);
+  }
+
+  .label {
+    animation: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--mof-hover-tint);
+  }
+
+  &:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--mof-blue);
+  }
+
+  &.active {
+    background: var(--mof-active-tint);
+    color: var(--mof-blue-strong);
+    font-weight: 700;
+
+    .ico {
+      color: var(--mof-blue);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host(.anim) :is(.label, .g-title, .s-txt, .brand-text),
+  .tip,
+  .flyout {
+    animation: none;
+  }
+
+  .g-body,
+  .g-toggle app-mof-fi-icon,
+  .item,
+  .item .ico {
+    transition: none;
+  }
+}

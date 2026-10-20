@@ -1,0 +1,56 @@
+# Người dân — Câu hỏi của tôi / theo dõi hồ sơ
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Affected UC: UC-110, UC-122, UC-165
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Người dân, doanh nghiệp |
+| Route | `/portal/cau-hoi-cua-toi` |
+| Màn | PUB-03 / PUB-05 |
+| MDC màn | `src/app/features/portal/my-questions/my-questions.mdc` |
+| Phạm vi dữ liệu | Chỉ hồ sơ trùng `senderEmail` |
+| Trạng thái | `mocked` |
+
+## Người dùng làm gì
+
+1. Hệ thống prefill email từ phiên đăng nhập hoặc email vừa gửi.  
+2. Có thể sửa email và tải lại danh sách.  
+3. Xem mã, nội dung, trạng thái, ngày gửi, hạn xử lý.  
+4. Bấm mã để mở chi tiết `/portal/ho-so/:code`.
+
+## UC liên quan
+
+- UC-110 — theo dõi sau khi gửi  
+- UC-122 — lịch sử câu hỏi cá nhân  
+- UC-165 — tra cứu/theo dõi theo mã
+
+## Luồng phụ
+
+- Không có hồ sơ → empty + CTA gửi câu hỏi.
+
+## Acceptance
+
+- Không hiện hồ sơ email khác.  
+- Form lọc dùng shared kit.  
+- Empty state có hướng dẫn rõ.
+
+## Test
+
+`mock-db.service.spec.ts` (dossiersByEmail, lastSenderEmail)
+
+## Cross-ref
+
+- Trước: `03-gui-cau-hoi.mdc`  
+- Chi tiết: `05-xem-tra-loi-danh-gia.mdc`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Thêm màn câu hỏi của tôi (G1) | 110, 122 |
+| 2026-10-20 | Codex | Chuyển folder người dân, tiếng Việt | 110, 122, 165 |

@@ -1,0 +1,33 @@
+# Màn W-01 — Tổng quan workspace / hàng đợi
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G3 — metric/chart SLA live từ mock DB (DASH-01)  
+Affected UC: UC-142..UC-149, UC-188..UC-191  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `07-bao-cao-dashboard.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace` |
+| Actor | Cán bộ nội bộ đã đăng nhập |
+| Trạng thái | `mocked` |
+
+## Luồng
+
+1. Xem metric + biểu đồ SLA.  
+2. Lọc hàng đợi: tất cả / mới / đang xử lý / chờ duyệt.  
+3. Mở chi tiết `/workspace/ho-so/:id`.
+
+## Acceptance
+
+- Hàng đợi lấy từ `MockDbService.activeQueue`.  
+- Copy chart/greeting qua i18n.
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Thêm filter tabs hàng đợi (G2) | 142–149 |
+| 2026-10-20 | Codex | Metric + donut SLA theo dữ liệu mock live (G3) | 188–191 |

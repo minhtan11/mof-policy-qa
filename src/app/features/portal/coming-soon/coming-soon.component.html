@@ -1,0 +1,50 @@
+<ng-template #card>
+  <div class="panel" role="status">
+    <svg class="illus" viewBox="0 0 240 150" aria-hidden="true" focusable="false">
+      <circle class="i-halo" cx="120" cy="78" r="66" />
+      <rect class="i-board" x="58" y="34" width="124" height="86" rx="10" />
+      <rect class="i-bar" x="58" y="34" width="124" height="16" rx="10" />
+      <circle class="i-dot" cx="70" cy="42" r="3" />
+      <circle class="i-dot" cx="80" cy="42" r="3" />
+      <rect class="i-line" x="72" y="62" width="64" height="7" rx="3.5" />
+      <rect class="i-line soft" x="72" y="76" width="96" height="7" rx="3.5" />
+      <rect class="i-line soft" x="72" y="90" width="80" height="7" rx="3.5" />
+      <g class="i-gear">
+        <circle cx="176" cy="112" r="20" />
+        <circle class="i-gear-hole" cx="176" cy="112" r="7" />
+      </g>
+      <path class="i-spark" d="M44 40l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
+      <path class="i-spark soft" d="M200 30l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" />
+    </svg>
+    <span class="badge"><app-mof-fi-icon name="time-past" /> {{ 'comingSoon.eyebrow' | t }}</span>
+    <p class="f-title" role="heading" [attr.aria-level]="workspace() ? 2 : 1"><span class="f-ico" aria-hidden="true"><app-mof-fi-icon [name]="icon()" /></span>{{ titleKey() | t }}</p>
+    <p class="lead">{{ 'comingSoon.building' | t }}</p>
+    <p class="body">{{ bodyKey() | t }}</p>
+    <div class="actions">
+      <a [routerLink]="homeRoute()"><app-mof-button [label]="homeKey() | t" [icon]="workspace() ? 'briefcase' : 'building'" /></a>
+      <app-mof-button variant="secondary" [label]="'comingSoon.back' | t" icon="arrow-left" (click)="back()" />
+    </div>
+  </div>
+</ng-template>
+
+@if (workspace()) {
+  <app-workspace-shell [title]="titleKey() | t" [eyebrow]="'comingSoon.eyebrow' | t">
+    <section class="soon-ws">
+      <ng-container [ngTemplateOutlet]="card" />
+    </section>
+  </app-workspace-shell>
+} @else {
+  <app-portal-header />
+  <app-page-backdrop />
+  <section class="soon-page">
+    <div class="content-width narrow">
+      <nav class="breadcrumb" [attr.aria-label]="'comingSoon.breadcrumb' | t">
+        <a routerLink="/portal">{{ 'nav.home' | t }}</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">{{ titleKey() | t }}</span>
+      </nav>
+      <ng-container [ngTemplateOutlet]="card" />
+    </div>
+  </section>
+  <app-portal-footer />
+}

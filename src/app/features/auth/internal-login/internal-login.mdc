@@ -1,0 +1,43 @@
+# AU-02 — Đăng nhập cán bộ (/workspace/login)
+
+Changed on: 2026-10-20  
+Changed by: Grok Bot  
+Change reason: Thiết kế lại theo mockup, dùng chung khung với đăng nhập cổng; bỏ lối đăng nhập chỉ chọn vai trò  
+Affected UC: UC-01..UC-08, UC-16, UC-31..UC-40
+
+## Giao diện
+
+- Khung dùng chung `app-auth-shell` (`split="even"`, 50/50) + kiểu form `shared/ui/auth-shell/_auth-form.scss` (chung với `public-login`).
+- Trái: ảnh `hero/mof-hq.jpg` phủ xanh đậm (`--mof-ws-brand-overlay`), quốc huy + BỘ TÀI CHÍNH, gạch vàng bo tròn, eyebrow vàng, tiêu đề 2 dòng (dòng 2 vàng), mô tả, 3 minh hoạ xanh/trắng, ghi chú mockup. Mobile: banner gọn.
+- Phải: Về trang chủ, eyebrow, tiêu đề, mô tả, tên đăng nhập/email + mật khẩu (ẩn/hiện), Ghi nhớ + Quên mật khẩu, nút gradient, ô lỗi giữ chỗ (không nhảy layout), "Hoặc đăng nhập bằng" → **Vai trò mô phỏng** (`mof-select`).
+
+## Quy tắc xác thực
+
+- `AuthService.loginInternal()` → `CredentialsAuthAdapter.verify()`; chỉ vai trò nội bộ được lưu phiên.
+- Tài khoản công dân (đúng mật khẩu) → "Tài khoản này không có quyền truy cập hệ thống nội bộ" (inline + toast lỗi), không lưu phiên.
+- Sai tên/mật khẩu → "Tên đăng nhập hoặc mật khẩu không đúng" (inline + toast). Form lỗi → toast cảnh báo.
+- Thành công → toast "Chào mừng, {name}"; `system-admin` → `/admin`, còn lại → `/workspace`.
+- Ghi nhớ: bật = localStorage, tắt = sessionStorage (như cổng).
+- Vai trò mô phỏng chỉ điền sẵn username + mật khẩu mặc định; mặc định chọn và điền tài khoản nội bộ đầu tiên (`DEMO_INTERNAL_PREFILL_USER_ID`). Người dùng sửa thì giá trị gõ vào được dùng.
+
+## Tài khoản demo (mật khẩu `mof123456`)
+
+| Username | Email | Họ tên | Vai trò | Đích |
+|---|---|---|---|---|
+| ha.tt | ha.tt@moj.gov.vn | Trần Thu Hà | reception | /workspace |
+| hung.lq | hung.lq@moj.gov.vn | Lê Quốc Hưng | specialist | /workspace |
+| long.pd | long.pd@moj.gov.vn | Phạm Đức Long | leader | /workspace |
+| ngoc.db | ngoc.db@moj.gov.vn | Đỗ Bích Ngọc | coordinator | /workspace |
+| admin | admin@moj.gov.vn | Quản trị hệ thống | system-admin | /admin |
+| minhanh | minhanh@example.vn | Nguyễn Minh Anh | public | **bị từ chối** |
+
+## Test mapping
+
+`internal-login.component.spec.ts`: điền sẵn, chọn vai trò điền form, từ chối công dân, sai tên/mật khẩu, chuyển hướng theo vai trò, ghi nhớ.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Grok Bot | Thiết kế lại theo mockup, auth-shell dùng chung, chỉ tài khoản nội bộ, bỏ đăng nhập chỉ chọn vai trò | UC-01..UC-08, UC-16, UC-31..UC-40 |
+| 2026-10-20 | Grok Bot | Panel trái: lớp phủ chéo (đậm sau chữ, trong dần ở góc dưới-phải), ảnh trụ sở ở nửa dưới như portal, text-shadow nhẹ; biến thể tối | UC-01..UC-08 |

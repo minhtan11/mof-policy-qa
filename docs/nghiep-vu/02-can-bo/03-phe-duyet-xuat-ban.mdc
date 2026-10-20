@@ -1,0 +1,61 @@
+# Cán bộ — Phê duyệt, ký số (mock), xuất bản
+
+Changed on: 2026-10-20  
+Changed by: Codex  
+Change reason: G4 — thu hồi công khai (published → answered, ẩn isPublic)  
+Affected UC: UC-142..UC-161 (phê duyệt / phát hành / thu hồi)
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Lãnh đạo, điều phối cấp Bộ |
+| Route | `/workspace/ho-so/:id` |
+| Màn | OPS/EXP phê duyệt–phát hành (mock) |
+| Trạng thái | `mocked` |
+
+## Cán bộ làm gì
+
+1. Xem câu hỏi + dự thảo song song.  
+2. Phê duyệt hoặc trả sửa kèm lý do.  
+3. Ký số công văn — **chỉ mô phỏng** đến khi có API.  
+4. Rà soát hình thức / ẩn danh dữ liệu cá nhân trước khi công khai.  
+5. Xuất bản → hồ sơ `published` / `isPublic`; thông báo người hỏi (mock).  
+6. Thu hồi: ẩn công khai, giữ lịch sử.
+
+## Điều kiện chuyển
+
+| Từ | Đến | Ai (mock) | Điều kiện |
+|---|---|---|---|
+| `waiting-approval` | `processing` | leader, coordinator | Trả sửa |
+| `waiting-approval` | `answered` | leader | Phê duyệt nội dung |
+| `waiting-approval` | `published` | leader | Tick ký số mock + công khai |
+| `answered` | `published` | leader, coordinator | Tick ký số mock |
+| `published` | `answered` | leader, coordinator | Thu hồi + lý do; `isPublic=false` |
+
+- Xuất bản set `isPublic`; timeline giữ đầy đủ.  
+- Thu hồi không xóa ratings / clarifications / timeline.
+
+## Cross-ref
+
+- Trước: `02-soan-tra-loi.mdc`  
+- Người dân xem: `../01-nguoi-dan/05-xem-tra-loi-danh-gia.mdc`  
+- Báo cáo: `07-bao-cao-dashboard.mdc`
+
+## Acceptance
+
+- Published answers có dấu vết phê duyệt trên timeline.  
+- Recall bỏ hiển thị công khai, không mất lịch sử.
+
+## Test
+
+`mock-db.service.spec.ts` (updateStatus published)
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Codex | Publish / approval mock | 142–161 |
+| 2026-10-20 | Codex | Chuyển folder cán bộ, tiếng Việt | 142–161 |
+| 2026-10-20 | Codex | G2: return / approve / e-sign mock / publish E2E | 142–161 |
+| 2026-10-20 | Codex | G4: thu hồi công khai E2E mock | 142–161 |

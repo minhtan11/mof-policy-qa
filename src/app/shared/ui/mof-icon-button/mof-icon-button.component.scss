@@ -1,0 +1,81 @@
+:host {
+  display: inline-grid;
+  flex: none;
+}
+
+.mof-icon-btn {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mof-muted);
+  line-height: 0;
+  cursor: pointer;
+  transition: background var(--mof-fast) ease, color var(--mof-fast) ease;
+
+  &.is-sm { width: var(--mof-icon-btn-sm); height: var(--mof-icon-btn-sm); }
+  &.is-md { width: var(--mof-icon-btn-md); height: var(--mof-icon-btn-md); }
+  &.is-lg { width: var(--mof-icon-btn-lg); height: var(--mof-icon-btn-lg); font-size: 1.0625rem; }
+
+  position: relative;
+
+  &.is-outline {
+    border: 1px solid var(--mof-line);
+    background: color-mix(in srgb, var(--mof-surface) 85%, transparent);
+    color: var(--mof-navy);
+  }
+
+  &.is-outline:hover:not(:disabled),
+  &.is-outline[aria-expanded='true'] {
+    border-color: color-mix(in srgb, var(--mof-blue) 45%, var(--mof-line));
+    background: var(--mof-blue-soft);
+    color: var(--mof-blue);
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--mof-hover-tint);
+    color: var(--mof-ink);
+  }
+
+  &.is-danger:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--mof-danger) 14%, transparent);
+    color: var(--mof-danger);
+  }
+
+  &:focus-visible {
+    outline: 0.125rem solid var(--mof-blue);
+    outline-offset: 0.0625rem;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.badge {
+  position: absolute;
+  top: -0.125rem;
+  right: -0.125rem;
+  display: grid;
+  place-items: center;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  padding-inline: 0.25rem;
+  border: 0.125rem solid var(--mof-surface);
+  border-radius: 999px;
+  background: var(--mof-danger);
+  color: var(--mof-on-brand);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ico {
+  display: block;
+  line-height: 0;
+}

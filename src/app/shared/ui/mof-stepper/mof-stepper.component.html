@@ -1,0 +1,26 @@
+<nav class="mof-stepper" [attr.aria-label]="ariaLabel()" [style.--mof-step-progress]="steps().length > 1 ? activeIndex() / (steps().length - 1) : 0">
+  <ol [style.--n]="steps().length">
+    @for (step of steps(); track step.id; let i = $index) {
+      <li class="mof-stepper__item" [class.is-active]="i === activeIndex()" [class.is-done]="isDone(i)" [class.is-upcoming]="i > activeIndex() && !isDone(i)">
+        <button
+          #stepBtn
+          type="button"
+          class="mof-stepper__btn"
+          [attr.aria-current]="i === activeIndex() ? 'step' : null"
+          [attr.tabindex]="i === activeIndex() ? 0 : -1"
+          (click)="stepSelect.emit(i)"
+          (keydown)="onKey($event, i)"
+        >
+          <span class="mof-stepper__index" aria-hidden="true">
+            @if (isDone(i)) {
+              <svg class="check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            } @else {
+              {{ i + 1 }}
+            }
+          </span>
+          <span class="mof-stepper__label">{{ step.label }}</span>
+        </button>
+      </li>
+    }
+  </ol>
+</nav>

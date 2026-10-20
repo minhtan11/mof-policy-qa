@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.mof-field {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 14px;
+  border: 1px solid var(--mof-line);
+  border-radius: 12px;
+  background: var(--mof-surface);
+  color: var(--mof-ink);
+  font: inherit;
+  resize: vertical;
+  transition:
+    border-color var(--mof-fast),
+    box-shadow var(--mof-fast);
+}
+
+.mof-field:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--mof-blue) 55%, var(--mof-line));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--mof-blue) 14%, transparent);
+}

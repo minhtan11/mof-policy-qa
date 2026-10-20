@@ -1,0 +1,192 @@
+.page {
+  min-height: calc(100vh - 74px);
+  padding: 30px 0 70px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--mof-blue-soft) 45%, transparent), var(--mof-canvas) 220px);
+}
+
+.narrow {
+  max-width: 960px;
+}
+
+.page-heading {
+  margin-bottom: 22px;
+}
+
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-heading h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  letter-spacing: -0.03em;
+}
+
+.topic {
+  margin: 10px 0 0;
+  color: var(--mof-blue);
+  font-size: var(--mof-text-sm);
+  font-weight: 700;
+}
+
+.question {
+  margin: 12px 0 0;
+  font-size: var(--mof-text-lg);
+  line-height: 1.45;
+  font-weight: 650;
+}
+
+.grid,
+.feedback-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.block {
+  padding: 20px;
+}
+
+.block h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.block h4 {
+  margin: 16px 0 8px;
+  font-size: 0.9rem;
+}
+
+.muted {
+  margin: 0 0 12px;
+  color: var(--mof-muted);
+  font-size: var(--mof-text-sm);
+  line-height: 1.5;
+}
+
+.answer {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--mof-ink);
+}
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline li {
+  position: relative;
+  padding: 0 0 16px 16px;
+  border-left: 2px solid var(--mof-line);
+}
+
+.timeline li::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: -5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mof-blue);
+}
+
+.timeline li[data-state='pending']::before {
+  background: var(--mof-muted);
+}
+
+.timeline strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.timeline p {
+  margin: 0 0 4px;
+  color: var(--mof-muted);
+  font-size: var(--mof-text-sm);
+  line-height: 1.45;
+}
+
+.timeline small {
+  color: var(--mof-muted);
+  font-size: 0.72rem;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.ok {
+  margin: 0;
+  color: var(--mof-success);
+  font-weight: 650;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 8px;
+  color: var(--mof-muted);
+  font-size: var(--mof-text-xs);
+}
+
+.empty {
+  max-width: 520px;
+  margin: 40px auto;
+  padding: 36px 24px;
+  text-align: center;
+}
+
+.empty h1 {
+  margin: 0 0 10px;
+  font-size: 1.5rem;
+}
+
+.empty p {
+  margin: 0 0 18px;
+  color: var(--mof-muted);
+}
+
+ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--mof-muted);
+  font-size: var(--mof-text-sm);
+}
+
+@media (max-width: 800px) {
+  .grid,
+  .feedback-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Round 28: quay lại “Câu hỏi của tôi” */
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--mof-touch);
+  color: var(--mof-blue);
+  font-size: var(--mof-text-sm);
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+}

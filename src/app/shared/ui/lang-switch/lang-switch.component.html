@@ -1,0 +1,22 @@
+<div class="lang-wrap">
+  <span class="flags" aria-hidden="true">
+    <img src="assets/flag-vn.svg" alt="" width="22" height="15" [class.on]="i18n.locale() === 'vi'" />
+    <img src="assets/flag-gb.svg" alt="" width="22" height="15" [class.on]="i18n.locale() === 'en'" />
+  </span>
+  <div class="lang-switch" role="group" [attr.aria-label]="'portal.lang.label' | t">
+    <span class="thumb" [class.is-en]="i18n.locale() === 'en'" aria-hidden="true"></span>
+    @for (loc of locales; track loc) {
+      <button
+        type="button"
+        class="lang-opt"
+        [class.active]="i18n.locale() === loc"
+        [attr.aria-pressed]="i18n.locale() === loc"
+        [attr.title]="(loc === 'vi' ? 'action.langVi' : 'action.langEn') | t"
+        [attr.lang]="loc"
+        (click)="set(loc)"
+      >
+        {{ loc === 'vi' ? 'VI' : 'EN' }}
+      </button>
+    }
+  </div>
+</div>

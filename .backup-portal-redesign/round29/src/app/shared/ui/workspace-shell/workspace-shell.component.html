@@ -1,0 +1,61 @@
+<div class="shell">
+  <aside [class.collapsed]="collapsed()">
+    <a class="shell-brand" routerLink="/workspace">
+      <span><app-mof-icon name="building" [size]="16" /></span>
+      <b>MOF<span>PolicyQA</span></b>
+    </a>
+    <nav>
+      <p>{{ 'workspace.navWork' | t }}</p>
+      <a routerLink="/workspace" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <app-mof-icon name="inbox" />
+        <span>{{ 'workspace.navOverview' | t }}</span>
+      </a>
+      <a routerLink="/workspace" fragment="queue">
+        <app-mof-icon name="send" />
+        <span>{{ 'workspace.navQueue' | t }}</span>
+      </a>
+      <a routerLink="/workspace/tra-cuu" routerLinkActive="active">
+        <app-mof-icon name="search" />
+        <span>{{ 'workspace.navSearch' | t }}</span>
+      </a>
+      <p>{{ 'workspace.navSystem' | t }}</p>
+      <a routerLink="/admin" routerLinkActive="active">
+        <app-mof-icon name="cog" />
+        <span>{{ 'workspace.navAdmin' | t }}</span>
+      </a>
+    </nav>
+    <div class="side-bottom">
+      <button type="button" class="icon-btn" (click)="collapse.emit()" [attr.title]="collapsed() ? 'Expand' : 'Collapse'">
+        <app-mof-icon name="chevron-left" />
+      </button>
+    </div>
+  </aside>
+
+  <div class="shell-main">
+    <header>
+      <button type="button" class="mobile-menu icon-btn" (click)="collapse.emit()">
+        <app-mof-icon name="menu" />
+      </button>
+      <div class="title">
+        <p>{{ eyebrow() }}</p>
+        <h1>{{ title() }}</h1>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="icon-btn" (click)="theme.toggle()">
+          <app-mof-icon [name]="theme.theme() === 'light' ? 'moon' : 'sun'" />
+        </button>
+        <app-lang-switch />
+        <a routerLink="/portal" class="icon-btn"><app-mof-icon name="arrow-up-right" /></a>
+        <div class="profile">
+          <span class="avatar">{{ auth.user()?.avatar ?? 'QT' }}</span>
+          <span>
+            <b>{{ auth.user()?.name ?? 'Guest' }}</b>
+            <small>{{ auth.user()?.organization }}</small>
+          </span>
+        </div>
+        <button type="button" class="icon-btn" (click)="logout()"><app-mof-icon name="arrow-left" /></button>
+      </div>
+    </header>
+    <main class="workspace-content"><ng-content /></main>
+  </div>
+</div>
