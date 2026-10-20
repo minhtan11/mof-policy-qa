@@ -1,0 +1,45 @@
+# Admin — Nhật ký audit
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: G5 P3 — tab Admin Nhật ký + AuditRepository (fixture + flatten timeline)  
+Affected UC: UC-176..UC-187
+
+## Ai / màn hình
+
+| Mục | Nội dung |
+|---|---|
+| Actor | Quản trị hệ thống |
+| Route | `/admin?tab=audit` |
+| Màn | Tab Nhật ký trên admin |
+| MDC màn | `src/app/features/admin/admin/admin.mdc` |
+| Trạng thái | `mocked` |
+| Cross-ref | `02-can-bo/04-tra-cuu-noi-bo.mdc` (bút phê / tra cứu nội bộ) |
+
+## Cán bộ làm gì
+
+1. Mở tab **Nhật ký**.  
+2. Lọc theo loại thao tác (đăng nhập, phân công, phê duyệt, xuất bản, thu hồi, cấu hình, tích hợp, bút phê, luân chuyển…).  
+3. Xem actor, thời gian, mã hồ sơ (nếu có), tóm tắt i18n.
+
+## Dữ liệu
+
+- `AUDIT_LOG_FIXTURES` — bản ghi hệ thống bất biến.  
+- Flatten `dossier.timeline` từ `MockDbService` thành entry `actionType: timeline`.  
+- Repository chỉ đọc / lọc — không cho sửa xóa.
+
+## Acceptance
+
+- Danh sách surface-card; lọc theo action type.  
+- Không lộ PII thừa trên toast.  
+- 2 theme × 2 ngôn ngữ.
+
+## Test
+
+`audit.repository.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | G5 P3: khởi tạo tab audit admin | 176–187 |

@@ -1,7 +1,6 @@
 <button
-  class="mof-btn"
   [attr.type]="type()"
-  [class]="['mof-btn', 'is-' + variant(), 'is-' + size(), block() ? 'is-block' : '', !label() && icon() ? 'is-icon' : '', active() ? 'is-active' : '', loading() ? 'is-loading' : ''].join(' ')"
+  [class]="btnClass()"
   [disabled]="disabled() || loading()"
   [attr.aria-label]="ariaLabel() || null"
   [attr.aria-busy]="loading() || null"

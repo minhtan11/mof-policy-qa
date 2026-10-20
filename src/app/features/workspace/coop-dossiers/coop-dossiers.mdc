@@ -1,0 +1,43 @@
+# Màn EXP-05-INBOX — Hồ sơ phối hợp (`/workspace/ho-so-phoi-hop`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Bọc danh sách bằng `app-mof-data-table`  
+Affected UC: UC-150, UC-142..UC-161  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/02-soan-tra-loi.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/ho-so-phoi-hop` (`internalGuard`) |
+| Actor | Chuyên viên, lãnh đạo, điều phối |
+| Trạng thái | `mocked` |
+| Dữ liệu | `CoopDossierRepository` ← `MockDbService.listCollaborations` + `scopeFor` |
+
+## Seed
+
+`d-001` có `collaborations[0]` status `open` → Vụ Ngân sách nhà nước (fixture `demo-data.ts`).
+
+## Bố cục
+
+1. Breadcrumb → hero W-01.  
+2. KPI: tổng / đang mở / đã xong.  
+3. Danh sách yêu cầu trong `app-mof-data-table`: mã hồ sơ, đơn vị, nội dung, trạng thái phối hợp, hạn + pagination chân; mở chi tiết hồ sơ.
+
+## Acceptance
+
+- Không Coming soon; đăng nhập `hung.lq` thấy ≥1 yêu cầu mở.  
+- Tạo thêm phối hợp trên dossier-detail → xuất hiện sau reload (persist MockDb).  
+- 2 theme × 2 ngôn ngữ.
+
+## Test
+
+`coop-dossier.repository.spec.ts`, `coop-dossiers.component.spec.ts`, `mock-db.service.spec.ts` (UC-150)
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Dùng `mof-data-table` tách bảng khỏi pagination | 150, 142–161 |
+| 2026-10-20 | Auto | G5: hộp phối hợp thay Coming soon + seed collab | 150, 142–161 |

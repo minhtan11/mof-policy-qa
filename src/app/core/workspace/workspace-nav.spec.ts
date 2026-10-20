@@ -29,7 +29,7 @@ describe('workspace nav model', () => {
     }
   });
 
-  it('every item points to an existing route; coming-soon items get their own route with titleKey + icon', () => {
+  it('every item points to an existing route; G5 soon list empty; real screens wired', () => {
     const paths = new Set(routes.map((r) => `/${r.path}`));
     for (const i of [WS_HOME, ...all]) expect(paths.has(i.route)).toBe(true);
     for (const p of WS_SOON_PAGES) {
@@ -37,9 +37,28 @@ describe('workspace nav model', () => {
       expect(r.data).toEqual({ titleKey: p.titleKey, icon: p.icon, bodyKey: p.bodyKey, shell: 'workspace' });
       expect(r.canActivate?.length).toBe(1);
     }
-    expect(item('calendar')).toMatchObject({ soon: true, route: '/workspace/lich-lam-viec', labelKey: 'wsNav.calendar' });
+    expect(WS_SOON_PAGES).toEqual([]);
+    expect(item('calendar')).toMatchObject({ route: '/workspace/lich-lam-viec', labelKey: 'wsNav.calendar' });
+    expect(item('calendar').soon).toBeFalsy();
+    expect(item('incoming')).toMatchObject({ route: '/workspace/van-ban-den' });
+    expect(item('outgoing')).toMatchObject({ route: '/workspace/van-ban-di' });
+    expect(item('internal-docs')).toMatchObject({ route: '/workspace/tai-lieu-noi-bo' });
+    expect(item('data-store')).toMatchObject({ route: '/workspace/kho-du-lieu' });
+    expect(item('my-dossiers')).toMatchObject({ route: '/workspace/ho-so-cua-toi' });
+    expect(item('internal-dossiers')).toMatchObject({ route: '/workspace/ho-so-noi-bo' });
+    expect(item('coop-dossiers')).toMatchObject({ route: '/workspace/ho-so-phoi-hop' });
+    expect(item('reports-soon')).toMatchObject({ route: '/workspace/bao-cao-thong-ke' });
+    expect(item('my-dossiers').soon).toBeFalsy();
+    expect(item('internal-dossiers').soon).toBeFalsy();
+    expect(item('coop-dossiers').soon).toBeFalsy();
+    expect(item('reports-soon').soon).toBeFalsy();
     expect(item('search').soon).toBeFalsy();
+    expect(item('incoming').soon).toBeFalsy();
+    expect(item('outgoing').soon).toBeFalsy();
+    expect(item('internal-docs').soon).toBeFalsy();
+    expect(item('data-store').soon).toBeFalsy();
     expect(WS_PROFILE_ROUTE).toBe('/workspace/ho-so-ca-nhan');
+    expect(paths.has(WS_PROFILE_ROUTE)).toBe(true);
     expect(new Set(WS_SOON_PAGES.map((p) => p.path)).size).toBe(WS_SOON_PAGES.length);
   });
 

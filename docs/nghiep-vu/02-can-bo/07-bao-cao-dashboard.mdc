@@ -1,33 +1,41 @@
 # Cán bộ — Báo cáo và dashboard
 
 Changed on: 2026-10-20  
-Changed by: Codex  
-Change reason: G3 — dashboard live workspace + sinh báo cáo/chart admin  
+Changed by: Auto  
+Change reason: G5 P3 — 16 báo cáo khớp đúng tên dac-ta §XVII (RPT-01..16)  
 Affected UC: UC-188..UC-203
 
 ## Ai / màn hình
 
 | Mục | Nội dung |
 |---|---|
-| Actor | Lãnh đạo, điều phối |
-| Route | Workspace overview (ApexCharts); admin reports |
-| Màn | DASH-01..03 (một phần mocked) |
-| Trạng thái | `mocked` (DASH-01 live; 16 báo cáo P2) |
-| MDC màn | `workspace/workspace.mdc`, `admin/admin.mdc` |
+| Actor | Lãnh đạo, điều phối (workspace); admin (tab Báo cáo) |
+| Route | `/workspace`, `/workspace/bao-cao-thong-ke`; admin `?tab=reports` |
+| Màn | DASH-01 overview; DASH-RPT workspace reports |
+| Trạng thái | `mocked` |
+| MDC màn | `workspace/workspace.mdc`, `workspace/reports/reports.mdc`, `admin/admin.mdc` |
 
 ## Cán bộ làm gì
 
 1. Xem metric + donut SLA trên `/workspace` (tính từ mock DB).  
-2. Admin mở tab Báo cáo: đủ 16 định nghĩa (RPT-01..16), chọn kỳ, sinh tóm tắt + biểu đồ theo category.
+2. Lãnh đạo/điều phối mở `/workspace/bao-cao-thong-ke`: 16 định nghĩa, chọn kỳ, sinh tóm tắt + biểu đồ.  
+3. Admin vẫn sinh báo cáo trên tab Báo cáo `/admin?tab=reports`.
+
+## 16 báo cáo §XVII
+
+1. Tổng hợp tình hình tiếp nhận và xử lý · 2. Tiến độ theo đơn vị · 3. Tỷ lệ đúng hạn/quá hạn · 4. Phân loại theo lĩnh vực chính sách · 5. Danh sách chưa trả lời · 6. Câu hỏi quá hạn · 7. Lịch sử luân chuyển · 8. Câu hỏi bị trả lại/yêu cầu chỉnh sửa · 9. Câu hỏi phức tạp và gia hạn · 10. Câu hỏi đã trả lời và xuất bản · 11. Chất lượng câu trả lời · 12. Tra cứu hỏi–đáp theo từ khóa · 13. Nguồn/kênh tiếp nhận · 14. Người dùng gửi câu hỏi nhiều lần · 15. Thống kê chuyên viên trả lời · 16. Thanh toán nhuận bút.
+
+Mã `RPT-01`..`RPT-16` trong `REPORTS` (`domain-fixtures.ts`); `ReportRepository.generate` sinh rows mock theo từng mã.
 
 ## Acceptance
 
 - Chỉ số bám SLA đặc tả.  
+- Tên 16 báo cáo khớp §XVII.  
 - Không lộ dữ liệu cá nhân trên dashboard công khai nội bộ vượt scope.
 
 ## Test
 
-`report.repository.spec.ts`
+`report.repository.spec.ts`, `reports.component.spec.ts`
 
 ## Changelog
 
@@ -38,3 +46,5 @@ Affected UC: UC-188..UC-203
 | 2026-10-20 | Codex | G3 live metrics + generate report chart | 188–203 |
 | 2026-10-20 | Codex | G4 đủ 16 báo cáo + rows theo category | 188–203 |
 | 2026-10-20 | Grok Bot | R31 Tổng quan công việc: KPI theo phạm vi vai trò, donut tiến độ theo tháng, lĩnh vực, hàng đợi cần chú ý đồng bộ URL | 188–203 |
+| 2026-10-20 | Auto | G5: `/workspace/bao-cao-thong-ke` thay Coming soon (ReportRepository + chart) | 188–203 |
+| 2026-10-20 | Auto | G5 P3: align tên RPT-01..16 với §XVII + rows theo mã | 188–203 |

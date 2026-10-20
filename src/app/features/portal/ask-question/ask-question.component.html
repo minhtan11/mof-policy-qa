@@ -2,11 +2,7 @@
 <app-page-backdrop />
 <section class="form-page">
   <div class="content-width narrow">
-    <nav class="breadcrumb" aria-label="breadcrumb">
-      <a routerLink="/portal">{{ 'ask.breadcrumb' | t }}</a>
-      <span aria-hidden="true">›</span>
-      <span aria-current="page">{{ 'nav.ask' | t }}</span>
-    </nav>
+    <app-mof-breadcrumb [items]="crumbs" />
 
     @if (!submitted()) {
       <div class="page-heading">

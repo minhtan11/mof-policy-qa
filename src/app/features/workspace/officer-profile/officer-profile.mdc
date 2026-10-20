@@ -1,0 +1,33 @@
+# Màn WS-PROF — Hồ sơ cá nhân (`/workspace/ho-so-ca-nhan`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: G5 — hồ sơ cán bộ (Reactive Forms + shared kit) thay Coming soon  
+Affected UC: UC-018..UC-030  
+MDC nhóm: `docs/nghiep-vu/03-admin/02-nguoi-dung.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/ho-so-ca-nhan` (`WS_PROFILE_ROUTE`, `internalGuard`) |
+| Actor | Cán bộ nội bộ đã đăng nhập |
+| Trạng thái | `mocked` |
+| Dữ liệu | `AuthService.user` + prefs localStorage |
+
+## Acceptance
+
+- Hiển thị tên, đơn vị, vai trò, email đã che.  
+- Toggle 2FA mock + checkbox tùy chọn chữ ký; lưu toast.  
+- Không còn trong `WS_SOON_PAGES`.  
+- 2 theme × 2 ngôn ngữ.
+
+## Test
+
+`officer-profile.component.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | G5: WS-PROF thay Coming soon | 18–30 |

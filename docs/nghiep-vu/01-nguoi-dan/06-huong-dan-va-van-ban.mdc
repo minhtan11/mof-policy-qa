@@ -1,8 +1,8 @@
-# Người dân — Hướng dẫn & Văn bản pháp luật (placeholder)
+# Người dân — Hướng dẫn & Văn bản pháp luật
 
 Changed on: 2026-10-20  
 Changed by: Auto  
-Change reason: Tách route khỏi tra cứu để tránh nhiều submenu cùng active; tạm dùng màn Coming soon chung  
+Change reason: Thay Coming soon bằng màn Hướng dẫn và kho VBPL công khai (mock E2E)  
 Affected UC: UC-162..UC-165
 
 ## Ai / màn hình
@@ -11,41 +11,52 @@ Affected UC: UC-162..UC-165
 |---|---|
 | Actor | Người dân, doanh nghiệp |
 | Route | `/portal/huong-dan`, `/portal/van-ban` |
-| Màn | PUB-soon (`features/portal/coming-soon`) |
-| MDC màn | `src/app/features/portal/coming-soon/coming-soon.mdc` |
-| Trạng thái | `mocked` (placeholder) |
+| Màn | PUB-guide (`features/portal/guide`), PUB-legal (`features/portal/public-legal`) |
+| MDC màn | `guide.mdc`, `public-legal.mdc` |
+| Trạng thái | `mocked` |
 
 ## Người dùng làm gì
 
-1. Chọn **Giới thiệu → Hướng dẫn** hoặc **Văn bản pháp luật** trên header.  
-2. Xem trang “Sắp ra mắt” với tiêu đề/nội dung theo route.  
-3. Quay về trang chủ hoặc sang `/portal/tra-cuu`.
+### Hướng dẫn (`/portal/huong-dan`)
+
+1. Chọn **Giới thiệu → Hướng dẫn** trên header.  
+2. Đọc ba hành trình: gửi hỏi, theo dõi hồ sơ, đánh giá; mở FAQ.  
+3. Bấm CTA sang Gửi câu hỏi / Câu hỏi của tôi / Tra cứu.
+
+### Văn bản pháp luật (`/portal/van-ban`)
+
+1. Chọn **Văn bản pháp luật** trên header.  
+2. Tìm theo từ khóa (số hiệu/tên/cơ quan) và lọc trạng thái hiệu lực.  
+3. Mở rộng chi tiết văn bản (hiệu lực, phiên bản, nguồn…).
 
 ## UC liên quan
 
-UC-162..UC-165 — lối vào cổng; nội dung hướng dẫn / kho VBPL công khai chưa mock đầy đủ.
+UC-162..UC-165 — lối vào cổng; hướng dẫn sử dụng; tra cứu VBPL công khai (mock từ `LEGAL_DOCUMENTS`).
 
 ## Luồng phụ / lỗi
 
-Không có — màn tĩnh, không gọi repository.
+- VBPL: không khớp bộ lọc → empty state + xoá bộ lọc.  
+- Không gọi API ngoài (mock cục bộ).
 
 ## Dữ liệu vào / ra
 
-- Vào: `route.data.titleKey`, `route.data.bodyKey`.  
-- Ra: không.
+- Hướng dẫn: `GuideRepository` ← `guide-fixtures.ts` (sections + FAQ keys i18n).  
+- VBPL: `LegalDocumentRepository.list({ query, status })` ← `LEGAL_DOCUMENTS`; URL `?q=&status=`.
 
 ## Acceptance
 
-- Route Hướng dẫn / VBPL **khác** `/portal/tra-cuu`.  
+- `/portal/huong-dan` và `/portal/van-ban` **không** còn Coming soon.  
 - Trên `/portal/tra-cuu` chỉ sáng submenu Tra cứu (Dịch vụ công).  
-- Trên `/portal/huong-dan` chỉ sáng Hướng dẫn; trên `/portal/van-ban` chỉ sáng VBPL.
+- Trên `/portal/huong-dan` chỉ sáng Hướng dẫn; trên `/portal/van-ban` chỉ sáng VBPL.  
+- Shared kit; 2 theme × 2 ngôn ngữ; không mock data trong component.
 
 ## Test mapping
 
-`coming-soon.component.spec.ts`, `portal-header.component.spec.ts` (multi-active submenu).
+`guide.component.spec.ts`, `guide.repository.spec.ts`, `public-legal.component.spec.ts`, `legal-document.repository.spec.ts`, `portal-header.component.spec.ts`.
 
 ## Changelog
 
 | Changed on | Changed by | Change reason | Affected UC |
 |---|---|---|---|
 | 2026-10-20 | Auto | Thêm route + MDC placeholder Hướng dẫn / VBPL | UC-162..UC-165 |
+| 2026-10-20 | Auto | Thay Coming soon bằng màn guide + public-legal (fixture/repo, i18n, shared kit) | UC-162..UC-165 |

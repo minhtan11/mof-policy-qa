@@ -1,0 +1,66 @@
+<!-- WS-PROF Hồ sơ cá nhân cán bộ — style W-01 + shared kit. -->
+<app-workspace-shell>
+  <app-mof-breadcrumb [items]="crumbs" />
+
+  <section class="hero" aria-labelledby="prof-title">
+    <div class="hero-text">
+      <h1 id="prof-title">{{ 'wsProfile.title' | t }}</h1>
+      <p class="sub">{{ 'wsProfile.welcome' | t: { name: auth.user()?.name ?? '' } }}</p>
+    </div>
+  </section>
+
+  <ul class="kpis" role="list">
+    <li class="kpi" data-tone="blue">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="user" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsProfile.kpiRole' | t }}</p>
+        <strong class="k-num k-text">{{ roleKey() | t }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="teal">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="briefcase" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsProfile.kpiOrg' | t }}</p>
+        <strong class="k-num k-text">{{ auth.user()?.organization || '—' }}</strong>
+      </div>
+    </li>
+  </ul>
+
+  <section class="card" aria-labelledby="form-title">
+    <header class="c-head">
+      <div>
+        <h2 id="form-title">{{ 'wsProfile.formTitle' | t }}</h2>
+        <p>{{ 'wsProfile.formHint' | t }}</p>
+      </div>
+    </header>
+
+    <form class="prof-form" [formGroup]="form" (ngSubmit)="save()">
+      <div class="field">
+        <label for="prof-name">{{ 'wsProfile.name' | t }}</label>
+        <app-mof-input id="prof-name" formControlName="name" prefixIcon="user" />
+      </div>
+      <div class="field">
+        <label for="prof-org">{{ 'wsProfile.org' | t }}</label>
+        <app-mof-input id="prof-org" formControlName="organization" prefixIcon="briefcase" />
+      </div>
+      <div class="field">
+        <label for="prof-role">{{ 'wsProfile.role' | t }}</label>
+        <app-mof-input id="prof-role" formControlName="role" prefixIcon="shield-check" />
+      </div>
+      <div class="field">
+        <label for="prof-email">{{ 'wsProfile.email' | t }}</label>
+        <app-mof-input id="prof-email" formControlName="email" prefixIcon="envelope" />
+        <small class="hint">{{ 'wsProfile.emailHint' | t }}</small>
+      </div>
+
+      <div class="prefs">
+        <app-mof-checkbox formControlName="twoFa" [label]="'wsProfile.twoFa' | t" />
+        <app-mof-checkbox formControlName="signaturePrefs" [label]="'wsProfile.signature' | t" />
+      </div>
+
+      <div class="actions">
+        <app-mof-button type="submit" [label]="'wsProfile.save' | t" icon="check" />
+      </div>
+    </form>
+  </section>
+</app-workspace-shell>

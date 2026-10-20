@@ -1,0 +1,18 @@
+@if (viewItems().length) {
+  <nav class="mof-bc" [attr.aria-label]="ariaLabelKey() | t">
+    <ol>
+      @for (it of viewItems(); track $index; let last = $last) {
+        <li>
+          @if (it.clickable) {
+            <a [routerLink]="it.link!" [queryParams]="it.queryParams">{{ it.label }}</a>
+          } @else {
+            <span [attr.aria-current]="it.current ? 'page' : null">{{ it.label }}</span>
+          }
+          @if (!last) {
+            <app-mof-fi-icon class="sep" name="angle-small-right" aria-hidden="true" />
+          }
+        </li>
+      }
+    </ol>
+  </nav>
+}

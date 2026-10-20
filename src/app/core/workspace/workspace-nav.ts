@@ -1,9 +1,8 @@
 import { DossierStatus, UserRole } from '../models/domain.models';
 
 /**
- * Menu workspace (sidebar + lối tắt tìm kiếm). Mục có màn thật trỏ route thật:
- * /workspace (+ ?filter=), /workspace/tra-cuu, /workspace/ho-so/:id, /admin (+ ?tab=), /portal, /portal/tra-cuu.
- * Mục mockup chưa có màn (`soon`) trỏ tới trang Sắp ra mắt riêng (WS_SOON_PAGES, sinh route trong app.routes).
+ * Menu workspace (sidebar + lối tắt tìm kiếm). Mục có màn thật trỏ route thật.
+ * G5: không còn mục Coming soon — `WS_SOON_PAGES` rỗng.
  */
 export type WsQueueBadge = DossierStatus | 'all';
 
@@ -43,34 +42,11 @@ export interface WsSoonPage {
   bodyKey: string;
 }
 
-const soon = (id: string, slug: string, titleKey: string, icon: string): WsSoonPage => ({
-  id,
-  path: `workspace/${slug}`,
-  titleKey,
-  icon,
-  bodyKey: `comingSoon.ws.${id}`,
-});
+/** G5 hoàn tất — không còn trang Coming soon workspace. Giữ type/helpers cho spread routes. */
+export const WS_SOON_PAGES: WsSoonPage[] = [];
 
-export const WS_SOON_PAGES: WsSoonPage[] = [
-  soon('my-dossiers', 'ho-so-cua-toi', 'wsNav.myDossiers', 'user'),
-  soon('internal-dossiers', 'ho-so-noi-bo', 'wsNav.internalDossiers', 'folder-tree'),
-  soon('coop-dossiers', 'ho-so-phoi-hop', 'wsNav.coopDossiers', 'users-alt'),
-  soon('calendar', 'lich-lam-viec', 'wsNav.calendar', 'calendar'),
-  soon('reports-soon', 'bao-cao-thong-ke', 'wsNav.reports', 'chart-histogram'),
-  soon('incoming', 'van-ban-den', 'wsNav.incoming', 'inbox-in'),
-  soon('outgoing', 'van-ban-di', 'wsNav.outgoing', 'paper-plane'),
-  soon('internal-docs', 'tai-lieu-noi-bo', 'wsNav.internalDocs', 'document'),
-  soon('data-store', 'kho-du-lieu', 'wsNav.dataStore', 'database'),
-  soon('profile', 'ho-so-ca-nhan', 'wsNav.profile', 'user'),
-];
-
-const soonItem = (id: string): WsNavItem => {
-  const p = WS_SOON_PAGES.find((x) => x.id === id)!;
-  return { id, labelKey: p.titleKey, icon: p.icon, route: `/${p.path}`, soon: true };
-};
-
-/** Trang Sắp ra mắt cho "Hồ sơ cá nhân" (menu tài khoản). */
-export const WS_PROFILE_ROUTE = `/${WS_SOON_PAGES.find((x) => x.id === 'profile')!.path}`;
+/** Hồ sơ cá nhân cán bộ (menu tài khoản) — màn thật, không qua soon. */
+export const WS_PROFILE_ROUTE = '/workspace/ho-so-ca-nhan';
 
 // ---------------- Ma trận vai trò (1 nơi duy nhất) ----------------
 const R: UserRole = 'reception';
@@ -83,6 +59,7 @@ const INTERNAL: UserRole[] = [R, S, L, C, A];
 /**
  * Mục nào hiển thị cho vai trò nào (theo id mục). Nhóm không còn mục nào thì ẩn.
  * Mục không có trong ma trận = mọi cán bộ nội bộ. Tài liệu: workspace-shell.mdc.
+ * Báo cáo lãnh đạo/điều phối giữ id `reports-soon` → `/workspace/bao-cao-thong-ke`.
  */
 export const WS_ROLE_MATRIX: Record<string, UserRole[]> = {
   'my-dossiers': INTERNAL,
@@ -129,9 +106,24 @@ export const WS_NAV_GROUPS: WsNavGroup[] = [
     titleKey: 'wsNav.group.dossiers',
     icon: 'folder-open',
     items: [
-      soonItem('my-dossiers'),
-      soonItem('internal-dossiers'),
-      soonItem('coop-dossiers'),
+      {
+        id: 'my-dossiers',
+        labelKey: 'wsNav.myDossiers',
+        icon: 'user',
+        route: '/workspace/ho-so-cua-toi',
+      },
+      {
+        id: 'internal-dossiers',
+        labelKey: 'wsNav.internalDossiers',
+        icon: 'folder-tree',
+        route: '/workspace/ho-so-noi-bo',
+      },
+      {
+        id: 'coop-dossiers',
+        labelKey: 'wsNav.coopDossiers',
+        icon: 'users-alt',
+        route: '/workspace/ho-so-phoi-hop',
+      },
       { id: 'queue-all', labelKey: 'wsNav.queue', icon: 'folder', route: '/workspace', query: { filter: 'all' }, badge: 'all', activePrefixes: ['/workspace/ho-so'] },
       { id: 'queue-new', labelKey: 'wsNav.queueNew', icon: 'inbox-in', route: '/workspace', query: { filter: 'new' }, badge: 'new' },
       { id: 'queue-processing', labelKey: 'wsNav.queueProcessing', icon: 'hourglass-end', route: '/workspace', query: { filter: 'processing' }, badge: 'processing' },
@@ -144,8 +136,13 @@ export const WS_NAV_GROUPS: WsNavGroup[] = [
     icon: 'search-alt',
     items: [
       { id: 'search', labelKey: 'wsNav.search', icon: 'search-alt', route: '/workspace/tra-cuu' },
-      soonItem('calendar'),
-      soonItem('reports-soon'),
+      { id: 'calendar', labelKey: 'wsNav.calendar', icon: 'calendar', route: '/workspace/lich-lam-viec' },
+      {
+        id: 'reports-soon',
+        labelKey: 'wsNav.reports',
+        icon: 'chart-histogram',
+        route: '/workspace/bao-cao-thong-ke',
+      },
       adminTab('reports', 'wsNav.reports', 'chart-histogram', 'reports'),
       { id: 'portal', labelKey: 'wsNav.portal', icon: 'globe', route: '/portal' },
       { id: 'portal-lookup', labelKey: 'wsNav.portalLookup', icon: 'book-alt', route: '/portal/tra-cuu' },
@@ -156,10 +153,10 @@ export const WS_NAV_GROUPS: WsNavGroup[] = [
     titleKey: 'wsNav.group.docs',
     icon: 'document-signed',
     items: [
-      soonItem('incoming'),
-      soonItem('outgoing'),
-      soonItem('internal-docs'),
-      soonItem('data-store'),
+      { id: 'incoming', labelKey: 'wsNav.incoming', icon: 'inbox-in', route: '/workspace/van-ban-den' },
+      { id: 'outgoing', labelKey: 'wsNav.outgoing', icon: 'paper-plane', route: '/workspace/van-ban-di' },
+      { id: 'internal-docs', labelKey: 'wsNav.internalDocs', icon: 'document', route: '/workspace/tai-lieu-noi-bo' },
+      { id: 'data-store', labelKey: 'wsNav.dataStore', icon: 'database', route: '/workspace/kho-du-lieu' },
       adminTab('legal', 'wsNav.legal', 'document-signed', 'legal'),
     ],
   },

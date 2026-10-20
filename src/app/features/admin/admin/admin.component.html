@@ -1,29 +1,38 @@
+<!-- A-01..A-09 Quản trị — hero/tabs/surface bám W-01. -->
 <app-workspace-shell
   [title]="'admin.title' | t"
   [eyebrow]="'admin.eyebrow' | t"
 >
-  <div class="admin-head">
-    <div>
+  <section class="hero" aria-labelledby="admin-title">
+    <div class="hero-text">
       <p class="eyebrow">{{ 'admin.headEyebrow' | t }}</p>
-      <h2>{{ 'admin.headTitle' | t }}</h2>
-      <p>{{ 'admin.headBody' | t }}</p>
+      <h1 id="admin-title">{{ 'admin.headTitle' | t }}</h1>
+      <p class="sub">{{ 'admin.headBody' | t }}</p>
     </div>
-    <app-mof-button [label]="'admin.createConfig' | t" icon="plus" (click)="quickCreateWorkflow()" />
-  </div>
+    <div class="hero-actions">
+      <app-mof-button [label]="'admin.createConfig' | t" icon="plus" (click)="quickCreateWorkflow()" />
+    </div>
+  </section>
 
   <nav class="admin-tabs" [attr.aria-label]="'admin.title' | t">
     @for (tab of tabs; track tab.id) {
-      <button type="button" class="tab" [class.active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
+      <button
+        type="button"
+        class="tab"
+        [class.on]="activeTab() === tab.id"
+        [attr.aria-selected]="activeTab() === tab.id"
+        (click)="selectTab(tab.id)"
+      >
         {{ tab.labelKey | t }}
       </button>
     }
   </nav>
 
   @if (activeTab() === 'org') {
-    <section class="surface-card panel">
-      <header>
+    <section class="card panel" aria-labelledby="admin-org-title">
+      <header class="c-head">
         <div>
-          <h3>{{ 'admin.org.title' | t }}</h3>
+          <h2 id="admin-org-title">{{ 'admin.org.title' | t }}</h2>
           <p>{{ 'admin.org.hint' | t }}</p>
         </div>
       </header>
@@ -477,6 +486,96 @@
             <p>{{ bk.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
             <small>{{ 'admin.ops.snapshot' | t }}</small>
           </article>
+        }
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'integration') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.integration.title' | t }}</h3>
+          <p>{{ 'admin.integration.hint' | t }}</p>
+        </div>
+      </header>
+      <div class="integration-grid">
+        @for (channel of integration.channels(); track channel.id) {
+          <article class="surface-card integration-card">
+            <div class="integration-card__head">
+              <div>
+                <h4>{{ channel.nameKey | t }}</h4>
+                <p>{{ channel.descriptionKey | t }}</p>
+              </div>
+              <app-mof-badge
+                [label]="('admin.integration.status.' + channel.status) | t"
+                [tone]="integrationStatusTone(channel.status)"
+              />
+            </div>
+            <code class="integration-endpoint">{{ channel.endpointHint }}</code>
+            <div class="integration-meta">
+              <span>{{ 'admin.integration.lastCheck' | t }}: {{ channel.lastCheckedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+              <app-mof-badge
+                [label]="(channel.enabled ? 'admin.status.active' : 'admin.status.inactive') | t"
+                [tone]="channel.enabled ? 'success' : 'neutral'"
+              />
+            </div>
+            <div class="panel-actions integration-actions">
+              <app-mof-button
+                [label]="'admin.integration.test' | t"
+                variant="secondary"
+                size="sm"
+                icon="cog"
+                (click)="testIntegration(channel.id)"
+              />
+              <app-mof-button
+                [label]="(channel.enabled ? 'admin.integration.disable' : 'admin.integration.enable') | t"
+                variant="ghost"
+                size="sm"
+                (click)="toggleIntegration(channel.id)"
+              />
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  @if (activeTab() === 'audit') {
+    <section class="surface-card panel">
+      <header>
+        <div>
+          <h3>{{ 'admin.audit.title' | t }}</h3>
+          <p>{{ 'admin.audit.hint' | t }}</p>
+        </div>
+      </header>
+      <form class="inline-form" [formGroup]="auditFilterForm" (ngSubmit)="applyAuditFilter()">
+        <app-mof-select
+          formControlName="actionType"
+          [options]="auditFilterOptions()"
+          [placeholder]="'admin.audit.filter' | t"
+        />
+        <app-mof-button type="submit" [label]="'admin.audit.apply' | t" icon="search" />
+      </form>
+      <div class="audit-list">
+        @for (entry of audit.entries(); track entry.id) {
+          <article class="surface-card audit-row">
+            <div class="audit-row__main">
+              <app-mof-badge [label]="auditActionLabel(entry.actionType)" tone="info" />
+              <div>
+                <h4>{{ entry.summaryKey | t }}</h4>
+                <p>
+                  <span>{{ entry.actor }}</span>
+                  @if (entry.dossierCode) {
+                    <span class="audit-code"> · {{ entry.dossierCode }}</span>
+                  }
+                </p>
+              </div>
+            </div>
+            <time>{{ entry.at | date: 'dd/MM/yyyy HH:mm' }}</time>
+          </article>
+        } @empty {
+          <p class="muted empty-hint">{{ 'admin.audit.empty' | t }}</p>
         }
       </div>
     </section>

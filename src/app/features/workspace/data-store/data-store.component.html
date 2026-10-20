@@ -1,0 +1,95 @@
+<!-- WS-DS Kho dữ liệu — style W-01. -->
+<app-workspace-shell>
+  <app-mof-breadcrumb [items]="crumbs" />
+
+  <section class="hero" aria-labelledby="ds-title">
+    <div class="hero-text">
+      <h1 id="ds-title">{{ 'wsDataStore.title' | t }}</h1>
+      <p class="sub">{{ 'wsDataStore.welcome' | t }}</p>
+    </div>
+  </section>
+
+  <ul class="kpis" role="list">
+    <li class="kpi" data-tone="blue">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="folder" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsDataStore.kpiDossiers' | t }}</p>
+        <strong class="k-num">{{ health().dossierTotal }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="amber">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="hourglass-end" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsDataStore.kpiOpen' | t }}</p>
+        <strong class="k-num">{{ health().dossierOpen }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="green">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="document-signed" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsDataStore.kpiLegal' | t }}</p>
+        <strong class="k-num">{{ health().legalDocs }}</strong>
+      </div>
+    </li>
+  </ul>
+
+  <section class="card" aria-labelledby="index-title">
+    <header class="c-head">
+      <div>
+        <h2 id="index-title">{{ 'wsDataStore.indexTitle' | t }}</h2>
+        <p>{{ 'wsDataStore.indexHint' | t }}</p>
+      </div>
+    </header>
+    <ul class="row-list" role="list">
+      <li>
+        <span>{{ 'wsDataStore.statPublished' | t }}</span>
+        <strong>{{ health().dossierPublished }}</strong>
+      </li>
+      <li>
+        <span>{{ 'wsDataStore.statLegalOk' | t }}</span>
+        <strong>{{ health().legalEffective }}</strong>
+      </li>
+      <li>
+        <span>{{ 'wsDataStore.statJobs' | t }}</span>
+        <strong>{{ health().jobOk }}/{{ health().jobTotal }}</strong>
+      </li>
+      <li>
+        <span>{{ 'wsDataStore.statBackupSize' | t }}</span>
+        <strong>{{ health().lastBackupSize }}</strong>
+      </li>
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="backup-title">
+    <header class="c-head">
+      <div>
+        <h2 id="backup-title">{{ 'wsDataStore.backupTitle' | t }}</h2>
+        <p>{{ 'wsDataStore.backupHint' | t }}</p>
+      </div>
+    </header>
+    @if (ops.backups().length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'wsDataStore.colLabel' | t }}</th>
+              <th>{{ 'wsDataStore.colAt' | t }}</th>
+              <th>{{ 'wsDataStore.colSize' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (b of ops.backups(); track b.id) {
+              <tr>
+                <td class="code"><strong>{{ b.label }}</strong></td>
+                <td>{{ b.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ b.sizeLabel }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="empty">{{ 'wsDataStore.emptyBackup' | t }}</p>
+    }
+  </section>
+</app-workspace-shell>

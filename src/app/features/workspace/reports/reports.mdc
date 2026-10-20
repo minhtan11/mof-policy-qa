@@ -1,0 +1,40 @@
+# Màn DASH-RPT — Báo cáo thống kê (`/workspace/bao-cao-thong-ke`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: G5 P3 — catalog 16 báo cáo khớp tên dac-ta §XVII  
+Affected UC: UC-188..UC-203  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/07-bao-cao-dashboard.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/bao-cao-thong-ke` (`internalGuard`) |
+| Actor | Lãnh đạo, điều phối (`WS_ROLE_MATRIX.reports-soon`) |
+| Trạng thái | `mocked` |
+| Dữ liệu | `ReportRepository` (16 định nghĩa + `generateById`) |
+
+## Bố cục
+
+1. Breadcrumb → hero W-01.  
+2. Form shared kit: chọn báo cáo + kỳ → sinh tóm tắt + ApexCharts.  
+3. Catalog 16 thẻ báo cáo (bấm để chọn).  
+4. Kết quả: hàng số liệu + biểu đồ cột.
+
+## Acceptance
+
+- Không Coming soon; `long.pd` / `ngoc.db` mở được; admin vẫn dùng tab Báo cáo trên `/admin`.  
+- Sinh báo cáo hiện toast + chart.  
+- 2 theme × 2 ngôn ngữ.
+
+## Test
+
+`report.repository.spec.ts`, `reports.component.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | G5: DASH-RPT workspace thay Coming soon | 188–203 |
+| 2026-10-20 | Auto | G5 P3: tên RPT-01..16 khớp §XVII | 188–203 |

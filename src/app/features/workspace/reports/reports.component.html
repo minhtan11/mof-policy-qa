@@ -1,0 +1,94 @@
+<!-- DASH-RPT Báo cáo thống kê workspace — style W-01 + ReportRepository. -->
+<app-workspace-shell>
+  <app-mof-breadcrumb [items]="crumbs" />
+
+  <section class="hero" aria-labelledby="rpt-title">
+    <div class="hero-text">
+      <h1 id="rpt-title">{{ 'wsReports.title' | t }}</h1>
+      <p class="sub">{{ 'wsReports.welcome' | t: { name: auth.user()?.name ?? '' } }}</p>
+    </div>
+  </section>
+
+  <ul class="kpis" role="list">
+    <li class="kpi" data-tone="blue">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="chart-histogram" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsReports.kpiDefs' | t }}</p>
+        <strong class="k-num">{{ reports.definitions.length }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="green">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="check-circle" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsReports.kpiReady' | t }}</p>
+        <strong class="k-num">{{ reportResult() ? 1 : 0 }}</strong>
+      </div>
+    </li>
+  </ul>
+
+  <section class="card" aria-labelledby="gen-title">
+    <header class="c-head">
+      <div>
+        <h2 id="gen-title">{{ 'admin.reports.title' | t }}</h2>
+        <p>{{ 'wsReports.hint' | t }}</p>
+      </div>
+    </header>
+
+    <form class="gen-form" [formGroup]="reportForm" (ngSubmit)="generateReport()">
+      <app-mof-select
+        formControlName="reportId"
+        [options]="reportOptions"
+        [placeholder]="'admin.reports.pick' | t"
+      />
+      <app-mof-input formControlName="from" [placeholder]="'admin.reports.from' | t" />
+      <app-mof-input formControlName="to" [placeholder]="'admin.reports.to' | t" />
+      <app-mof-button type="submit" [label]="'admin.reports.generate' | t" icon="book" />
+    </form>
+  </section>
+
+  <section class="card" aria-labelledby="catalog-title">
+    <header class="c-head">
+      <div>
+        <h2 id="catalog-title">{{ 'wsReports.catalogTitle' | t }}</h2>
+        <p>{{ 'wsReports.catalogHint' | t }}</p>
+      </div>
+    </header>
+
+    <div class="report-grid">
+      @for (pair of defsByCategory(); track pair[0]) {
+        @for (report of pair[1]; track report.id) {
+          <button type="button" class="report-card" (click)="pickReport(report.id)">
+            <span class="code">{{ report.code }}</span>
+            <h3>{{ report.name }}</h3>
+            <p>{{ report.description }}</p>
+            <small>{{ report.category }}</small>
+          </button>
+        }
+      }
+    </div>
+  </section>
+
+  @if (reportResult(); as result) {
+    <section class="card result" aria-labelledby="result-title">
+      <header class="c-head">
+        <div>
+          <h2 id="result-title">{{ result.report.name }}</h2>
+          <p>{{ result.generatedAt }}</p>
+        </div>
+      </header>
+      <ul class="row-list" role="list">
+        @for (row of result.rows; track row.labelKey) {
+          <li>
+            <span>{{ row.labelKey | t }}</span>
+            <strong>{{ row.value }}</strong>
+          </li>
+        }
+      </ul>
+      @if (reportChart(); as chart) {
+        <div class="chart-wrap">
+          <app-mof-chart [options]="chart" />
+        </div>
+      }
+    </section>
+  }
+</app-workspace-shell>

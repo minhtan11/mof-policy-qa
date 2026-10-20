@@ -1,0 +1,38 @@
+# Màn WS-CAL — Lịch làm việc (`/workspace/lich-lam-viec`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: G5 — thay Coming soon bằng lịch SLA theo tháng hạn xử lý  
+Affected UC: UC-142..UC-161  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/lich-lam-viec` (`internalGuard`) |
+| Actor | Cán bộ nội bộ (`WS_ROLE_MATRIX.calendar`) |
+| Trạng thái | `mocked` |
+| Dữ liệu | `CalendarRepository` ← `MockDbService.dossiers` theo `dueAt` |
+
+## Bố cục
+
+1. Breadcrumb → hero W-01 + KPI tháng.  
+2. Chọn tháng (select + prev/next).  
+3. Bảng hồ sơ đến hạn trong tháng → mở `/workspace/ho-so/:id`.
+
+## Acceptance
+
+- Không Coming soon; đổi tháng lọc đúng `dueAt`.  
+- Mở được chi tiết hồ sơ.  
+- 2 theme × 2 ngôn ngữ.
+
+## Test
+
+`calendar.component.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | G5: WS-CAL thay Coming soon | 142–161 |

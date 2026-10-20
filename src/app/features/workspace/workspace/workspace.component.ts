@@ -37,6 +37,7 @@ import { MofIconButtonComponent } from '../../../shared/ui/mof-icon-button/mof-i
 import { MofChartComponent } from '../../../shared/ui/mof-chart/mof-chart.component';
 import { MofFiIconComponent } from '../../../shared/ui/mof-fi-icon/mof-fi-icon.component';
 import { MofPaginationComponent } from '../../../shared/ui/mof-pagination/mof-pagination.component';
+import { MofDataTableComponent } from '../../../shared/ui/mof-data-table/mof-data-table.component';
 import { MofSelectComponent, MofSelectOption } from '../../../shared/ui/mof-select/mof-select.component';
 import { anchorFloating, AnchoredHandle } from '../../../core/overlay/floating';
 import { WorkspaceOverviewRepository, WsQuery, isOverdue } from '../../../core/mock-api/workspace-overview.repository';
@@ -64,6 +65,7 @@ const reducedMotion = () =>
     MofIconButtonComponent,
     MofFiIconComponent,
     MofPaginationComponent,
+    MofDataTableComponent,
     MofSelectComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

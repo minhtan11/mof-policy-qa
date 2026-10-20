@@ -1,0 +1,41 @@
+# Màn EXP-01 — Hồ sơ của tôi (`/workspace/ho-so-cua-toi`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Bọc danh sách bằng `app-mof-data-table` — tách hàng màu khỏi pagination  
+Affected UC: UC-142..UC-161  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/02-soan-tra-loi.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/ho-so-cua-toi` (`internalGuard`) |
+| Actor | Cán bộ nội bộ (đặc biệt chuyên viên) |
+| Trạng thái | `mocked` |
+| Dữ liệu | `MyDossierRepository` ← `MockDbService` (assignedTo = tên đăng nhập) |
+
+## Bố cục
+
+1. Breadcrumb shared → hero W-01 (ảnh trụ sở) + lời chào theo tên.  
+2. 4 KPI: tổng / đúng hạn / sắp quá hạn / quá hạn.  
+3. Hộp việc: tìm kiếm, tab SLA, `app-mof-data-table` (ghim, mã, nội dung, trạng thái, hạn + pagination chân); hàng quá hạn `is-late`; container query → thẻ trên mobile.
+
+## Acceptance
+
+- Không Coming soon; đăng nhập `hung.lq` thấy hồ sơ được giao.  
+- Ghim persist `localStorage` key `mof.ws.my-dossiers.pins`; hồ sơ ghim lên đầu danh sách.  
+- Nút ghim: chưa ghim = icon mute; đã ghim = `is-active` (nền xanh nhạt + icon `--mof-blue`) + `aria-pressed`.  
+- 2 theme × 2 ngôn ngữ; không overflow 320–1920.
+
+## Test
+
+`my-dossier.repository.spec.ts`, `my-dossiers.component.spec.ts`, `mof-icon-button.component.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Dùng `mof-data-table` tách màu hàng khỏi pagination | 142–161 |
+| 2026-10-20 | Auto | Sửa visual ghim: `mof-icon-button` `[active]` thay class host không ăn màu | 142–161 |
+| 2026-10-20 | Auto | G5: EXP-01 thay Coming soon | 142–161 |

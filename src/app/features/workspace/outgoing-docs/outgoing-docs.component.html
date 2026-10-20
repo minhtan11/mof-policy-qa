@@ -1,0 +1,99 @@
+<app-workspace-shell>
+  <app-mof-breadcrumb [items]="crumbs" />
+
+  <section class="hero" aria-labelledby="out-title">
+    <div class="hero-text">
+      <h1 id="out-title">{{ 'wsOutgoing.title' | t }}</h1>
+      <p class="sub">{{ 'wsOutgoing.welcome' | t }}</p>
+    </div>
+  </section>
+
+  <ul class="kpis" role="list">
+    <li class="kpi" data-tone="blue">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="paper-plane" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsOutgoing.tabAll' | t }}</p>
+        <strong class="k-num">{{ counts().all }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="amber">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="edit" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsOutgoing.tabAnswered' | t }}</p>
+        <strong class="k-num">{{ counts().answered }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="green">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="check-circle" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsOutgoing.tabPublished' | t }}</p>
+        <strong class="k-num">{{ counts().published }}</strong>
+      </div>
+    </li>
+  </ul>
+
+  <section class="card attention" aria-labelledby="list-title">
+    <header class="c-head">
+      <div>
+        <h2 id="list-title">{{ 'wsOutgoing.listTitle' | t }}</h2>
+        <p>{{ 'wsOutgoing.listHint' | t }}</p>
+      </div>
+      <div class="tools">
+        <label class="search">
+          <app-mof-fi-icon name="search" aria-hidden="true" />
+          <span class="sr-only">{{ 'wsOutgoing.searchLabel' | t }}</span>
+          <input
+            type="search"
+            [placeholder]="'wsOutgoing.searchPlaceholder' | t"
+            [value]="qInput()"
+            (input)="qInput.set($any($event.target).value)"
+            (keydown.enter)="applySearch()"
+            (keydown.escape)="clearSearch()"
+          />
+        </label>
+      </div>
+    </header>
+
+    <div class="tabs" role="tablist">
+      @for (t of tabs; track t.id) {
+        <button type="button" class="tab" [class.on]="tab() === t.id" (click)="setTab(t.id)">
+          {{ t.labelKey | t }}
+          <span class="t-n">{{ counts()[t.id] }}</span>
+        </button>
+      }
+    </div>
+
+    @if (rows().length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'workspace.colCode' | t }}</th>
+              <th>{{ 'workspace.colContent' | t }}</th>
+              <th>{{ 'workspace.colStatus' | t }}</th>
+              <th class="act">{{ 'workspace.colActions' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (d of rows(); track d.id) {
+              <tr>
+                <td class="code">
+                  <a [routerLink]="['/workspace/ho-so', d.id]">{{ d.code }}</a>
+                </td>
+                <td class="content"><span>{{ d.title }}</span></td>
+                <td><app-status-badge [status]="d.status" /></td>
+                <td class="act">
+                  <a class="open" [routerLink]="['/workspace/ho-so', d.id]" [attr.aria-label]="'workspace.viewDetail' | t">
+                    <app-mof-fi-icon name="arrow-small-right" />
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="empty">{{ 'wsOutgoing.empty' | t }}</p>
+    }
+  </section>
+</app-workspace-shell>

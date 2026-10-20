@@ -1,5 +1,32 @@
+/* Host khóa chiều cao theo size → các app-mof-button cạnh nhau luôn bằng nhau (kể cả có/không icon). */
 :host {
   display: inline-flex;
+  vertical-align: middle;
+  line-height: 0;
+  flex: 0 0 auto;
+}
+
+:host([data-size='sm']) {
+  height: var(--mof-btn-h-sm);
+}
+
+:host([data-size='md']) {
+  height: var(--mof-btn-h-md);
+}
+
+:host([data-size='lg']) {
+  height: var(--mof-btn-h-lg);
+}
+
+:host(.is-block-host) {
+  display: flex;
+  width: 100%;
+}
+
+/* Tab: chiều cao linh hoạt hơn (segmented). */
+:host:has(.is-tab) {
+  height: auto;
+  min-height: 46px;
 }
 
 .mof-btn {
@@ -8,6 +35,10 @@
   justify-content: center;
   box-sizing: border-box;
   gap: 0.5rem;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  max-height: 100%;
   border: 1px solid transparent;
   border-radius: 0.75rem;
   line-height: 1.2;
@@ -15,6 +46,7 @@
   font-weight: 650;
   letter-spacing: -0.01em;
   cursor: pointer;
+  overflow: hidden;
   transition:
     transform var(--mof-fast) ease,
     background var(--mof-fast) ease,
@@ -28,29 +60,22 @@
   cursor: not-allowed;
 }
 
-.mof-btn:not(:disabled):hover {
-  transform: translateY(-1px);
-}
-
+/* Không translateY trên hover — lệch 1px làm cặp nút action trông lệch chiều cao. */
 .mof-btn:not(:disabled):active {
-  transform: translateY(1px) scale(0.985);
+  transform: scale(0.985);
 }
 
-/* Chiều cao CỐ ĐỊNH theo token cho mọi variant (viền 1px nằm trong box) → các nút cạnh nhau luôn bằng nhau */
 .is-sm {
-  height: var(--mof-btn-h-sm);
   padding: 0 0.75rem;
   font-size: 0.78rem;
 }
 
 .is-md {
-  height: var(--mof-btn-h-md);
   padding: 0 1rem;
   font-size: 0.84rem;
 }
 
 .is-lg {
-  height: var(--mof-btn-h-lg);
   padding: 0 1.125rem;
   font-size: 0.9rem;
 }
@@ -66,18 +91,22 @@
 
 .is-primary {
   background: var(--mof-blue);
+  /* Viền cùng màu nền: mép nút sắc như secondary (tránh bóng đổ làm trông cao hơn) */
+  border-color: var(--mof-blue);
   color: #fff;
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--mof-blue) 24%, transparent);
+  box-shadow: none;
 }
 
 .is-primary:not(:disabled):hover {
   background: var(--mof-blue-strong);
+  border-color: var(--mof-blue-strong);
 }
 
 .is-secondary {
   background: var(--mof-surface);
   border-color: var(--mof-line);
   color: var(--mof-ink);
+  box-shadow: none;
 }
 
 .is-secondary:not(:disabled):hover {
@@ -132,6 +161,8 @@
   position: relative;
   width: 100%;
   min-height: 46px;
+  height: auto;
+  max-height: none;
   border-radius: 11px;
   background: transparent;
   color: var(--mof-muted);
@@ -181,4 +212,19 @@
 
 .is-loading:not(:has(.icon-slot)) .label {
   opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mof-btn {
+    transition: none;
+  }
+
+  .mof-btn:not(:disabled):hover,
+  .mof-btn:not(:disabled):active {
+    transform: none;
+  }
+
+  .spinner {
+    animation: none;
+  }
 }

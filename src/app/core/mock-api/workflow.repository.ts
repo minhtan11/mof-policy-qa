@@ -2,6 +2,22 @@ import { Injectable, signal } from '@angular/core';
 import { WORKFLOWS } from './domain-fixtures';
 import { DossierStatus, WorkflowDefinition } from '../models/domain.models';
 
+/** Bảng chuyển trạng thái G5 — dac-ta §4.3 / UC-142..UC-161. */
+export const DOSSIER_TRANSITIONS: Record<DossierStatus, DossierStatus[]> = {
+  new: ['received', 'processing', 'rejected'],
+  received: ['processing', 'rejected'],
+  processing: ['waiting-approval', 'awaiting-clarification', 'awaiting-collaboration', 'rejected'],
+  'awaiting-clarification': ['processing', 'rejected'],
+  'awaiting-collaboration': ['processing'],
+  'waiting-approval': ['returned', 'approved', 'published', 'answered'],
+  returned: ['processing', 'waiting-approval'],
+  approved: ['published', 'answered'],
+  answered: ['published', 'closed'],
+  published: ['answered', 'closed'],
+  closed: [],
+  rejected: [],
+};
+
 @Injectable({ providedIn: 'root' })
 export class WorkflowRepository {
   readonly workflows = signal<WorkflowDefinition[]>(structuredClone(WORKFLOWS));
@@ -10,19 +26,9 @@ export class WorkflowRepository {
     return this.workflows().find((workflow) => workflow.status === 'active') ?? this.workflows()[0];
   }
 
-  /** UC-142..UC-161 — bảng chuyển trạng thái P0 mock. */
+  /** UC-142..UC-161 — bảng chuyển trạng thái G5. */
   canTransition(from: DossierStatus, to: DossierStatus): boolean {
-    const allowed: Record<DossierStatus, DossierStatus[]> = {
-      new: ['received', 'processing'],
-      received: ['processing'],
-      processing: ['waiting-approval'],
-      'waiting-approval': ['processing', 'answered', 'published'],
-      answered: ['published'],
-      /** Thu hồi công khai → còn trả lời nội bộ, giữ lịch sử */
-      published: ['answered'],
-      rejected: [],
-    };
-    return allowed[from]?.includes(to) ?? false;
+    return DOSSIER_TRANSITIONS[from]?.includes(to) ?? false;
   }
 
   createDraft(name: string, slaDays: number): WorkflowDefinition {

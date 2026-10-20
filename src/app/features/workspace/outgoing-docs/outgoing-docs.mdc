@@ -1,0 +1,31 @@
+# Màn WS-OUT — Văn bản đi (`/workspace/van-ban-di`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: G5 — sổ văn bản đi (answered/published) thay Coming soon  
+Affected UC: UC-142..UC-161  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/03-phe-duyet-xuat-ban.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/van-ban-di` (`internalGuard`) |
+| Actor | Cán bộ nội bộ (`WS_ROLE_MATRIX.outgoing`) |
+| Trạng thái | `mocked` |
+| Dữ liệu | `OutgoingDocsRepository` ← MockDb answered/published |
+
+## Acceptance
+
+- Danh sách câu trả lời đã soạn/xuất bản; mở chi tiết hồ sơ.  
+- 2 theme × 2 ngôn ngữ.
+
+## Test
+
+`outgoing-docs.component.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | G5: WS-OUT thay Coming soon | 142–161 |

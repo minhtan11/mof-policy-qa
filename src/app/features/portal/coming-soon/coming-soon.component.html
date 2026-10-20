@@ -38,11 +38,7 @@
   <app-page-backdrop />
   <section class="soon-page">
     <div class="content-width narrow">
-      <nav class="breadcrumb" [attr.aria-label]="'comingSoon.breadcrumb' | t">
-        <a routerLink="/portal">{{ 'nav.home' | t }}</a>
-        <span aria-hidden="true">›</span>
-        <span aria-current="page">{{ titleKey() | t }}</span>
-      </nav>
+      <app-mof-breadcrumb [items]="crumbs()" ariaLabelKey="comingSoon.breadcrumb" />
       <ng-container [ngTemplateOutlet]="card" />
     </div>
   </section>

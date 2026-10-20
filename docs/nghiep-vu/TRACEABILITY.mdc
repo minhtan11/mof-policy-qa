@@ -27,18 +27,24 @@ Chi tiết mục lục: `README.mdc`.
 | Gửi câu hỏi | 100–113 | Wizard ask-question | `01-nguoi-dan/03-gui-cau-hoi.mdc` | mocked; step tested |
 | Tương tác ND | 114–126 | Chi tiết công khai, rating/clarify | `01-nguoi-dan/05-xem-tra-loi-danh-gia.mdc` | mocked |
 | Tra cứu công khai | 162–175 | Lookup + `/portal/ho-so/:code` | `01-nguoi-dan/02-tra-cuu-cong-khai.mdc` | mocked |
-| Hướng dẫn / VBPL cổng | 162–165 (lối vào) | Coming soon `/portal/huong-dan`, `/portal/van-ban` | `01-nguoi-dan/06-huong-dan-va-van-ban.mdc` | mocked (placeholder) |
+| Hướng dẫn / VBPL cổng | 162–165 (lối vào) | `/portal/huong-dan`, `/portal/van-ban` | `01-nguoi-dan/06-huong-dan-va-van-ban.mdc` | mocked |
+| Hồ sơ của tôi (EXP-01) | 142–161 | `/workspace/ho-so-cua-toi` | `02-can-bo/02-soan-tra-loi.mdc` | mocked; pin/SLA tested |
+| Workspace nav G5 | 142–203 | lịch, VB đến/đi, mẫu trả lời, kho DL, hồ sơ cá nhân, báo cáo L/C | `00-ke-hoach…` G5 | mocked; Coming soon workspace = 0 |
+| Hồ sơ nội bộ (OPS-LIST) | 142–161 | `/workspace/ho-so-noi-bo` | `02-can-bo/01-tiep-nhan-phan-cong.mdc` | mocked; scope/filter tested |
+| Hồ sơ phối hợp (EXP-05 inbox) | 150, 142–161 | `/workspace/ho-so-phoi-hop` | `02-can-bo/02-soan-tra-loi.mdc` | mocked; seed collab + list tested |
 | Câu hỏi của tôi | 110, 122 | my-questions | `01-nguoi-dan/04-cau-hoi-cua-toi.mdc` | mocked |
-| Quy trình trả lời | 142–161 | Workspace dossier | `02-can-bo/01..03-*.mdc` | mocked |
+| Quy trình trả lời | 142–161 | Workspace dossier — G5 state machine (§4.3) + scope unit/assigned | `02-can-bo/01..03-*.mdc` | mocked; transitions tested |
 | AI hỗ trợ | 127–134 | Suggest/accept/reject | `02-can-bo/06-phan-he-thong-minh.mdc` | mocked; service tested |
-| Báo cáo | 188–203 | 16 báo cáo + chart | `02-can-bo/07-bao-cao-dashboard.mdc` | mocked; generate tested |
+| Báo cáo | 188–203 | `/workspace/bao-cao-thong-ke` + admin tab; RPT-01..16 §XVII | `02-can-bo/07-bao-cao-dashboard.mdc` | mocked; generate tested |
 | Tra cứu nội bộ | 176–187 | `/workspace/tra-cuu`, audit notes | `02-can-bo/04-tra-cuu-noi-bo.mdc` | mocked |
+| Nhật ký admin | 176–187 | `/admin?tab=audit` | `03-admin/09-nhat-ky-audit.mdc` | mocked; filter tested |
+| Tích hợp | 52–59 | `/admin?tab=integration` | `03-admin/06-tich-hop.mdc` | mocked (adapter); production `blocked` |
 | Vận hành | 84–99 | Jobs/backup/reset seed | `03-admin/07-van-han.mdc` | mocked; ops tested |
 | Thu hồi / phối hợp | 142–161 | dossier-detail | `02-can-bo/02`…`03` | mocked |
 
 ## Chưa đánh dấu hoàn tất
 
-SSO/VNeID thật, SMS/email, storage, webhook, OCR/dịch, backup production, export ký số, API backend — `blocked` / chưa `integrated`.
+SSO/VNeID thật, SMS/email, storage, webhook production, OCR/dịch, backup production, export ký số, API backend — `blocked` / chưa `integrated`. UI admin tích hợp đã mocked cục bộ.
 
 ## Quy tắc cập nhật
 

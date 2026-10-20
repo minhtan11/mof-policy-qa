@@ -1,8 +1,8 @@
 # Cán bộ — Soạn trả lời, phối hợp, trình duyệt
 
 Changed on: 2026-10-20  
-Changed by: Codex  
-Change reason: G4 — form yêu cầu phối hợp đơn vị trên dossier-detail  
+Changed by: Auto  
+Change reason: EXP-01 / W-01 — `mof-data-table` tách bảng khỏi pagination  
 Affected UC: UC-142..UC-161 (trọng tâm soạn / phối hợp / trình)
 
 ## Ai / màn hình
@@ -11,15 +11,15 @@ Affected UC: UC-142..UC-161 (trọng tâm soạn / phối hợp / trình)
 |---|---|
 | Actor | Chuyên viên |
 | Route | `/workspace/ho-so/:id` |
-| Màn | EXP-01..EXP-06 (mock trên dossier-detail) |
+| Màn | EXP-01 `/workspace/ho-so-cua-toi`; EXP-05 inbox `/workspace/ho-so-phoi-hop`; EXP-02..06 trên dossier-detail |
 | Trạng thái | `mocked` |
 
 ## Cán bộ làm gì
 
-1. Nhận hồ sơ được giao.  
+1. Mở **Hồ sơ của tôi** (`/workspace/ho-so-cua-toi`) — lọc đúng hạn/sắp hạn/quá hạn, ghim; hoặc nhận từ hàng đợi / danh sách nội bộ.  
 2. Nghiên cứu câu hỏi; xem gợi ý AI / OCR (mock advisory).  
 3. Tra cứu VBPL (`05-van-ban-phap-luat.mdc`), gắn căn cứ.  
-4. Soạn dự thảo trả lời; xin phối hợp đơn vị khác nếu cần.  
+4. Soạn dự thảo trả lời; xin phối hợp đơn vị khác nếu cần; theo dõi hộp `/workspace/ho-so-phoi-hop`.  
 5. Có thể yêu cầu người hỏi bổ sung / làm rõ.  
 6. Trình phê duyệt khi đủ nội dung.
 
@@ -32,10 +32,14 @@ Soạn thảo, căn cứ pháp lý, phối hợp, yêu cầu bổ sung, trình d
 | Từ | Đến | Ai (mock) | Điều kiện |
 |---|---|---|---|
 | `processing` | `waiting-approval` | specialist, coordinator | Có nội dung dự thảo; lưu căn cứ tùy chọn |
-| `waiting-approval` | `processing` | leader (trả sửa) | Xem `03-phe-duyet-xuat-ban.mdc` |
+| `processing` | `awaiting-clarification` | specialist, coordinator | Yêu cầu người hỏi bổ sung |
+| `processing` | `awaiting-collaboration` | specialist, coordinator | Chọn đơn vị + ghi chú + hạn |
+| `awaiting-clarification` / `awaiting-collaboration` / `returned` | `processing` | specialist / leader | Tiếp tục xử lý |
+| `returned` | `waiting-approval` | specialist | Soạn lại rồi trình |
+| `waiting-approval` | `returned` | leader (trả sửa) | Xem `03-phe-duyet-xuat-ban.mdc` |
 
 - Chỉ trình khi có nội dung trả lời và quyền chuyên viên.  
-- Phối hợp: chọn đơn vị + ghi chú + hạn; ghi timeline; không đổi trạng thái hồ sơ.
+- Phối hợp / bổ sung đổi trạng thái hồ sơ theo bảng trên; ghi timeline.
 
 ## Cross-ref
 
@@ -60,3 +64,8 @@ Soạn thảo, căn cứ pháp lý, phối hợp, yêu cầu bổ sung, trình d
 | 2026-10-20 | Codex | Chuyển folder cán bộ, tiếng Việt | 142–161 |
 | 2026-10-20 | Codex | G2: draft + legal basis + submit approval E2E | 142–161 |
 | 2026-10-20 | Codex | G4: form phối hợp liên đơn vị | 142–161 |
+| 2026-10-20 | Auto | EXP-01 / W-01 / nội bộ / phối hợp: `mof-data-table` tách hàng màu khỏi pager | 142–161 |
+| 2026-10-20 | Auto | EXP-01: nút ghim dùng `mof-icon-button` `[active]` (màu xanh Bộ khi đã ghim) | 142–161 |
+| 2026-10-20 | Auto | G5: EXP-01 `/workspace/ho-so-cua-toi` (hộp việc, SLA, ghim) thay Coming soon | 142–161 |
+| 2026-10-20 | Auto | G5: EXP-05 inbox `/workspace/ho-so-phoi-hop` + seed collab mở trên d-001 | 150, 142–161 |
+| 2026-10-20 | Auto | G5 P1: chờ bổ sung / chờ phối hợp / trả sửa thao tác được trên W-02 | 142–161 |

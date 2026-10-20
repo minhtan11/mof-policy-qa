@@ -49,11 +49,19 @@ const HOUR = 3_600_000;
 const isOpen = (d: Dossier) => WS_OPEN_STATUSES.includes(d.status);
 const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
 
-/** Hồ sơ trong phạm vi của người dùng (WS_ROLE_SCOPE). */
+/** Hồ sơ trong phạm vi của người dùng (WS_ROLE_SCOPE ↔ ROLE_PERMISSIONS). */
 export function scopeFor(list: Dossier[], user: PortalUser | null): Dossier[] {
   const scope = user ? WS_ROLE_SCOPE[user.role] : 'none';
   if (scope === 'all') return list;
   if (scope === 'assigned') return list.filter((d) => d.assignedTo === user!.name);
+  if (scope === 'unit') {
+    const unitId = user!.organizationId;
+    if (!unitId) return list;
+    return list.filter((d) => {
+      if (user!.role === 'reception' && (d.status === 'new' || d.status === 'received')) return true;
+      return !d.handlingUnitId || d.handlingUnitId === unitId;
+    });
+  }
   return [];
 }
 
@@ -65,7 +73,8 @@ export function isOverdue(d: Dossier, now: number): boolean {
 export function computeKpis(list: Dossier[], now: number): WsKpi[] {
   const open = list.filter(isOpen);
   const count = (tab: WsTab) => list.filter((d) => WS_TABS.find((t) => t.id === tab)!.statuses.includes(d.status)).length;
-  const processing = list.filter((d) => d.status === 'processing');
+  const processingStatuses = WS_TABS.find((t) => t.id === 'processing')!.statuses;
+  const processing = list.filter((d) => processingStatuses.includes(d.status));
   const nearDue = processing.filter((d) => {
     const h = (new Date(d.dueAt).getTime() - now) / HOUR;
     return h >= 0 && h <= WS_NEAR_DUE_HOURS;

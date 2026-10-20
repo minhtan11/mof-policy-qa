@@ -1,0 +1,31 @@
+# Màn WS-TPL — Tài liệu nội bộ (`/workspace/tai-lieu-noi-bo`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: G5 — thư viện mẫu trả lời (catalog + fixture) thay Coming soon  
+Affected UC: UC-060..UC-074  
+MDC nhóm: `docs/nghiep-vu/03-admin/05-danh-muc.mdc`, `02-can-bo/02-soan-tra-loi.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/tai-lieu-noi-bo` (`internalGuard`) |
+| Actor | Cán bộ nội bộ (`WS_ROLE_MATRIX.internal-docs`) |
+| Trạng thái | `mocked` |
+| Dữ liệu | `InternalDocsRepository` ← catalog `answer-template` |
+
+## Acceptance
+
+- Danh sách mẫu; xem trước; sao chép nội dung (toast).  
+- 2 theme × 2 ngôn ngữ.
+
+## Test
+
+`internal-docs.component.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | G5: WS-TPL thay Coming soon | 60–74 |

@@ -2,16 +2,14 @@
 <app-portal-header />
 
 <main class="mine">
+  <!-- Breadcrumb ngoài hero (điều hướng); hero chỉ còn tiêu đề / mô tả. -->
+  <div class="wide crumb-bar">
+    <app-mof-breadcrumb [items]="crumbs" />
+  </div>
   <!-- Hero sáng tràn viền: ảnh trụ sở bên phải mờ dần + minh hoạ tài liệu/kính lúp (không vàng) -->
   <section class="hero">
     <div class="wide hero-inner" appReveal>
       <div class="hero-text">
-        <nav class="crumbs" [attr.aria-label]="'nav.breadcrumb' | t">
-          <ol>
-            <li><a routerLink="/portal">{{ 'portal.nav.services' | t }}</a></li>
-            <li aria-current="page">{{ 'nav.myQuestions' | t }}</li>
-          </ol>
-        </nav>
         <p class="eyebrow">{{ 'my.eyebrow' | t }}</p>
         <h1>{{ 'my.titleBefore' | t }}<span class="accent">{{ 'my.titleAccent' | t }}</span>{{ 'my.titleAfter' | t }}</h1>
         <p class="sub">{{ 'my.intro' | t }}</p>

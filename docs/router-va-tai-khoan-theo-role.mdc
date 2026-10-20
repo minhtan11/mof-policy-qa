@@ -22,11 +22,15 @@ Tài liệu này là bản đồ điều hướng của mockup Angular `MOF-Poli
 | `/portal/login/vneid` | Đăng nhập VNeID | Public | Mô phỏng QR/redirect VNeID; bản production sẽ thay bằng adapter VNeID thật |
 | `/portal/hoi-dap` | Gửi câu hỏi | Public | Chọn lĩnh vực, nhập nội dung, thông tin liên hệ, tạo mã hồ sơ |
 | `/portal/tra-cuu` | Tra cứu công khai | Public | Tìm theo mã hồ sơ/từ khóa, xem hồ sơ đã công khai |
-| `/portal/huong-dan` | Coming soon — Hướng dẫn | Public | Placeholder; sẽ thay bằng tài liệu hướng dẫn cổng |
-| `/portal/van-ban` | Coming soon — Văn bản pháp luật | Public | Placeholder; sẽ thay bằng kho VBPL công khai |
+| `/portal/huong-dan` | Hướng dẫn sử dụng cổng | Public | Hành trình gửi hỏi / theo dõi / đánh giá + FAQ (`GuideRepository`) |
+| `/portal/van-ban` | Văn bản pháp luật công khai | Public | Tìm kiếm + lọc hiệu lực + chi tiết mở rộng (`LegalDocumentRepository`) |
 
 | `/workspace/login` | Đăng nhập nghiệp vụ | Cán bộ nội bộ | Chọn role mock; production sẽ kết nối SSO/IAM của Bộ |
 | `/workspace` | Tổng quan công việc | Cán bộ nội bộ | Xem KPI, hàng đợi hồ sơ, biểu đồ SLA, mở chi tiết hồ sơ |
+| `/workspace/ho-so-cua-toi` | Hồ sơ của tôi (EXP-01) | Cán bộ nội bộ | Hộp việc theo SLA + ghim |
+| `/workspace/ho-so-noi-bo` | Hồ sơ nội bộ | Specialist, leader, coordinator, admin | Danh sách hồ sơ theo phạm vi vai trò + lọc trạng thái |
+| `/workspace/ho-so-phoi-hop` | Hồ sơ phối hợp | Specialist, leader, coordinator | Hộp yêu cầu phối hợp liên đơn vị |
+| `/workspace/bao-cao-thong-ke` | Báo cáo thống kê | Leader, coordinator | Sinh 16 báo cáo + biểu đồ (ReportRepository) |
 | `/workspace/ho-so/:id` | Chi tiết và xử lý hồ sơ | Reception, specialist, leader, coordinator | Xem câu hỏi, soạn trả lời, lưu nháp, AI advisory, chuyển bước workflow |
 | `/admin` | Quản trị tập trung | System admin | Tabs: người dùng, danh mục, workflow, văn bản pháp luật, AI, báo cáo |
 | `**` | Fallback | Tất cả | Route không tồn tại chuyển về `/portal` |
@@ -111,3 +115,4 @@ Router/màn hình liên kết với các nhóm MDC: đăng nhập `01`, người
 | 2026-10-20 | Codex | Tạo bản đồ router, màn hình, luồng role và danh sách tài khoản mock | Router toàn hệ thống; UC 1-8, 18-40, 100-113, 142-175, 188-203 |
 | 2026-10-20 | Grok Bot | R29: `/workspace/**` và `/admin` dùng chung `app-workspace-shell`; menu lọc theo role (Văn bản/Hệ thống chỉ ADMIN), deep-link `/workspace?filter=`, `/admin?tab=`, `/workspace/tra-cuu?q=` | Router workspace/admin |
 | 2026-10-20 | Grok Bot | R30: thêm 10 route Sắp ra mắt (internalGuard): `/workspace/ho-so-cua-toi`, `ho-so-noi-bo`, `ho-so-phoi-hop`, `lich-lam-viec`, `bao-cao-thong-ke`, `van-ban-den`, `van-ban-di`, `tai-lieu-noi-bo`, `kho-du-lieu`, `ho-so-ca-nhan`; quyền hiển thị menu theo `WS_ROLE_MATRIX` | Router workspace |
+| 2026-10-20 | Auto | G5: `ho-so-noi-bo`, `ho-so-phoi-hop`, `bao-cao-thong-ke` thành màn thật (gỡ khỏi WS_SOON_PAGES); giữ soon: lịch, VB đến/đi, tài liệu, kho DL, hồ sơ cá nhân | Router workspace |

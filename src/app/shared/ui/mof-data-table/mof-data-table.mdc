@@ -1,0 +1,28 @@
+# Shared — `app-mof-data-table`
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Shell bảng + chân pagination — tránh màu hàng dính pager  
+Affected UC: UC-142..UC-161 (EXP-01 / W-01 danh sách)
+
+## Mục đích
+
+Bọc `<table class="mof-tbl">` + chân `[mofTableFoot]` (thường `app-mof-pagination`): scroll ngang, footer có `border-top` / padding / nền surface để hàng `is-late` không dính pager.
+
+## Cách dùng
+
+```html
+<app-mof-data-table>
+  <table class="mof-tbl">…</table>
+  <app-mof-pagination mofTableFoot … />
+</app-mof-data-table>
+```
+
+- Hàng quá hạn: `class="is-late"` trên `<tr>` (style trong control).  
+- Feature giữ style cột riêng (`.pin-col`, `.code`, …).
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Thêm shell mof-data-table | 142–161 |

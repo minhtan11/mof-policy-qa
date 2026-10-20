@@ -1,0 +1,112 @@
+<app-workspace-shell>
+  <app-mof-breadcrumb [items]="crumbs" />
+
+  <section class="hero" aria-labelledby="in-title">
+    <div class="hero-text">
+      <h1 id="in-title">{{ 'wsIncoming.title' | t }}</h1>
+      <p class="sub">{{ 'wsIncoming.welcome' | t }}</p>
+    </div>
+  </section>
+
+  <ul class="kpis" role="list">
+    <li class="kpi" data-tone="blue">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="inbox-in" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsIncoming.tabAll' | t }}</p>
+        <strong class="k-num">{{ counts().all }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="amber">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="file" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsIncoming.tabNew' | t }}</p>
+        <strong class="k-num">{{ counts().new }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="violet">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="hourglass-end" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsIncoming.tabProcessing' | t }}</p>
+        <strong class="k-num">{{ counts().processing }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="green">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="check-circle" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsIncoming.tabDone' | t }}</p>
+        <strong class="k-num">{{ counts().done }}</strong>
+      </div>
+    </li>
+  </ul>
+
+  <section class="card attention" aria-labelledby="list-title">
+    <header class="c-head">
+      <div>
+        <h2 id="list-title">{{ 'wsIncoming.listTitle' | t }}</h2>
+        <p>{{ 'wsIncoming.listHint' | t }}</p>
+      </div>
+      <div class="tools">
+        <label class="search">
+          <app-mof-fi-icon name="search" aria-hidden="true" />
+          <span class="sr-only">{{ 'wsIncoming.searchLabel' | t }}</span>
+          <input
+            type="search"
+            [placeholder]="'wsIncoming.searchPlaceholder' | t"
+            [value]="qInput()"
+            (input)="qInput.set($any($event.target).value)"
+            (keydown.enter)="applySearch()"
+            (keydown.escape)="clearSearch()"
+          />
+        </label>
+      </div>
+    </header>
+
+    <div class="tabs" role="tablist">
+      @for (t of tabs; track t.id) {
+        <button type="button" class="tab" [class.on]="tab() === t.id" (click)="setTab(t.id)">
+          {{ t.labelKey | t }}
+          <span class="t-n">{{ counts()[t.id] }}</span>
+        </button>
+      }
+    </div>
+
+    @if (rows().length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'wsIncoming.colCode' | t }}</th>
+              <th>{{ 'wsIncoming.colTitle' | t }}</th>
+              <th>{{ 'wsIncoming.colSender' | t }}</th>
+              <th>{{ 'wsIncoming.colStatus' | t }}</th>
+              <th>{{ 'wsIncoming.colDate' | t }}</th>
+              <th class="act">{{ 'workspace.colActions' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (d of rows(); track d.id) {
+              <tr>
+                <td class="code">{{ d.code }}</td>
+                <td class="content"><span>{{ d.title }}</span></td>
+                <td>{{ d.sender }}</td>
+                <td>{{ statusKey(d.status) | t }}</td>
+                <td>{{ d.receivedAt | date: 'dd/MM/yyyy' }}</td>
+                <td class="act">
+                  @if (d.dossierId) {
+                    <a class="open" [routerLink]="['/workspace/ho-so', d.dossierId]" [attr.aria-label]="'workspace.viewDetail' | t">
+                      <app-mof-fi-icon name="arrow-small-right" />
+                    </a>
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="empty">{{ 'wsIncoming.empty' | t }}</p>
+    }
+  </section>
+</app-workspace-shell>

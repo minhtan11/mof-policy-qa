@@ -1,10 +1,12 @@
 # Màn W-01 — Tổng quan workspace / hàng đợi
 
 Changed on: 2026-10-20  
-Changed by: Grok Bot  
-Change reason: R31 — redesign Tổng quan công việc theo mockup  
+Changed by: Auto  
+Change reason: Hàng đợi dùng `app-mof-data-table` — tách bảng khỏi pagination  
 Affected UC: UC-142..UC-149, UC-188..UC-191  
-MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `07-bao-cao-dashboard.mdc`## Màn hình
+MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `07-bao-cao-dashboard.mdc`
+
+## Màn hình
 
 | Mục | Giá trị |
 |---|---|
@@ -15,13 +17,12 @@ MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `07-bao-cao-da
 
 ## Bố cục (R31)
 
-1. **Hero sáng**: breadcrumb «Tổng quan › Công việc», h1, phụ đề; ảnh trụ sở Bộ (`/assets/hero/mof-hq.jpg`) mờ dần bên phải (token `--mof-ws-hero-*`, ẩn ảnh < 640px). Thẻ ngày dùng `Intl.DateTimeFormat` theo locale (vd. «Thứ Ba, 20/10/2026») kèm lời chúc. Shell không vẽ page-head (`title` rỗng), nên trang chỉ có 1 h1.
+1. **Hero sáng**: h1, phụ đề, thẻ ngày (cột chữ trái); ảnh trụ sở Bộ (`/assets/hero/mof-hq.jpg`) mờ dần bên phải (token `--mof-ws-hero-*`, ẩn ảnh < 640px). Không breadcrumb trong hero (trang gốc workspace). Thẻ ngày dùng `Intl.DateTimeFormat` theo locale (vd. «Thứ Ba, 20/10/2026») kèm lời chúc. Shell không vẽ page-head (`title` rỗng), nên trang chỉ có 1 h1. Shared breadcrumb: `app-mof-breadcrumb` (xem `shared/ui/mof-breadcrumb/mof-breadcrumb.mdc`).
 2. **4 KPI** (`WS_KPIS`): Chờ tiếp nhận (new+received, xanh, folder), Đang xử lý (amber, clock; gợi ý = số sắp đến hạn 48h), Chờ phê duyệt (tím, user-check), Đúng hạn ước tính (xanh lá; đang mở & chưa quá hạn, kèm %). Mũi tên → `/workspace?filter=…`. Có count-up.
 3. **Hồ sơ cần chú ý**:
    - ô tìm kiếm (không dấu, debounce 250ms); nút bộ lọc mở popover (core overlay, portal) lọc mức ưu tiên và lĩnh vực; nút + Tạo hồ sơ nội bộ chỉ cho vai trò trong `WS_CAN_CREATE` (hiện là toast «sắp ra mắt», như trước chưa có luồng).
    - tab pill (`WS_TABS`): Tất cả đang mở / Mới / Đang xử lý / Chờ duyệt / Đã trả lời / Đã đóng, có số đếm; phím ←/→; cuộn ngang trên mobile.
-   - bảng: mã hồ sơ (icon màu lĩnh vực + link), nội dung (ellipsis), trạng thái, hạn xử lý (quá hạn tô đỏ), thao tác → `/workspace/ho-so/:id`. Khi thẻ hẹp hơn 38rem (container query) bảng chuyển thành thẻ.
-   - `mof-pagination layout="per-page" [edges]` (đầu/trước/số/sau/cuối; 10/20/50).
+   - `app-mof-data-table`: bảng `mof-tbl` (mã, nội dung, trạng thái, hạn; hàng quá hạn `is-late`) + `mof-pagination` chân `[mofTableFoot]`. Khi thẻ hẹp hơn 38rem (container query) bảng chuyển thành thẻ.
 4. **Cột phải** (≥1280; dưới 1280 xuống dưới thành 2 cột):
    - «Tiến độ xử lý»: donut ApexCharts (`mof-chart`, màu từ `--mof-tone-*`, theo theme). Tâm hiển thị «Tổng số N hồ sơ»; legend Đúng hạn / Sắp quá hạn / Quá hạn / Đã hoàn thành. Chọn tháng lọc theo `receivedAt`, bỏ hồ sơ từ chối.
    - «Lĩnh vực hồ sơ»: top 5, icon màu, thanh tiến độ, «%(n)», «Xem chi tiết» → `/workspace/tra-cuu`.
@@ -53,6 +54,8 @@ KPI và thẻ có hiệu ứng rise; KPI đếm tăng dần (700ms); thanh lĩnh
 
 | Ngày | Người | Lý do | UC |
 |---|---|---|---|
+| 2026-10-20 | Auto | Hàng đợi bọc `mof-data-table` (tách màu hàng khỏi pager) | 142–149 |
 | 2026-10-20 | Codex | Thêm filter tabs hàng đợi (G2) | 142–149 |
 | 2026-10-20 | Codex | Metric + donut SLA theo dữ liệu mock live (G3) | 188–191 |
 | 2026-10-20 | Grok Bot | R31: redesign theo mockup (hero, KPI, hàng đợi có tab/tìm/lọc/phân trang đồng bộ URL, donut theo tháng, lĩnh vực, phạm vi vai trò) | 142–149, 188–191 |
+| 2026-10-20 | Auto | Gỡ crumb trong hero; thẻ ngày gắn cột chữ; breadcrumb core `mof-breadcrumb` | 142–149 |

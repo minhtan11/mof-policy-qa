@@ -34,9 +34,7 @@
   font-size: var(--select-font);
   text-align: left;
   cursor: pointer;
-  transition:
-    border-color var(--mof-fast) ease,
-    box-shadow var(--mof-fast) ease;
+  transition: border-color var(--mof-fast) ease;
 
   &:hover:not(:disabled) {
     border-color: color-mix(in srgb, var(--mof-blue) 40%, var(--mof-line));
@@ -46,7 +44,7 @@
   :host(.is-open) & {
     outline: none;
     border-color: var(--mof-blue);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mof-blue) 16%, transparent);
+    box-shadow: none;
   }
 
   &:disabled {
@@ -145,9 +143,7 @@
     color: var(--mof-ink);
     font: inherit;
     font-size: var(--mof-text-sm);
-    transition:
-      border-color var(--mof-fast) ease,
-      box-shadow var(--mof-fast) ease;
+    transition: border-color var(--mof-fast) ease;
 
     &::placeholder {
       color: var(--mof-muted);
@@ -156,7 +152,7 @@
     &:focus {
       outline: none;
       border-color: var(--mof-blue);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--mof-blue) 14%, transparent);
+      box-shadow: none;
     }
   }
 }

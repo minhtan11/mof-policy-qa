@@ -13,7 +13,7 @@ Affected UC: UC-1..UC-8, UC-142..UC-149
 - **Tuỳ chọn (`app-header-prefs`):** ngày, giao diện sáng/tối (switch — nhãn đổi theo theme hiện tại), VI|EN, Sơ đồ cổng, Hỗ trợ — trong menu tài khoản; khi chưa đăng nhập nằm trong menu cài đặt (luôn đổi được ngôn ngữ/giao diện).
 - **Sticky:** blur trên `::before` (KHÔNG đặt backdrop-filter trên header để overlay `position:fixed` bên trong phủ đúng viewport); khi cuộn (`.scrolled`) nền đặc hơn + đổ bóng.
 - **Tràn menu:** `measure()` đo bề rộng mục (ResizeObserver + đổi ngôn ngữ + fonts.ready); mục không vừa được ẩn (`.overflowed`, inert) và hiện trong dropdown **Thêm** — không xuống dòng. 1024–1279: chữ/khoảng cách thu nhỏ bằng clamp, ẩn dòng phụ nhận diện; tên người dùng chỉ hiện ≥ 1440.
-- **Mục đang chọn:** theo `activeFor` / route con (mỗi route chỉ thuộc một mục → không bao giờ 2 submenu cùng sáng). `/portal/tra-cuu`, `/portal/hoi-dap`, … thuộc **Dịch vụ công**; `/portal/huong-dan` thuộc **Giới thiệu**; `/portal/van-ban` thuộc **Văn bản pháp luật** (placeholder Coming soon).
+- **Mục đang chọn:** theo `activeFor` / route con (mỗi route chỉ thuộc một mục → không bao giờ 2 submenu cùng sáng). `/portal/tra-cuu`, `/portal/hoi-dap`, … thuộc **Dịch vụ công**; `/portal/huong-dan` thuộc **Giới thiệu** (màn `guide`); `/portal/van-ban` thuộc **Văn bản pháp luật** (màn `public-legal`).
 - **< 1024px:** drawer off-canvas round 16–18 giữ nguyên (hàng chip tiện ích, accordion); thanh trên cao `--mof-header-h` (3.75rem) gồm logo, tìm kiếm, chuông, nút menu.
 
 ## Chiều cao
@@ -34,6 +34,7 @@ Affected UC: UC-1..UC-8, UC-142..UC-149
 | 2026-10-20 | Auto | Menu tài khoản/drawer: cán bộ nội bộ thấy «Không gian làm việc» → landing workspace/admin | UC-1..UC-8, UC-142..UC-149 |
 | 2026-10-20 | Auto | Nhãn switch giao diện trong Tuỳ chọn đổi «Giao diện sáng» ↔ «Giao diện tối» theo theme | UC-1..UC-8 |
 | 2026-10-20 | Auto | Tách route Hướng dẫn `/portal/huong-dan` và VBPL `/portal/van-ban` (Coming soon) — hết multi-active submenu trên `/portal/tra-cuu` | UC-1..UC-8, UC-162..UC-165 |
+| 2026-10-20 | Auto | `/portal/huong-dan` → GuideComponent; `/portal/van-ban` → PublicLegalComponent (hết Coming soon trên 2 route này) | UC-162..UC-165 |
 | 2026-10-20 | Auto | Exclusive dropdown: bỏ `:focus-within` giữ submenu cũ; `openNav`/`toggleUser`/`opened` đóng panel còn lại | UC-1..UC-8 |
 | 2026-10-20 | Auto | Gỡ «Đăng nhập bằng VNeID» khỏi submenu Dịch vụ công | UC-1..UC-8 |
 | 2026-10-20 | Grok Bot | Dropdown desktop + drawer: mục cách nhau 0.1875rem, hover tint trung tính (--mof-hover-tint), active = chữ brand 600 + thanh trái + --mof-active-tint, focus ring riêng | UC-1..UC-8 |

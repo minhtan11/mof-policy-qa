@@ -16,10 +16,10 @@ const ROWS: Row[] = [
   ['Chi phí khấu hao tài sản cố định thuê tài chính có được tính vào chi phí được trừ không?', 'tax', 'received', '2026-10-17T08:40:00', '2026-10-24T17:00:00', []],
   ['Doanh nghiệp nhập khẩu máy móc để tạo tài sản cố định có được miễn thuế nhập khẩu không?', 'customs', 'processing', '2026-10-09T14:00:00', '2026-10-16T17:00:00', ['danh-muc-may-moc.xlsx', 'hop-dong-nhap-khau.pdf']],
   ['Thời hạn nộp báo cáo tình hình sử dụng hóa đơn điện tử là khi nào?', 'tax', 'new', '2026-10-19T16:20:00', '2026-10-26T17:00:00', []],
-  ['Quy định về trích lập quỹ phát triển khoa học và công nghệ của doanh nghiệp?', 'finance', 'processing', '2026-10-14T09:30:00', '2026-10-21T17:00:00', []],
-  ['Thủ tục điều chỉnh thông tin đăng ký thuế khi doanh nghiệp đổi địa chỉ trụ sở?', 'tax', 'processing', '2026-10-16T11:00:00', '2026-10-23T17:00:00', ['quyet-dinh-doi-tru-so.pdf']],
+  ['Quy định về trích lập quỹ phát triển khoa học và công nghệ của doanh nghiệp?', 'finance', 'awaiting-clarification', '2026-10-14T09:30:00', '2026-10-21T17:00:00', []],
+  ['Thủ tục điều chỉnh thông tin đăng ký thuế khi doanh nghiệp đổi địa chỉ trụ sở?', 'tax', 'returned', '2026-10-16T11:00:00', '2026-10-23T17:00:00', ['quyet-dinh-doi-tru-so.pdf']],
   ['Đơn vị sự nghiệp công lập cho thuê tài sản công cần lập đề án như thế nào?', 'public-assets', 'waiting-approval', '2026-10-08T08:00:00', '2026-10-15T17:00:00', ['de-an-cho-thue.docx']],
-  ['Hướng dẫn hạch toán khoản hỗ trợ lãi suất từ ngân sách nhà nước?', 'budget', 'waiting-approval', '2026-10-12T13:45:00', '2026-10-21T17:00:00', []],
+  ['Hướng dẫn hạch toán khoản hỗ trợ lãi suất từ ngân sách nhà nước?', 'budget', 'approved', '2026-10-12T13:45:00', '2026-10-21T17:00:00', []],
   ['Doanh nghiệp chế xuất bán hàng vào nội địa có phải khai hải quan không?', 'customs', 'waiting-approval', '2026-10-15T10:10:00', '2026-10-22T17:00:00', []],
   ['Điều kiện được hoàn thuế thu nhập doanh nghiệp đã nộp thừa?', 'tax', 'waiting-approval', '2026-10-11T15:00:00', '2026-10-25T17:00:00', ['giay-nop-tien.pdf']],
   ['Quy trình phân bổ dự toán chi thường xuyên cho đơn vị trực thuộc?', 'budget', 'waiting-approval', '2026-10-18T09:00:00', '2026-10-27T17:00:00', []],
@@ -57,10 +57,24 @@ function timeline(status: DossierStatus, received: string): Dossier['timeline'] 
   if (status === 'received') return t;
   t.push(ev(plusDays(received, 2), 'Đang soạn dự thảo', 'Chuyên viên đang nghiên cứu hồ sơ.', 'Lê Quốc Hưng', status === 'processing' ? 'current' : 'done'));
   if (status === 'processing') return t;
+  if (status === 'awaiting-clarification') {
+    return [...t, ev(plusDays(received, 3), 'Yêu cầu bổ sung thông tin', 'Cần bổ sung chứng từ liên quan.', 'Lê Quốc Hưng', 'current')];
+  }
+  if (status === 'awaiting-collaboration') {
+    return [...t, ev(plusDays(received, 3), 'Yêu cầu phối hợp', 'Đang chờ đơn vị phối hợp phản hồi.', 'Lê Quốc Hưng', 'current')];
+  }
+  if (status === 'returned') {
+    t.push(ev(plusDays(received, 4), 'Trình lãnh đạo duyệt', 'Dự thảo đã trình.', 'Lê Quốc Hưng', 'done'));
+    return [...t, ev(plusDays(received, 5), 'Trả sửa dự thảo', 'Lãnh đạo yêu cầu chỉnh sửa.', 'Phạm Đức Long', 'current')];
+  }
   t.push(ev(plusDays(received, 4), 'Trình lãnh đạo duyệt', 'Dự thảo đang chờ phê duyệt.', 'Lê Quốc Hưng', status === 'waiting-approval' ? 'current' : 'done'));
   if (status === 'waiting-approval') return t;
+  if (status === 'approved') {
+    return [...t, ev(plusDays(received, 5), 'Đã phê duyệt', 'Chờ xuất bản công khai.', 'Phạm Đức Long', 'current')];
+  }
   t.push(ev(plusDays(received, 5), 'Đã trả lời', 'Câu trả lời đã được gửi tới email của bạn.', 'Phạm Đức Long', 'done'));
   if (status === 'published') t.push(ev(plusDays(received, 6), 'Công khai câu trả lời', 'Câu trả lời đã được công bố.', 'Phạm Đức Long', 'done'));
+  if (status === 'closed') t.push(ev(plusDays(received, 7), 'Đóng hồ sơ', 'Hồ sơ đã đóng trên hệ thống.', 'Phạm Đức Long', 'done'));
   return t;
 }
 
@@ -79,8 +93,9 @@ export const MY_QUESTIONS_FIXTURES: Dossier[] = ROWS.map(([question, topicId, st
     status,
     priority: i % 5 === 0 ? ('high' as const) : ('normal' as const),
     assignedTo: status === 'new' || status === 'rejected' ? '' : 'Lê Quốc Hưng',
-    answer: done ? ANSWER : status === 'rejected' ? REJECT : '',
-    legalBasis: done ? ['Luật Quản lý thuế số 38/2019/QH14'] : [],
+    handlingUnitId: status === 'new' || status === 'rejected' ? undefined : 'org-tax',
+    answer: done || status === 'approved' ? ANSWER : status === 'rejected' ? REJECT : '',
+    legalBasis: done || status === 'approved' ? ['Luật Quản lý thuế số 38/2019/QH14'] : [],
     attachments,
     isPublic: status === 'published',
     ratings: [],

@@ -11,28 +11,41 @@ export const TOPICS: Topic[] = [
 
 export const USERS: PortalUser[] = [
   { id: 'u-public', username: 'minhanh', name: 'Nguyễn Minh Anh', email: 'minhanh@example.vn', organization: 'Công ty CP An Phát', role: 'public', avatar: 'MA' },
-  { id: 'u-reception', username: 'ha.tt', name: 'Trần Thu Hà', email: 'ha.tt@moj.gov.vn', organization: 'Văn phòng Bộ', role: 'reception', avatar: 'TH' },
-  { id: 'u-specialist', username: 'hung.lq', name: 'Lê Quốc Hưng', email: 'hung.lq@moj.gov.vn', organization: 'Vụ Chính sách thuế', role: 'specialist', avatar: 'LH' },
-  { id: 'u-leader', username: 'long.pd', name: 'Phạm Đức Long', email: 'long.pd@moj.gov.vn', organization: 'Vụ Chính sách thuế', role: 'leader', avatar: 'PL' },
-  { id: 'u-coordinator', username: 'ngoc.db', name: 'Đỗ Bích Ngọc', email: 'ngoc.db@moj.gov.vn', organization: 'Tổ điều phối', role: 'coordinator', avatar: 'BN' },
-  { id: 'u-admin', username: 'admin', name: 'Quản trị hệ thống', email: 'admin@moj.gov.vn', organization: 'Trung tâm CNTT', role: 'system-admin', avatar: 'QT' },
+  { id: 'u-reception', username: 'ha.tt', name: 'Trần Thu Hà', email: 'ha.tt@moj.gov.vn', organization: 'Văn phòng Bộ', organizationId: 'org-vp', role: 'reception', avatar: 'TH' },
+  { id: 'u-specialist', username: 'hung.lq', name: 'Lê Quốc Hưng', email: 'hung.lq@moj.gov.vn', organization: 'Vụ Chính sách thuế', organizationId: 'org-tax', role: 'specialist', avatar: 'LH' },
+  { id: 'u-leader', username: 'long.pd', name: 'Phạm Đức Long', email: 'long.pd@moj.gov.vn', organization: 'Vụ Chính sách thuế', organizationId: 'org-tax', role: 'leader', avatar: 'PL' },
+  { id: 'u-coordinator', username: 'ngoc.db', name: 'Đỗ Bích Ngọc', email: 'ngoc.db@moj.gov.vn', organization: 'Tổ điều phối', organizationId: 'org-coord', role: 'coordinator', avatar: 'BN' },
+  { id: 'u-admin', username: 'admin', name: 'Quản trị hệ thống', email: 'admin@moj.gov.vn', organization: 'Trung tâm CNTT', organizationId: 'org-ict', role: 'system-admin', avatar: 'QT' },
 ];
 
 export const DOSSIERS: Dossier[] = [
   {
-    id: 'd-001', code: 'CSTC-2026-001284', question: 'Doanh nghiệp mới thành lập cần thực hiện các thủ tục khai thuế ban đầu như thế nào?', topicId: 'tax', sender: 'Nguyễn Minh Anh', senderEmail: 'minhanh@example.vn', organization: 'Công ty CP An Phát', receivedAt: '2026-10-15T08:30:00', dueAt: '2026-10-22T17:00:00', status: 'processing', priority: 'high', assignedTo: 'Lê Quốc Hưng', answer: '', legalBasis: ['Luật Quản lý thuế số 38/2019/QH14', 'Nghị định số 126/2020/NĐ-CP'], attachments: ['giay-chung-nhan-dkkd.pdf'], isPublic: false,
+    id: 'd-001', code: 'CSTC-2026-001284', question: 'Doanh nghiệp mới thành lập cần thực hiện các thủ tục khai thuế ban đầu như thế nào?', topicId: 'tax', sender: 'Nguyễn Minh Anh', senderEmail: 'minhanh@example.vn', organization: 'Công ty CP An Phát', receivedAt: '2026-10-15T08:30:00', dueAt: '2026-10-22T17:00:00', status: 'awaiting-collaboration', priority: 'high', assignedTo: 'Lê Quốc Hưng', handlingUnitId: 'org-tax', answer: '', legalBasis: ['Luật Quản lý thuế số 38/2019/QH14', 'Nghị định số 126/2020/NĐ-CP'], attachments: ['giay-chung-nhan-dkkd.pdf'], isPublic: false,
+    collaborations: [
+      {
+        id: 'collab-seed-001',
+        unitId: 'org-budget',
+        unitName: 'Vụ Ngân sách nhà nước',
+        note: 'Xin ý kiến về hỗ trợ đăng ký thuế ban đầu gắn với nghĩa vụ ngân sách địa phương.',
+        dueAt: '2026-10-21T17:00:00',
+        status: 'open',
+        requestedBy: 'Lê Quốc Hưng',
+        at: '2026-10-16T11:00:00',
+      },
+    ],
     timeline: [
       { at: '15/10/2026 08:30', title: 'Tiếp nhận câu hỏi', description: 'Hệ thống đã ghi nhận hồ sơ từ Cổng công khai.', actor: 'Hệ thống', state: 'done' },
       { at: '15/10/2026 10:15', title: 'Phân loại và chuyển xử lý', description: 'Chuyển Vụ Chính sách thuế.', actor: 'Trần Thu Hà', state: 'done' },
-      { at: '16/10/2026 09:00', title: 'Đang soạn dự thảo', description: 'Chuyên viên đang nghiên cứu hồ sơ.', actor: 'Lê Quốc Hưng', state: 'current' },
+      { at: '16/10/2026 09:00', title: 'Đang soạn dự thảo', description: 'Chuyên viên đang nghiên cứu hồ sơ.', actor: 'Lê Quốc Hưng', state: 'done' },
+      { at: '16/10/2026 11:00', title: 'Yêu cầu phối hợp', description: 'Gửi Vụ Ngân sách nhà nước: Xin ý kiến về hỗ trợ đăng ký thuế ban đầu.', actor: 'Lê Quốc Hưng', state: 'current' },
     ],
   },
   {
-    id: 'd-002', code: 'CSTC-2026-001279', question: 'Hồ sơ quyết toán ngân sách cấp xã cần gửi trước thời hạn nào?', topicId: 'budget', sender: 'UBND phường Hòa Bình', senderEmail: 'vanthu@hoabinh.gov.vn', organization: 'UBND phường Hòa Bình', receivedAt: '2026-10-14T14:20:00', dueAt: '2026-10-21T17:00:00', status: 'waiting-approval', priority: 'normal', assignedTo: 'Lê Quốc Hưng', answer: 'Theo quy định hiện hành, báo cáo quyết toán ngân sách cấp xã được lập và gửi cơ quan tài chính cấp trên đúng thời hạn quy định.', legalBasis: ['Luật Ngân sách nhà nước 2015'], attachments: [], isPublic: false,
+    id: 'd-002', code: 'CSTC-2026-001279', question: 'Hồ sơ quyết toán ngân sách cấp xã cần gửi trước thời hạn nào?', topicId: 'budget', sender: 'UBND phường Hòa Bình', senderEmail: 'vanthu@hoabinh.gov.vn', organization: 'UBND phường Hòa Bình', receivedAt: '2026-10-14T14:20:00', dueAt: '2026-10-21T17:00:00', status: 'waiting-approval', priority: 'normal', assignedTo: 'Lê Quốc Hưng', handlingUnitId: 'org-budget', answer: 'Theo quy định hiện hành, báo cáo quyết toán ngân sách cấp xã được lập và gửi cơ quan tài chính cấp trên đúng thời hạn quy định.', legalBasis: ['Luật Ngân sách nhà nước 2015'], attachments: [], isPublic: false,
     timeline: [{ at: '14/10/2026 14:20', title: 'Tiếp nhận câu hỏi', description: 'Đã tiếp nhận.', actor: 'Hệ thống', state: 'done' }, { at: '16/10/2026 15:40', title: 'Trình lãnh đạo duyệt', description: 'Dự thảo đang chờ phê duyệt.', actor: 'Lê Quốc Hưng', state: 'current' }],
   },
   {
-    id: 'd-003', code: 'CSTC-2026-001261', question: 'Thủ tục hoàn thuế giá trị gia tăng đối với hàng xuất khẩu?', topicId: 'tax', sender: 'Công ty TNHH Hưng Thịnh', senderEmail: 'contact@hungthinh.vn', organization: 'Công ty TNHH Hưng Thịnh', receivedAt: '2026-10-10T09:00:00', dueAt: '2026-10-17T17:00:00', status: 'published', priority: 'normal', assignedTo: 'Lê Quốc Hưng', answer: 'Người nộp thuế chuẩn bị hồ sơ hoàn thuế theo quy định của pháp luật về thuế và gửi cơ quan thuế quản lý trực tiếp.', legalBasis: ['Thông tư số 80/2021/TT-BTC'], attachments: [], isPublic: true,
+    id: 'd-003', code: 'CSTC-2026-001261', question: 'Thủ tục hoàn thuế giá trị gia tăng đối với hàng xuất khẩu?', topicId: 'tax', sender: 'Công ty TNHH Hưng Thịnh', senderEmail: 'contact@hungthinh.vn', organization: 'Công ty TNHH Hưng Thịnh', receivedAt: '2026-10-10T09:00:00', dueAt: '2026-10-17T17:00:00', status: 'published', priority: 'normal', assignedTo: 'Lê Quốc Hưng', handlingUnitId: 'org-tax', answer: 'Người nộp thuế chuẩn bị hồ sơ hoàn thuế theo quy định của pháp luật về thuế và gửi cơ quan thuế quản lý trực tiếp.', legalBasis: ['Thông tư số 80/2021/TT-BTC'], attachments: [], isPublic: true,
     timeline: [{ at: '10/10/2026 09:00', title: 'Tiếp nhận câu hỏi', description: 'Đã tiếp nhận.', actor: 'Hệ thống', state: 'done' }, { at: '15/10/2026 16:30', title: 'Công khai câu trả lời', description: 'Câu trả lời đã được công bố.', actor: 'Phạm Đức Long', state: 'done' }],
   },
 ];

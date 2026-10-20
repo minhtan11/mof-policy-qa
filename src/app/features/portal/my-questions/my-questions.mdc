@@ -1,8 +1,8 @@
 # Màn PUB-03 — Câu hỏi của tôi
 
 Changed on: 2026-10-20  
-Changed by: Grok Bot  
-Change reason: Round 28 — thiết kế lại theo mockup (hero sáng, thẻ email, bảng hồ sơ, lọc/sắp xếp/phân trang theo URL)  
+Changed by: Auto  
+Change reason: Breadcrumb dùng `app-mof-breadcrumb` đặt ngoài hero  
 Affected UC: UC-110, UC-122, UC-165  
 MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/04-cau-hoi-cua-toi.mdc`
 
@@ -18,7 +18,7 @@ MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/04-cau-hoi-cua-toi.mdc`
 
 ## Bố cục
 
-- Breadcrumb **Dịch vụ công › Câu hỏi của tôi** (`portal.nav.services` › `nav.myQuestions` — đúng nhãn trang, không dùng “Tra cứu hồ sơ” của mockup).
+- Breadcrumb **Dịch vụ công › Câu hỏi của tôi** qua `app-mof-breadcrumb` (ngoài hero; click về `/portal`; F5 vẫn `aria-current` đúng `/portal/cau-hoi-cua-toi`).
 - Eyebrow “THEO DÕI HỒ SƠ”, tiêu đề có phần nhấn `my.titleAccent` (vi “của tôi”, en “My”), phụ đề `my.intro`.
 - Hero sáng tràn viền: token `--mof-mine-hero-overlay` + `--mof-mine-hero-bg` (light/dark) trên ảnh `mof-hq.jpg`, minh hoạ `lookup-docs.svg` (chỉ xanh/trắng, không vàng). Nội dung theo `.wide` = `min(100% - 2*gutter, 96rem)`.
 - Thẻ email: ô icon thư, nhãn, `app-mof-input` + nút “Tải danh sách”, gợi ý; lỗi trong `app-mof-field-error` (giữ chỗ → không nhảy layout).
@@ -64,3 +64,4 @@ MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/04-cau-hoi-cua-toi.mdc`
 | 2026-10-20 | Codex | Thêm màn câu hỏi của tôi (G1) | 110, 122 |
 | 2026-10-20 | Codex | Viết lại tiếng Việt; path MDC nhóm mới | 110, 122, 165 |
 | 2026-10-20 | Grok Bot | Round 28: redesign theo mockup — hero sáng, thẻ email (validate giữ chỗ, toast), bảng sticky + thẻ mobile, lọc/sắp xếp/phân trang URL (mof-pagination per-page), trạng thái `rejected`, fixture 24 hồ sơ, chống nháy | 110, 122, 165 |
+| 2026-10-20 | Auto | Đổi sang `app-mof-breadcrumb` đặt ngoài hero | 110, 122, 165 |

@@ -1,5 +1,7 @@
 :host {
   display: block;
+  /* Tách khỏi bảng/hàng màu phía trên khi chưa bọc mof-data-table. */
+  margin-top: 0.75rem;
 }
 
 .pager {

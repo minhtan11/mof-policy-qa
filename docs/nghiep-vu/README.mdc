@@ -49,9 +49,10 @@ Số `01, 02…` trong mỗi folder = **thứ tự thao tác**, không phải m�
 | `03-phan-quyen.mdc` | Vai trò, quyền, phạm vi dữ liệu | 31–40 |
 | `04-cau-hinh-quy-trinh-sla.mdc` | Workflow, SLA | 41–51 |
 | `05-danh-muc.mdc` | Danh mục, mẫu | 60–74 |
-| `06-tich-hop.mdc` | VNeID, email/SMS, storage, webhook | 52–59 |
+| `06-tich-hop.mdc` | VNeID, email/SMS, storage, webhook (tab Admin) | 52–59 |
 | `07-van-han.mdc` | ATTT, backup, job, AI ops | 84–99 |
 | `08-du-lieu-backend.mdc` | Index, chất lượng, ẩn danh | 135–141 |
+| `09-nhat-ky-audit.mdc` | Nhật ký audit admin | 176–187 |
 
 ## MDC cạnh màn hình (feature)
 

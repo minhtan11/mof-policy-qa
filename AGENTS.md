@@ -4,7 +4,9 @@
 
 1. `docs/dac-ta-he-thong-hoi-dap-cstc.mdc` là đặc tả nghiệp vụ ưu tiên cao nhất. File này tổng hợp ba tài liệu khách hàng; mọi thay đổi nghiệp vụ phải đối chiếu file này trước.
 2. Source `D:\SourceCode\QA-html` chỉ là tài liệu tham khảo về dữ liệu demo, tình huống và luồng cũ. Không sao chép cấu trúc HTML/JS, UI, CSS hoặc dữ liệu rải rác của source cũ.
-3. Đây là functional mockup: các luồng nghiệp vụ phải thao tác được end-to-end bằng mock repository. Tích hợp ngoài (VNeID, SSO/AD, Email/SMS, ký số, AI/OCR, VBPQ) chỉ mô phỏng qua adapter/service cho đến khi có API thật.
+3. Đây là functional mockup: các luồng nghiệp vụ phải thao tác được end-to-end bằng mock repository. Tích hợp ngoài (VNeID, SSO/AD, Email/SMS, ký số nhà cung cấp, AI/OCR production, đồng bộ VBPQ, Antivirus/SIEM/webhook production) chỉ mô phỏng qua adapter/service cho đến khi có API thật.
+4. **Nghiệp vụ phải khớp đặc tả 100%** (màn hình, luồng xuyên suốt, state machine, thao tác theo role, permission, data scope, báo cáo, thông báo in-app). Không được để trống bằng trang “Sắp ra mắt / Coming soon”, toast “sắp có”, hoặc gộp màn làm mất capability đặc tả. Chỉ được stub adapter cho tích hợp ngoài ở mục 3 — UI/mock dữ liệu của nghiệp vụ vẫn phải đủ để demo E2E.
+5. Trạng thái `mocked` trong MDC/TRACEABILITY nghĩa là **đã thao tác được đủ nghiệp vụ bằng mock cục bộ**, không phải “làm một phần / placeholder”. `blocked` / `integrated` chỉ dùng cho adapter API ngoài.
 
 ## 2. Kiến trúc bắt buộc
 
@@ -26,6 +28,15 @@
 5. Biểu đồ dùng ApexCharts qua wrapper shared (`mof-chart`), không kéo lại thư viện UI full-suite.
 6. Tái sử dụng shared UI trước khi tạo component mới: `data-table`, `status-badge`, `sla-badge`, `filter-bar`, `timeline`, `empty-state`, `loading-state`, `page-header`, `confirm-dialog`, `file-upload`, `checkbox`, `stepper`.
 7. Không tạo CSS rải rác để ghi đè tùy hứng. Dùng token cho màu, spacing, radius, typography, elevation, z-index và motion (light và dark).
+
+### 3.0. Chuẩn giao diện tham chiếu (bắt buộc khi thiết kế màn / form)
+
+1. **Mọi màn hình và form mới hoặc chỉnh sửa** phải bám **cùng chất lượng và ngôn ngữ thiết kế** với hai mẫu đã nâng cấp:
+   - Cổng công khai: `src/app/features/portal/portal-home/` (hero nhận diện Bộ, spacing mềm, typography fluid, token light/dark).
+   - Workspace: `src/app/features/workspace/workspace/` — Tổng quan công việc (hero `--mof-ws-hero-*`, KPI tone, surface-card, bảng/hàng đợi, empty/loading thống nhất).
+2. Trước khi dựng layout/CSS của màn mới, đọc SCSS + MDC cạnh feature của hai mẫu trên và **tái sử dụng pattern** (hero/page header, surface-card, KPI/metric, filter bar, bảng → card trên mobile, pagination, toast). Không invent bố cục “dashboard thô” hay form phẳng không token.
+3. Các màn hiện còn thô (thiếu hero/page header chuẩn, table HTML trần, form không surface, spacing lệch token) **phải được nâng cấp** khi đụng tới feature đó — không được nhân rộng style cũ.
+4. Checklist chấp nhận UI của một màn/form: đủ 2 theme × 2 ngôn ngữ; không overflow ngang ở breakpoint AGENTS; dùng shared kit; có empty/loading/error; visual gần với portal-home hoặc workspace overview (không “nhìn như trang tạm”).
 
 ## 3.1. Theme sáng/tối và i18n bắt buộc
 
@@ -50,6 +61,8 @@
 6. Toast phải lịch sự, có icon, tiêu đề, nội dung, timeout phù hợp và CTA khi cần; không dùng `alert()` hay thông báo thô.
 7. Có `prefers-reduced-motion`; animation giảm/tắt đối với người dùng yêu cầu.
 8. UI nghiêm túc: navy/xanh Bộ, trắng/xám xanh nhạt; màu đỏ/cam/xanh lá chỉ để biểu thị trạng thái nghiệp vụ.
+9. **Nút nghiệp vụ trong cùng một action bar phải bằng nhau về chiều cao** (cùng `size` của `mof-button`, token `--mof-btn-h-*`). Không drop-shadow / `translateY` hover trên primary trong action bar — màu đặc + bóng tạo ảo giác to hơn dù cùng height. Ưu tiên cùng có icon. Không override padding/height tùy hứng theo từng màn.
+10. **Focus control form**: `mof-input` / `mof-textarea` / `mof-select` / `mof-checkbox` (và ô tìm kiếm shell) khi focus chỉ đổi `border-color` — **không** `box-shadow` / glow vòng ngoài. Focus vẫn phải nhận biết được bằng viền.
 
 ## 5. Dữ liệu mock và mock API
 

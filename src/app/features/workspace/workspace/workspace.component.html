@@ -2,20 +2,15 @@
 <app-workspace-shell>
   <section class="hero" aria-labelledby="ov-title">
     <div class="hero-text">
-      <nav class="crumbs" [attr.aria-label]="'nav.breadcrumb' | t">
-        <a routerLink="/workspace">{{ 'workspace.navOverview' | t }}</a>
-        <app-mof-fi-icon name="angle-small-right" aria-hidden="true" />
-        <span aria-current="page">{{ 'workspace.crumbWork' | t }}</span>
-      </nav>
       <h1 id="ov-title">{{ 'workspace.overview' | t }}</h1>
       <p class="sub">{{ 'workspace.welcome' | t }}</p>
-    </div>
-    <div class="date-card">
-      <span class="d-ico" aria-hidden="true"><app-mof-fi-icon name="calendar" /></span>
-      <span class="d-txt">
-        <strong>{{ todayLabel() }}</strong>
-        <small>{{ 'workspace.greetingDay' | t }}</small>
-      </span>
+      <div class="date-card">
+        <span class="d-ico" aria-hidden="true"><app-mof-fi-icon name="calendar" /></span>
+        <span class="d-txt">
+          <strong>{{ todayLabel() }}</strong>
+          <small>{{ 'workspace.greetingDay' | t }}</small>
+        </span>
+      </div>
     </div>
   </section>
 
@@ -104,42 +99,53 @@
 
       <div id="att-panel" role="tabpanel" class="panel">
         @if (pageRows().length) {
-          <div class="tbl-wrap">
-          <table class="tbl">
-            <thead>
-              <tr>
-                <th scope="col">{{ 'workspace.colCode' | t }}</th>
-                <th scope="col">{{ 'workspace.colContent' | t }}</th>
-                <th scope="col">{{ 'workspace.colStatus' | t }}</th>
-                <th scope="col">{{ 'workspace.colDue' | t }}</th>
-                <th scope="col" class="act">{{ 'workspace.colActions' | t }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (d of pageRows(); track d.id) {
-                <tr [class.late]="overdue(d)">
-                  <td class="code">
-                    <span class="f-ico" [attr.data-tone]="topicTone(d)" aria-hidden="true"><app-mof-fi-icon name="file" /></span>
-                    <a [routerLink]="['/workspace/ho-so', d.id]">{{ d.code }}</a>
-                  </td>
-                  <td class="content"><span [attr.title]="d.question">{{ d.question }}</span></td>
-                  <td class="status"><app-status-badge [status]="d.status" /></td>
-                  <td class="due">
-                    <span><app-mof-fi-icon name="clock" aria-hidden="true" /> {{ d.dueAt | date: 'dd/MM/yyyy' }}</span>
-                    @if (overdue(d)) {
-                      <span class="sr-only">({{ 'workspace.overdue' | t }})</span>
-                    }
-                  </td>
-                  <td class="act">
-                    <a class="row-go" [routerLink]="['/workspace/ho-so', d.id]" [attr.aria-label]="'workspace.openDossier' | t: { code: d.code }">
-                      <app-mof-fi-icon name="arrow-small-right" />
-                    </a>
-                  </td>
+          <app-mof-data-table>
+            <table class="mof-tbl">
+              <thead>
+                <tr>
+                  <th scope="col">{{ 'workspace.colCode' | t }}</th>
+                  <th scope="col">{{ 'workspace.colContent' | t }}</th>
+                  <th scope="col">{{ 'workspace.colStatus' | t }}</th>
+                  <th scope="col">{{ 'workspace.colDue' | t }}</th>
+                  <th scope="col" class="act">{{ 'workspace.colActions' | t }}</th>
                 </tr>
-              }
-            </tbody>
-          </table>
-          </div>
+              </thead>
+              <tbody>
+                @for (d of pageRows(); track d.id) {
+                  <tr [class.is-late]="overdue(d)">
+                    <td class="code">
+                      <span class="f-ico" [attr.data-tone]="topicTone(d)" aria-hidden="true"><app-mof-fi-icon name="file" /></span>
+                      <a [routerLink]="['/workspace/ho-so', d.id]">{{ d.code }}</a>
+                    </td>
+                    <td class="content"><span [attr.title]="d.question">{{ d.question }}</span></td>
+                    <td class="status"><app-status-badge [status]="d.status" /></td>
+                    <td class="due">
+                      <span><app-mof-fi-icon name="clock" aria-hidden="true" /> {{ d.dueAt | date: 'dd/MM/yyyy' }}</span>
+                      @if (overdue(d)) {
+                        <span class="sr-only">({{ 'workspace.overdue' | t }})</span>
+                      }
+                    </td>
+                    <td class="act">
+                      <a class="row-go" [routerLink]="['/workspace/ho-so', d.id]" [attr.aria-label]="'workspace.openDossier' | t: { code: d.code }">
+                        <app-mof-fi-icon name="arrow-small-right" />
+                      </a>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+            <app-mof-pagination
+              mofTableFoot
+              layout="per-page"
+              [edges]="true"
+              [page]="currentPage()"
+              [total]="rows().length"
+              [pageSize]="size()"
+              [pageSizes]="pageSizes"
+              (pageChange)="setPage($event)"
+              (pageSizeChange)="setSize($event)"
+            />
+          </app-mof-data-table>
         } @else {
           <div class="empty" role="status">
             <app-mof-fi-icon name="folder-open" aria-hidden="true" />
@@ -148,21 +154,18 @@
               <app-mof-button size="sm" variant="secondary" [label]="'workspace.resetFilters' | t" (click)="clearSearch(); resetFilters()" />
             }
           </div>
+          <app-mof-pagination
+            layout="per-page"
+            [edges]="true"
+            [page]="currentPage()"
+            [total]="rows().length"
+            [pageSize]="size()"
+            [pageSizes]="pageSizes"
+            (pageChange)="setPage($event)"
+            (pageSizeChange)="setSize($event)"
+          />
         }
       </div>
-
-      <footer class="c-foot">
-        <app-mof-pagination
-          layout="per-page"
-          [edges]="true"
-          [page]="currentPage()"
-          [total]="rows().length"
-          [pageSize]="size()"
-          [pageSizes]="pageSizes"
-          (pageChange)="setPage($event)"
-          (pageSizeChange)="setSize($event)"
-        />
-      </footer>
     </section>
 
     <aside class="side">

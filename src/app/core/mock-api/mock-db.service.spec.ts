@@ -89,6 +89,7 @@ describe('MockDbService', () => {
   /** UC-150 collaboration */
   it('requests collaboration on a processing dossier', () => {
     const target = service.dossiers().find((item) => item.status === 'processing')!;
+    const before = target.collaborations?.length ?? 0;
     const collab = service.requestCollaboration(target.id, {
       unitId: 'org-budget',
       unitName: 'Vụ Ngân sách nhà nước',
@@ -97,7 +98,18 @@ describe('MockDbService', () => {
       requestedBy: 'Chuyên viên',
     });
     expect(collab?.status).toBe('open');
-    expect(service.dossiers().find((item) => item.id === target.id)?.collaborations?.length).toBe(1);
+    const updated = service.dossiers().find((item) => item.id === target.id)!;
+    expect(updated.status).toBe('awaiting-collaboration');
+    expect(updated.handlingUnitId).toBe('org-budget');
+    expect(updated.collaborations?.length).toBe(before + 1);
+    expect(service.listCollaborations('open').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('requests clarification and moves to awaiting-clarification', () => {
+    const target = service.dossiers().find((item) => item.status === 'processing')!;
+    const saved = service.requestClarification(target.id, 'Bổ sung giấy chứng nhận ĐKKD', 'Chuyên viên');
+    expect(saved?.status).toBe('open');
+    expect(service.dossiers().find((item) => item.id === target.id)?.status).toBe('awaiting-clarification');
   });
 
   /** UC-176 internal search */

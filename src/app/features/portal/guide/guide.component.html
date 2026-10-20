@@ -1,0 +1,84 @@
+<app-page-backdrop />
+<app-portal-header />
+
+<main class="guide">
+  <div class="wide crumb-bar">
+    <app-mof-breadcrumb [items]="crumbs" />
+  </div>
+
+  <section class="hero">
+    <div class="wide hero-inner" appReveal>
+      <div class="hero-text">
+        <p class="eyebrow">{{ 'guide.eyebrow' | t }}</p>
+        <h1>{{ 'guide.titleBefore' | t }}<span class="accent">{{ 'guide.titleAccent' | t }}</span>{{ 'guide.titleAfter' | t }}</h1>
+        <p class="sub">{{ 'guide.intro' | t }}</p>
+        <div class="hero-actions">
+          <a routerLink="/portal/hoi-dap">
+            <app-mof-button variant="gradient" icon="send" [label]="'nav.ask' | t" />
+          </a>
+          <a routerLink="/portal/tra-cuu">
+            <app-mof-button variant="soft" icon="search" [label]="'nav.search' | t" />
+          </a>
+        </div>
+      </div>
+      <img class="art" src="assets/illustrations/lookup-docs.svg" alt="" width="320" height="240" />
+    </div>
+  </section>
+
+  <div class="wide body">
+    <section class="journeys" [attr.aria-label]="'guide.journeysLabel' | t">
+      @for (sec of sections; track sec.id) {
+        <article class="card journey" [attr.data-id]="sec.id" appReveal>
+          <header class="journey-head">
+            <span class="tile" aria-hidden="true"><app-mof-fi-icon [name]="sec.icon" /></span>
+            <div>
+              <h2>{{ sec.titleKey | t }}</h2>
+              <p>{{ sec.bodyKey | t }}</p>
+            </div>
+          </header>
+          <ol class="steps">
+            @for (step of sec.steps; track step.id; let i = $index) {
+              <li>
+                <span class="no" aria-hidden="true">{{ i + 1 }}</span>
+                <div>
+                  <h3>{{ step.titleKey | t }}</h3>
+                  <p>{{ step.bodyKey | t }}</p>
+                </div>
+              </li>
+            }
+          </ol>
+          <a class="cta" [routerLink]="sec.route">
+            <app-mof-button variant="soft" size="sm" icon="arrow-right" iconPos="right" [label]="sec.ctaKey | t" />
+          </a>
+        </article>
+      }
+    </section>
+
+    <section class="card faq" [attr.aria-label]="'guide.faqTitle' | t">
+      <div class="faq-head">
+        <span class="tile" aria-hidden="true"><app-mof-fi-icon name="comment" /></span>
+        <div>
+          <h2>{{ 'guide.faqTitle' | t }}</h2>
+          <p>{{ 'guide.faqIntro' | t }}</p>
+        </div>
+      </div>
+      <ul class="faq-list">
+        @for (faq of faqs; track faq.id) {
+          <li [class.open]="openFaq() === faq.id">
+            <button type="button" class="faq-q" [attr.aria-expanded]="openFaq() === faq.id" [attr.aria-controls]="'faq-' + faq.id" (click)="toggleFaq(faq.id)">
+              <span>{{ faq.questionKey | t }}</span>
+              <app-mof-fi-icon class="chev" [name]="openFaq() === faq.id ? 'angle-small-up' : 'angle-small-down'" aria-hidden="true" />
+            </button>
+            @if (openFaq() === faq.id) {
+              <div class="faq-a" [id]="'faq-' + faq.id" role="region">
+                <p>{{ faq.answerKey | t }}</p>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+</main>
+
+<app-portal-footer />

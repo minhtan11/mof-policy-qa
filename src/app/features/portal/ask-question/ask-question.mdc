@@ -1,3 +1,4 @@
 
 | 2026-10-20 | Grok Bot | Stepper nhẹ hơn: hoàn thành = tint success + check SVG mảnh vẽ dần; hiện tại = tint brand + ring nhẹ; sắp tới = viền trung tính; ô icon header bước dạng tint. Header CSS gọn lại dưới budget 16 kB | UC-100..UC-113 |
 | 2026-10-20 | Grok Bot | Toast: chặn bước (nêu tên bước), gửi thành công kèm mã, từ chối tệp sai loại/quá 10 MB | UC-100..UC-113 |
+| 2026-10-20 | Auto | Breadcrumb ngoài heading qua `app-mof-breadcrumb` (click + F5 đúng current) | UC-100..UC-113 |

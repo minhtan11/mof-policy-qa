@@ -26,6 +26,8 @@ import { MofSelectComponent } from '../../../shared/ui/mof-select/mof-select.com
 import { MofFiIconComponent } from '../../../shared/ui/mof-fi-icon/mof-fi-icon.component';
 import { MofFieldErrorComponent } from '../../../shared/ui/mof-field-error/mof-field-error.component';
 import { MofPaginationComponent } from '../../../shared/ui/mof-pagination/mof-pagination.component';
+import { MofBreadcrumbComponent } from '../../../shared/ui/mof-breadcrumb/mof-breadcrumb.component';
+import { MofBreadcrumbItem } from '../../../shared/ui/mof-breadcrumb/mof-breadcrumb.model';
 import { FormsModule } from '@angular/forms';
 
 export interface MineState extends MineQuery {
@@ -99,6 +101,7 @@ export function mineParams(s: MineState): Record<string, string | null> {
     MofFiIconComponent,
     MofFieldErrorComponent,
     MofPaginationComponent,
+    MofBreadcrumbComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './my-questions.component.html',
@@ -111,6 +114,12 @@ export class MyQuestionsComponent {
   private readonly toast = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+
+  /** Breadcrumb ngoài hero — khớp URL `/portal/cau-hoi-cua-toi` sau F5. */
+  readonly crumbs: readonly MofBreadcrumbItem[] = [
+    { labelKey: 'portal.nav.services', link: '/portal' },
+    { labelKey: 'nav.myQuestions', link: '/portal/cau-hoi-cua-toi' },
+  ];
 
   readonly signedIn = computed(() => !!this.auth.user()?.email);
   private readonly initialEmail = this.auth.user()?.email ?? this.repo.lastSenderEmail();

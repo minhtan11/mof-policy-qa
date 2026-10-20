@@ -14,8 +14,10 @@ import { OrganizationRepository } from '../../../core/mock-api/organization.repo
 import { AdminAccountRepository } from '../../../core/mock-api/admin-account.repository';
 import { PermissionRepository } from '../../../core/mock-api/permission.repository';
 import { OpsRepository } from '../../../core/mock-api/ops.repository';
+import { IntegrationRepository } from '../../../core/mock-api/integration.repository';
+import { AuditRepository } from '../../../core/mock-api/audit.repository';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
-import { AiModelInfo } from '../../../core/models/domain.models';
+import { AiModelInfo, AuditActionType, IntegrationStatus } from '../../../core/models/domain.models';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { MofButtonComponent } from '../../../shared/ui/mof-button/mof-button.component';
@@ -26,13 +28,36 @@ import { MofChartComponent } from '../../../shared/ui/mof-chart/mof-chart.compon
 import { CatalogEntry } from '../../../core/models/domain.models';
 import { TOPICS } from '../../../core/mock-api/demo-data';
 
-type AdminTab = 'org' | 'users' | 'roles' | 'catalog' | 'workflow' | 'legal' | 'ai' | 'ops' | 'reports';
-const ADMIN_TABS: AdminTab[] = ['org', 'users', 'roles', 'catalog', 'workflow', 'legal', 'ai', 'ops', 'reports'];
+type AdminTab =
+  | 'org'
+  | 'users'
+  | 'roles'
+  | 'catalog'
+  | 'workflow'
+  | 'legal'
+  | 'ai'
+  | 'ops'
+  | 'integration'
+  | 'audit'
+  | 'reports';
+const ADMIN_TABS: AdminTab[] = [
+  'org',
+  'users',
+  'roles',
+  'catalog',
+  'workflow',
+  'legal',
+  'ai',
+  'ops',
+  'integration',
+  'audit',
+  'reports',
+];
 
 /**
  * Screen A-01..A-09 | System administrator |
- * Tổ chức, user, quyền, danh mục, workflow/SLA, VBPL, AI ops, vận hành, báo cáo 16.
- * UC-009..UC-099, UC-127..UC-134, UC-188..UC-203
+ * Tổ chức, user, quyền, danh mục, workflow/SLA, VBPL, AI ops, vận hành, tích hợp, audit, báo cáo 16.
+ * UC-009..UC-099, UC-127..UC-134, UC-176..UC-187, UC-188..UC-203
  */
 @Component({
   imports: [
@@ -78,6 +103,8 @@ export class AdminComponent {
   readonly accounts = inject(AdminAccountRepository);
   readonly permissions = inject(PermissionRepository);
   readonly ops = inject(OpsRepository);
+  readonly integration = inject(IntegrationRepository);
+  readonly audit = inject(AuditRepository);
 
   readonly tabs: Array<{ id: AdminTab; labelKey: string }> = [
     { id: 'org', labelKey: 'admin.tab.org' },
@@ -88,8 +115,22 @@ export class AdminComponent {
     { id: 'legal', labelKey: 'admin.tab.legal' },
     { id: 'ai', labelKey: 'admin.tab.ai' },
     { id: 'ops', labelKey: 'admin.tab.ops' },
+    { id: 'integration', labelKey: 'admin.tab.integration' },
+    { id: 'audit', labelKey: 'admin.tab.audit' },
     { id: 'reports', labelKey: 'admin.tab.reports' },
   ];
+
+  readonly auditFilterOptions = computed(() => {
+    this.i18n.locale();
+    return this.audit.actionTypes.map((value) => ({
+      label: value === 'all' ? this.i18n.t('admin.audit.filterAll') : this.i18n.t(`admin.audit.action.${value}`),
+      value,
+    }));
+  });
+
+  readonly auditFilterForm = this.fb.nonNullable.group({
+    actionType: ['all' as AuditActionType | 'all'],
+  });
 
   readonly catalogTypeOptions = [
     { label: 'priority', value: 'priority' },
@@ -349,5 +390,38 @@ export class AdminComponent {
       current === 'online' ? 'degraded' : current === 'degraded' ? 'offline' : 'online';
     this.ops.setModelStatus(id, next);
     this.toast.show({ severity: 'success', summary: this.i18n.t('admin.ops.toastModel') });
+  }
+
+  integrationStatusTone(status: IntegrationStatus): 'success' | 'warn' | 'neutral' | 'info' {
+    if (status === 'connected') return 'success';
+    if (status === 'degraded' || status === 'mock') return 'warn';
+    return 'neutral';
+  }
+
+  toggleIntegration(id: string): void {
+    this.integration.toggle(id);
+    this.toast.show({ severity: 'success', summary: this.i18n.t('admin.integration.toastToggle') });
+  }
+
+  testIntegration(id: string): void {
+    const result = this.integration.testConnection(id);
+    if (!result) {
+      this.toast.show({ severity: 'warn', summary: this.i18n.t('admin.integration.toastFail') });
+      return;
+    }
+    this.toast.show({
+      severity: result.ok ? 'success' : 'warn',
+      summary: this.i18n.t(result.ok ? 'admin.integration.toastOk' : 'admin.integration.toastFail'),
+      detail: this.i18n.t(`admin.integration.status.${result.status}`),
+    });
+  }
+
+  applyAuditFilter(): void {
+    const { actionType } = this.auditFilterForm.getRawValue();
+    this.audit.setActionFilter(actionType);
+  }
+
+  auditActionLabel(type: AuditActionType): string {
+    return this.i18n.t(`admin.audit.action.${type}`);
   }
 }

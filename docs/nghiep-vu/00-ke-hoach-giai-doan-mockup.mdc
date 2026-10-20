@@ -22,6 +22,32 @@ Một giai đoạn chỉ `done` khi: màn hình thao tác được end-to-end (m
 | G2 | Workspace P0 | `done` | 2026-10-20 | Điều phối, phân công, soạn/trình, trả sửa, ký số mock, xuất bản, state machine đủ |
 | G3 | Dashboard + Admin P1 | `done` | 2026-10-20 | DASH-01 live, tổ chức, user, role–scope, workflow/SLA, danh mục, VBPL, báo cáo P1 |
 | G4 | P2 vận hành sâu | done | 2026-10-20 | Backup/jobs/reset, AI ops, 16 báo cáo, bút phê, thu hồi, phối hợp, tra cứu nội bộ |
+| G5 | Đặc tả 100% nghiệp vụ (trừ API ngoài) | `done` | 2026-10-20 | Bỏ Coming soon; đủ màn OPS/EXP/DASH/PUB; state machine + data scope theo dac-ta; 16 báo cáo khớp §XVII; style theo portal-home / W-01 |
+
+## G5 – checklist (đặc tả đầy đủ)
+
+> Mục tiêu người dùng: **khớp 100% nghiệp vụ** trong `dac-ta-he-thong-hoi-dap-cstc.mdc`. Tích hợp ngoài (VNeID/SSO, Email/SMS, ký số NCC, OCR/AI production, VBPQ sync, AV/SIEM) giữ adapter mock. **Cấm** trang Coming soon / toast «sắp có» cho capability nghiệp vụ. Style bắt buộc theo `AGENTS.md` §3.0 (portal-home + workspace overview).
+
+### P0 — thay Coming soon / E2E
+- [x] `/workspace/ho-so-cua-toi` (EXP-01 hộp việc)
+- [x] `/workspace/ho-so-phoi-hop` (phối hợp)
+- [x] `/workspace/bao-cao-thong-ke` (báo cáo lãnh đạo/điều phối)
+- [x] `/workspace/ho-so-noi-bo` (danh sách hồ sơ hỏi–đáp)
+- [x] `/workspace/ho-so-ca-nhan` (hồ sơ cá nhân cán bộ)
+- [x] `/portal/huong-dan`, `/portal/van-ban` (nội dung thật, không placeholder)
+- [x] Lịch / VB đến / VB đi / tài liệu nội bộ / kho DL — màn thật (WS_SOON_PAGES = [])
+
+### P1 — state machine + scope
+- [x] Mở rộng `DossierStatus` / `WorkflowRepository` theo §4.3 dac-ta
+- [x] `WS_ROLE_SCOPE` khớp `ROLE_PERMISSIONS` (unit / assigned / all); lọc hàng đợi & báo cáo theo scope
+- [x] Từ chối tiếp nhận, chờ bổ sung, chờ phối hợp, trả sửa, đóng hồ sơ thao tác được
+
+### P2 — nâng style màn thô
+- [x] `dossier-detail`, `admin`, `internal-search` (và form thô khác) theo chuẩn §3.0 AGENTS
+
+### P3 — báo cáo + admin
+- [x] 16 báo cáo khớp đúng tên §XVII dac-ta + xuất mock
+- [x] Tab Admin Tích hợp + Nhật ký (UI mock adapter)
 
 ## G0-UI – checklist
 
@@ -104,3 +130,9 @@ Một giai đoạn chỉ `done` khi: màn hình thao tác được end-to-end (m
 | 2026-10-20 | Codex | Hoàn thành G2: tiếp nhận–phân công–soạn–trình–trả sửa–duyệt–xuất bản mock + state machine | workspace, dossier-detail, mock-db, workflow, 02-can-bo |
 | 2026-10-20 | Codex | Hoàn thành G3: admin P1 (org/user/role/catalog/workflow/VBPL/report) + dashboard live | admin, repos, workspace metrics, 03-admin |
 | 2026-10-20 | Codex | Hoàn thành G4 + gap: thu hồi, phối hợp, tra cứu, bút phê, ops/reset, 16 báo cáo | workspace search, dossier, ops, reports |
+| 2026-10-20 | Auto | Mở G5: đặc tả 100% nghiệp vụ (trừ API ngoài); cấm Coming soon; style chuẩn portal/W-01 trong AGENTS | AGENTS, ke-hoach G5 |
+| 2026-10-20 | Auto | G5: thay Coming soon `ho-so-noi-bo`, `ho-so-phoi-hop`, `bao-cao-thong-ke` bằng màn thật (W-01) | workspace nav, routes, 02-can-bo |
+| 2026-10-20 | Auto | G5 P3: 16 báo cáo §XVII; tab Admin Tích hợp + Nhật ký (mock adapter) | reports, admin, integration/audit repos |
+| 2026-10-20 | Auto | G5 P1: state machine §4.3 + scope unit/assigned + action W-02 (reject/clarify/collab/return/close) | workflow, dossier-detail, overview |
+| 2026-10-20 | Auto | G5 P2: restyle dossier-detail / admin / internal-search theo token §3.0; đóng G5 | UI W-02, admin, tra-cứu |
+| 2026-10-20 | Auto | G5 P0: xóa Coming soon workspace còn lại (lịch, VB đến/đi, tài liệu, kho DL, hồ sơ cá nhân); WS_SOON_PAGES=[] | workspace features, nav, routes |

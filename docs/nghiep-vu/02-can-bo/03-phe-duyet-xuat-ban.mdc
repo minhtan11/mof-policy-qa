@@ -1,9 +1,9 @@
 # Cán bộ — Phê duyệt, ký số (mock), xuất bản
 
 Changed on: 2026-10-20  
-Changed by: Codex  
-Change reason: G4 — thu hồi công khai (published → answered, ẩn isPublic)  
-Affected UC: UC-142..UC-161 (phê duyệt / phát hành / thu hồi)
+Changed by: Auto  
+Change reason: G5 P1 — trả sửa → returned; phê duyệt → approved; đóng → closed  
+Affected UC: UC-142..UC-161 (phê duyệt / phát hành / thu hồi / đóng)
 
 ## Ai / màn hình
 
@@ -27,10 +27,11 @@ Affected UC: UC-142..UC-161 (phê duyệt / phát hành / thu hồi)
 
 | Từ | Đến | Ai (mock) | Điều kiện |
 |---|---|---|---|
-| `waiting-approval` | `processing` | leader, coordinator | Trả sửa |
-| `waiting-approval` | `answered` | leader | Phê duyệt nội dung |
-| `waiting-approval` | `published` | leader | Tick ký số mock + công khai |
-| `answered` | `published` | leader, coordinator | Tick ký số mock |
+| `waiting-approval` | `returned` | leader, coordinator | Trả sửa |
+| `waiting-approval` | `approved` | leader | Phê duyệt nội dung (chờ xuất bản) |
+| `waiting-approval` | `answered` / `published` | leader | Phê duyệt (+ công khai nếu tick ký số) |
+| `approved` / `answered` | `published` | leader, coordinator | Tick ký số mock |
+| `answered` / `published` | `closed` | leader, coordinator | Đóng hồ sơ |
 | `published` | `answered` | leader, coordinator | Thu hồi + lý do; `isPublic=false` |
 
 - Xuất bản set `isPublic`; timeline giữ đầy đủ.  
@@ -59,3 +60,4 @@ Affected UC: UC-142..UC-161 (phê duyệt / phát hành / thu hồi)
 | 2026-10-20 | Codex | Chuyển folder cán bộ, tiếng Việt | 142–161 |
 | 2026-10-20 | Codex | G2: return / approve / e-sign mock / publish E2E | 142–161 |
 | 2026-10-20 | Codex | G4: thu hồi công khai E2E mock | 142–161 |
+| 2026-10-20 | Auto | G5 P1: trả sửa → `returned`; phê duyệt → `approved`; đóng → `closed` | 142–161 |

@@ -1,8 +1,8 @@
 # Cán bộ — Tiếp nhận, phân loại, phân công
 
 Changed on: 2026-10-20  
-Changed by: Codex  
-Change reason: G2 — hàng đợi lọc trạng thái, tiếp nhận/phân công trên chi tiết hồ sơ  
+Changed by: Auto  
+Change reason: G5 P1 — từ chối tiếp nhận + data scope unit/assigned + handlingUnitId  
 Affected UC: UC-142..UC-149; hỗ trợ AI UC-127..UC-130
 
 ## Ai / màn hình
@@ -10,15 +10,15 @@ Affected UC: UC-142..UC-149; hỗ trợ AI UC-127..UC-130
 | Mục | Nội dung |
 |---|---|
 | Actor | Tiếp nhận, điều phối, đầu mối đơn vị |
-| Route | `/workspace`, `/workspace/ho-so/:id`, `/workspace/login` |
-| Màn | OPS-01..OPS-05 (mock một phần trên workspace / chi tiết) |
+| Route | `/workspace`, `/workspace/ho-so-noi-bo`, `/workspace/ho-so/:id`, `/workspace/login` |
+| Màn | OPS-01..OPS-05; OPS-LIST danh sách nội bộ |
 | Trạng thái | `mocked` |
-| MDC màn | `src/app/features/workspace/workspace/workspace.mdc`, `.../dossier-detail/dossier-detail.mdc` |
+| MDC màn | `workspace/workspace.mdc`, `internal-dossiers/internal-dossiers.mdc`, `dossier-detail/dossier-detail.mdc` |
 
 ## Cán bộ làm gì (theo thứ tự)
 
 1. Đăng nhập nội bộ (`/workspace/login`) theo role.  
-2. Xem hàng đợi trên `/workspace`; lọc Tất cả / Mới / Đang xử lý / Chờ duyệt.  
+2. Xem hàng đợi trên `/workspace` hoặc danh sách đầy đủ `/workspace/ho-so-noi-bo` (phạm vi vai trò); lọc trạng thái / từ khoá.  
 3. Mở chi tiết 360°: nội dung, đính kèm, timeline.  
 4. Tiếp nhận (`new` → `received`) hoặc Phân công chuyên viên (`new`/`received` → `processing`).  
 5. Gợi ý AI lĩnh vực–đơn vị–trùng (advisory, không tự đổi trạng thái).
@@ -32,8 +32,10 @@ Nhận–lọc, giao–trả–từ chối–gộp; SLA tiếp nhận/phân côn
 | Từ | Đến | Ai (mock) |
 |---|---|---|
 | `new` | `received` | reception, coordinator |
-| `new` / `received` | `processing` | reception, coordinator (+ chọn assignee) |
+| `new` / `received` / `processing` | `rejected` | reception, coordinator |
+| `new` / `received` | `processing` | reception, coordinator (+ chọn assignee + `handlingUnitId`) |
 
+- Phạm vi dữ liệu: `WS_ROLE_SCOPE` — reception/leader = `unit`, specialist = `assigned`, coordinator/admin = `all`.  
 - Phải đúng trạng thái hiện tại + quyền actor (`WorkflowRepository.canTransition`).  
 - AI không tự phê duyệt / không tự đổi trạng thái cuối.
 
@@ -62,3 +64,5 @@ Nhận–lọc, giao–trả–từ chối–gộp; SLA tiếp nhận/phân côn
 | 2026-10-20 | Grok Bot | R29 khung workspace: sidebar rail/mở rộng + flyout, drawer < 1024, header 1 hàng (tìm kiếm Ctrl K, chuông, VI/EN, user pill). Hàng đợi đồng bộ `?filter=`; admin đồng bộ `?tab=`; tra cứu nội bộ đọc `?q=` | 142–149 |
 | 2026-10-20 | Grok Bot | R30: menu workspace hiển thị các mục mockup chưa có màn (tag «Sắp có», route `/workspace/<slug>` tới trang Sắp ra mắt); ma trận vai trò `WS_ROLE_MATRIX` | 142–149 |
 | 2026-10-20 | Grok Bot | R31 Tổng quan công việc: KPI theo phạm vi vai trò, donut tiến độ theo tháng, lĩnh vực, hàng đợi cần chú ý đồng bộ URL | 142–149 |
+| 2026-10-20 | Auto | G5: `/workspace/ho-so-noi-bo` danh sách hồ sơ nội bộ (scope + filter) thay Coming soon | 142–149 |
+| 2026-10-20 | Auto | G5 P1: từ chối tiếp nhận + data scope unit/assigned + handlingUnitId | 142–149 |

@@ -206,7 +206,7 @@ export class MockDbService {
     input: { unitId: string; unitName: string; note: string; dueAt: string; requestedBy: string },
   ): DossierCollaboration | null {
     const target = this.dossiers().find((item) => item.id === id);
-    if (!target || !['processing', 'waiting-approval'].includes(target.status) || !input.unitId || !input.note.trim()) {
+    if (!target || target.status !== 'processing' || !input.unitId || !input.note.trim()) {
       return null;
     }
     const collab: DossierCollaboration = {
@@ -224,6 +224,8 @@ export class MockDbService {
         item.id === id
           ? {
               ...item,
+              status: 'awaiting-collaboration' as const,
+              handlingUnitId: input.unitId,
               collaborations: [...(item.collaborations ?? []), collab],
               timeline: [
                 ...item.timeline.map((event) => ({
@@ -303,8 +305,8 @@ export class MockDbService {
     this.dossiers.set(structuredClone(SEED_DOSSIERS));
   }
 
-  /** Tiếp nhận / phân công chuyên viên — chuyển sang processing và ghi assignee. */
-  assign(id: string, assigneeName: string, actor: string): boolean {
+  /** Tiếp nhận / phân công chuyên viên — chuyển sang processing và ghi assignee + đơn vị. */
+  assign(id: string, assigneeName: string, actor: string, handlingUnitId?: string): boolean {
     const target = this.dossiers().find((item) => item.id === id);
     if (!target || !['new', 'received'].includes(target.status) || !assigneeName.trim()) {
       return false;
@@ -316,6 +318,7 @@ export class MockDbService {
               ...item,
               status: 'processing' as const,
               assignedTo: assigneeName.trim(),
+              handlingUnitId: handlingUnitId ?? item.handlingUnitId,
               timeline: [
                 ...item.timeline.map((event) => ({
                   ...event,
@@ -336,6 +339,45 @@ export class MockDbService {
     return true;
   }
 
+  /** Cán bộ yêu cầu người hỏi bổ sung thông tin — UC chờ bổ sung. */
+  requestClarification(id: string, text: string, actor: string): DossierClarification | null {
+    const target = this.dossiers().find((item) => item.id === id);
+    if (!target || target.status !== 'processing' || !text.trim()) {
+      return null;
+    }
+    const clarification: DossierClarification = {
+      id: crypto.randomUUID(),
+      text: text.trim(),
+      at: new Date().toISOString(),
+      status: 'open',
+    };
+    this.commit(
+      this.dossiers().map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              status: 'awaiting-clarification' as const,
+              clarifications: [...(item.clarifications ?? []), clarification],
+              timeline: [
+                ...item.timeline.map((event) => ({
+                  ...event,
+                  state: event.state === 'current' ? ('done' as const) : event.state,
+                })),
+                {
+                  at: new Date().toLocaleString('vi-VN'),
+                  title: 'Yêu cầu bổ sung thông tin',
+                  description: clarification.text,
+                  actor,
+                  state: 'current' as const,
+                },
+              ],
+            }
+          : item,
+      ),
+    );
+    return clarification;
+  }
+
   updateAnswer(id: string, answer: string, legalBasis: string[]): void {
     this.commit(this.dossiers().map((item) => (item.id === id ? { ...item, answer, legalBasis } : item)));
   }
@@ -346,6 +388,25 @@ export class MockDbService {
       return items;
     }
     return items.filter((item) => item.status === filter);
+  }
+
+  /** Hộp phối hợp: mọi yêu cầu còn mở (hoặc lọc theo trạng thái collab). */
+  listCollaborations(status: 'all' | 'open' | 'done' = 'open'): Array<{
+    dossier: Dossier;
+    collaboration: DossierCollaboration;
+  }> {
+    const rows: Array<{ dossier: Dossier; collaboration: DossierCollaboration }> = [];
+    for (const dossier of this.dossiers()) {
+      for (const collaboration of dossier.collaborations ?? []) {
+        if (status !== 'all' && collaboration.status !== status) continue;
+        rows.push({ dossier, collaboration });
+      }
+    }
+    return rows.sort(
+      (a, b) =>
+        a.collaboration.dueAt.localeCompare(b.collaboration.dueAt) ||
+        a.dossier.code.localeCompare(b.dossier.code),
+    );
   }
 
   private load(): Dossier[] {

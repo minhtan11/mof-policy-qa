@@ -39,9 +39,9 @@ describe('WorkspaceComponent (Tổng quan công việc)', () => {
     return { h, el, cmp, router, flush, repo: TestBed.inject(WorkspaceOverviewRepository) };
   }
 
-  it('renders hero (breadcrumb, h1, localized date), 4 KPI cards from the repository and KPI links to filtered queues', async () => {
+  it('renders hero (h1, localized date), 4 KPI cards from the repository and KPI links to filtered queues', async () => {
     const { el, repo } = await setup();
-    expect(el.querySelector('.crumbs')?.textContent).toContain('Công việc');
+    expect(el.querySelector('.crumbs')).toBeNull();
     expect(el.querySelectorAll('h1').length).toBe(1);
     expect(el.querySelector('h1')?.textContent).toContain('Tổng quan công việc');
     expect(el.querySelector('.date-card strong')?.textContent).toBe('Thứ Ba, 20/10/2026');
@@ -55,7 +55,7 @@ describe('WorkspaceComponent (Tổng quan công việc)', () => {
   it('syncs tabs with ?filter= and search with ?q= (debounced, replaceUrl)', async () => {
     const { el, router, flush, cmp } = await setup('/workspace?filter=waiting-approval');
     expect(el.querySelector('.tab.on')?.getAttribute('data-tab')).toBe('waiting-approval');
-    expect(el.querySelectorAll('.tbl tbody tr').length).toBe(cmp.rows().length);
+    expect(el.querySelectorAll('.mof-tbl tbody tr').length).toBe(cmp.rows().length);
     (el.querySelector('.tab[data-tab="new"]') as HTMLButtonElement).click();
     await flush();
     expect(router.url).toBe('/workspace?filter=new');
@@ -74,18 +74,20 @@ describe('WorkspaceComponent (Tổng quan công việc)', () => {
   });
 
   it('paginates with mof-pagination (first/last, page size) and keeps ?page= / ?size=', async () => {
-    const { el, router, flush, cmp } = await setup();
+    // Điều phối viên scope=all — đủ hồ sơ để kiểm tra phân trang (>10).
+    const { el, router, flush, cmp } = await setup('/workspace', 'ngoc.db');
     const total = cmp.rows().length;
     expect(total).toBeGreaterThan(10);
-    expect(el.querySelectorAll('.tbl tbody tr').length).toBe(10);
+    expect(el.querySelectorAll('.mof-tbl tbody tr').length).toBe(10);
+    expect(el.querySelector('.mof-dt__foot app-mof-pagination')).toBeTruthy();
     (el.querySelector('button[aria-label="Trang cuối"]') as HTMLButtonElement).click();
     await flush();
     expect(router.url).toBe(`/workspace?page=${Math.ceil(total / 10)}`);
-    expect(el.querySelectorAll('.tbl tbody tr').length).toBe(total - 10 * (Math.ceil(total / 10) - 1));
+    expect(el.querySelectorAll('.mof-tbl tbody tr').length).toBe(total - 10 * (Math.ceil(total / 10) - 1));
     cmp.setSize(20);
     await flush();
     expect(router.url).toBe('/workspace?size=20');
-    expect(el.querySelectorAll('.tbl tbody tr').length).toBe(Math.min(20, total));
+    expect(el.querySelectorAll('.mof-tbl tbody tr').length).toBe(Math.min(20, total));
   });
 
   it('filters the progress donut by month (?month=) with centre total and legend', async () => {

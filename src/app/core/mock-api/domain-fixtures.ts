@@ -150,24 +150,24 @@ export const WORKFLOWS: WorkflowDefinition[] = [{ id: 'wf-standard', name: 'Quy 
 
 export const AI_SUGGESTIONS: AiSuggestion[] = [{ id: 'ai-001', dossierId: 'd-001', kind: 'classification', value: 'Thuế', confidence: .94, status: 'suggested', model: 'mof-classifier-v1' }, { id: 'ai-002', dossierId: 'd-001', kind: 'legal-basis', value: 'Luật Quản lý thuế số 38/2019/QH14', confidence: .89, status: 'suggested', model: 'mof-legal-v1' }];
 
-/** 16 báo cáo bắt buộc P2 — UC-188..UC-203 */
+/** 16 báo cáo bắt buộc — khớp dac-ta §XVII / UC-188..UC-203 */
 export const REPORTS: ReportDefinition[] = [
-  { id: 'r-01', code: 'RPT-01', name: 'Tổng hợp tiếp nhận và xử lý', description: 'Số lượng hồ sơ theo trạng thái, đơn vị và thời gian.', category: 'operations' },
-  { id: 'r-02', code: 'RPT-02', name: 'Tỷ lệ đúng hạn/quá hạn', description: 'Theo dõi SLA và cảnh báo hồ sơ quá hạn.', category: 'sla' },
-  { id: 'r-03', code: 'RPT-03', name: 'Phân loại theo lĩnh vực', description: 'Phân bổ câu hỏi theo chính sách tài chính.', category: 'quality' },
-  { id: 'r-04', code: 'RPT-04', name: 'Câu hỏi đã trả lời và công khai', description: 'Sản lượng phát hành câu trả lời theo kỳ.', category: 'public' },
-  { id: 'r-05', code: 'RPT-05', name: 'Hiệu suất theo đơn vị', description: 'Khối lượng và thời gian xử lý trung bình theo đơn vị.', category: 'operations' },
-  { id: 'r-06', code: 'RPT-06', name: 'Hồ sơ trả sửa', description: 'Số lần lãnh đạo trả sửa và lý do phổ biến.', category: 'quality' },
-  { id: 'r-07', code: 'RPT-07', name: 'Đánh giá người hỏi', description: 'Điểm trung bình và phân bố sao sau công khai.', category: 'public' },
-  { id: 'r-08', code: 'RPT-08', name: 'Yêu cầu làm rõ', description: 'Số yêu cầu làm rõ mở / đã trả lời.', category: 'quality' },
-  { id: 'r-09', code: 'RPT-09', name: 'Phối hợp liên đơn vị', description: 'Yêu cầu phối hợp theo trạng thái và hạn.', category: 'operations' },
-  { id: 'r-10', code: 'RPT-10', name: 'SLA tiếp nhận / phân công', description: 'Thời gian từ tiếp nhận đến phân công.', category: 'sla' },
-  { id: 'r-11', code: 'RPT-11', name: 'SLA soạn thảo', description: 'Thời gian từ phân công đến trình duyệt.', category: 'sla' },
-  { id: 'r-12', code: 'RPT-12', name: 'SLA phê duyệt', description: 'Thời gian chờ lãnh đạo phê duyệt.', category: 'sla' },
-  { id: 'r-13', code: 'RPT-13', name: 'Thu hồi công khai', description: 'Số lần thu hồi và lý do.', category: 'audit' },
-  { id: 'r-14', code: 'RPT-14', name: 'Sử dụng gợi ý AI', description: 'Tỷ lệ chấp nhận / từ chối gợi ý.', category: 'quality' },
-  { id: 'r-15', code: 'RPT-15', name: 'Audit thao tác nội bộ', description: 'Nhật ký bút phê và thao tác nhạy cảm.', category: 'audit' },
-  { id: 'r-16', code: 'RPT-16', name: 'Tồn kho theo ưu tiên', description: 'Hồ sơ mở phân theo mức ưu tiên.', category: 'operations' },
+  { id: 'r-01', code: 'RPT-01', name: 'Tổng hợp tình hình tiếp nhận và xử lý', description: 'Số lượng hồ sơ tiếp nhận và xử lý theo trạng thái trong kỳ.', category: 'operations' },
+  { id: 'r-02', code: 'RPT-02', name: 'Tiến độ theo đơn vị', description: 'Khối lượng và tiến độ xử lý theo từng đơn vị chuyên môn.', category: 'operations' },
+  { id: 'r-03', code: 'RPT-03', name: 'Tỷ lệ đúng hạn/quá hạn', description: 'Theo dõi tỷ lệ hồ sơ đúng hạn và quá hạn theo SLA.', category: 'sla' },
+  { id: 'r-04', code: 'RPT-04', name: 'Phân loại theo lĩnh vực chính sách', description: 'Phân bổ câu hỏi theo lĩnh vực chính sách tài chính.', category: 'quality' },
+  { id: 'r-05', code: 'RPT-05', name: 'Danh sách chưa trả lời', description: 'Hồ sơ còn mở, chưa có câu trả lời chính thức.', category: 'operations' },
+  { id: 'r-06', code: 'RPT-06', name: 'Câu hỏi quá hạn', description: 'Danh sách và thống kê hồ sơ đã vượt hạn trả lời.', category: 'sla' },
+  { id: 'r-07', code: 'RPT-07', name: 'Lịch sử luân chuyển', description: 'Số lần và bước luân chuyển hồ sơ trong quy trình.', category: 'audit' },
+  { id: 'r-08', code: 'RPT-08', name: 'Câu hỏi bị trả lại/yêu cầu chỉnh sửa', description: 'Hồ sơ bị lãnh đạo trả sửa hoặc yêu cầu chỉnh sửa.', category: 'quality' },
+  { id: 'r-09', code: 'RPT-09', name: 'Câu hỏi phức tạp và gia hạn', description: 'Hồ sơ phức tạp, phối hợp liên đơn vị và gia hạn SLA.', category: 'sla' },
+  { id: 'r-10', code: 'RPT-10', name: 'Câu hỏi đã trả lời và xuất bản', description: 'Sản lượng câu trả lời đã trả lời / đã xuất bản công khai.', category: 'public' },
+  { id: 'r-11', code: 'RPT-11', name: 'Chất lượng câu trả lời', description: 'Đánh giá sao và phản hồi chất lượng sau công khai.', category: 'quality' },
+  { id: 'r-12', code: 'RPT-12', name: 'Tra cứu hỏi–đáp theo từ khóa', description: 'Lượt tra cứu và kết quả hỏi–đáp theo từ khóa mock.', category: 'public' },
+  { id: 'r-13', code: 'RPT-13', name: 'Nguồn/kênh tiếp nhận', description: 'Phân bổ hồ sơ theo kênh tiếp nhận (cổng, email, giấy…).', category: 'operations' },
+  { id: 'r-14', code: 'RPT-14', name: 'Người dùng gửi câu hỏi nhiều lần', description: 'Người gửi / email gửi lặp trong kỳ.', category: 'quality' },
+  { id: 'r-15', code: 'RPT-15', name: 'Thống kê chuyên viên trả lời', description: 'Khối lượng hồ sơ theo chuyên viên được phân công.', category: 'operations' },
+  { id: 'r-16', code: 'RPT-16', name: 'Thanh toán nhuận bút', description: 'Ước tính nhuận bút theo câu trả lời đã xuất bản (mock).', category: 'audit' },
 ];
 
 export const OPS_JOBS: OpsJob[] = [
@@ -195,4 +195,7 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
   { id: 'cat-03', type: 'priority', code: 'URGENT', label: 'Khẩn cấp', active: true, sortOrder: 3 },
   { id: 'cat-04', type: 'intake-method', code: 'VNEID', label: 'VNeID', active: true, sortOrder: 1 },
   { id: 'cat-05', type: 'intake-method', code: 'PORTAL', label: 'Cổng công khai', active: true, sortOrder: 2 },
+  { id: 'cat-tpl-01', type: 'answer-template', code: 'TPL-TAX-01', label: 'Mẫu trả lời hoàn thuế GTGT', active: true, sortOrder: 1 },
+  { id: 'cat-tpl-02', type: 'answer-template', code: 'TPL-BUD-01', label: 'Mẫu trả lời ngân sách nhà nước', active: true, sortOrder: 2 },
+  { id: 'cat-tpl-03', type: 'answer-template', code: 'TPL-CUS-01', label: 'Mẫu trả lời thủ tục hải quan', active: true, sortOrder: 3 },
 ];

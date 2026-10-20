@@ -1,0 +1,31 @@
+# Màn WS-DS — Kho dữ liệu (`/workspace/kho-du-lieu`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: G5 — thống kê sức khỏe chỉ mục + backup mock thay Coming soon  
+Affected UC: UC-084..UC-099  
+MDC nhóm: `docs/nghiep-vu/03-admin/07-van-han.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/kho-du-lieu` (`internalGuard`) |
+| Actor | Lãnh đạo, điều phối, admin (`WS_ROLE_MATRIX.data-store`) |
+| Trạng thái | `mocked` |
+| Dữ liệu | `DataStoreRepository` ← MockDb + Legal + Ops |
+
+## Acceptance
+
+- KPI hồ sơ / VBPL; danh sách backup gần nhất.  
+- 2 theme × 2 ngôn ngữ.
+
+## Test
+
+`data-store.component.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | G5: WS-DS thay Coming soon | 84–99 |

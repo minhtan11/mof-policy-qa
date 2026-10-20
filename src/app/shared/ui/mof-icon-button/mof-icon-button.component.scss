@@ -41,6 +41,16 @@
     color: var(--mof-ink);
   }
 
+  &.is-active {
+    background: color-mix(in srgb, var(--mof-blue) 14%, transparent);
+    color: var(--mof-blue);
+  }
+
+  &.is-active:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--mof-blue) 22%, transparent);
+    color: var(--mof-blue);
+  }
+
   &.is-danger:hover:not(:disabled) {
     background: color-mix(in srgb, var(--mof-danger) 14%, transparent);
     color: var(--mof-danger);

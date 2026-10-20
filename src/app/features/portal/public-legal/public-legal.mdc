@@ -1,0 +1,50 @@
+# Màn PUB-legal — Văn bản pháp luật công khai
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Thay Coming soon bằng kho VBPL công khai (tìm kiếm + lọc hiệu lực + chi tiết mở rộng)  
+Affected UC: UC-162..UC-165  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/06-huong-dan-va-van-ban.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/portal/van-ban` |
+| Actor | Người dân / doanh nghiệp |
+| Quyền | Công khai |
+| Dữ liệu | `LegalDocumentRepository` ← `LEGAL_DOCUMENTS` (`domain-fixtures.ts`) |
+| Trạng thái | `mocked` |
+
+## Bố cục
+
+- Chrome cổng: `PageBackdrop` + `PortalHeader` + `PortalFooter`.
+- Breadcrumb **Trang chủ › Văn bản pháp luật**.
+- Hero sáng (token `--mof-mine-hero-*`).
+- Thẻ lọc: `app-mof-input` (từ khóa) + `app-mof-select` (hiệu lực) + nút Tìm kiếm.
+- Bảng kết quả (desktop) / thẻ xếp chồng (mobile): số hiệu, tên, cơ quan, ngày hiệu lực, badge trạng thái.
+- Mở rộng hàng → chi tiết (số hiệu, tên, cơ quan, ban hành, hiệu lực, phiên bản, chương, nguồn).
+
+## Luồng
+
+1. Vào menu **Văn bản pháp luật** (chỉ mục này sáng trên header).  
+2. Nhập từ khóa và/hoặc chọn trạng thái hiệu lực → URL `?q=&status=`.  
+3. Bấm mở chi tiết trên từng văn bản; xoá bộ lọc khi rỗng.
+
+## Acceptance
+
+- Không còn Coming soon trên `/portal/van-ban`.  
+- Shared kit (`mof-input` / `mof-select` / `mof-badge`); không mock data trong component.  
+- 2 theme × 2 ngôn ngữ; không overflow ngang 320→1920.  
+- Nav active: chỉ **Văn bản pháp luật**.
+
+## Test mapping
+
+- `public-legal.component.spec.ts`, `legal-document.repository.spec.ts`  
+- `portal-header.component.spec.ts` (active nav)
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Tạo màn VBPL công khai thay Coming soon | UC-162..UC-165 |

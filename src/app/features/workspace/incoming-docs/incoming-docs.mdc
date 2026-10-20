@@ -1,0 +1,31 @@
+# Màn WS-IN — Văn bản đến (`/workspace/van-ban-den`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: G5 — sổ văn bản đến mock thay Coming soon  
+Affected UC: UC-142..UC-149  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/van-ban-den` (`internalGuard`) |
+| Actor | Cán bộ nội bộ (`WS_ROLE_MATRIX.incoming`) |
+| Trạng thái | `mocked` |
+| Dữ liệu | `IncomingDocsRepository` + `INCOMING_DOC_FIXTURES` |
+
+## Acceptance
+
+- Danh sách VB đến; lọc trạng thái; mở hồ sơ liên kết nếu có.  
+- 2 theme × 2 ngôn ngữ.
+
+## Test
+
+`incoming-docs.component.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | G5: WS-IN thay Coming soon | 142–149 |

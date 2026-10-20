@@ -1,0 +1,39 @@
+# Màn OPS-LIST — Hồ sơ nội bộ (`/workspace/ho-so-noi-bo`)
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Bọc danh sách bằng `app-mof-data-table`  
+Affected UC: UC-142..UC-161  
+MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `02-soan-tra-loi.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/workspace/ho-so-noi-bo` (`internalGuard`) |
+| Actor | Chuyên viên, lãnh đạo, điều phối, admin |
+| Trạng thái | `mocked` |
+| Dữ liệu | `InternalDossierRepository` ← `scopeFor` + `attentionList` (MockDb) |
+
+## Bố cục
+
+1. Breadcrumb → hero W-01 + lời chào.  
+2. 4 KPI: tổng / đang mở / đang xử lý / quá hạn.  
+3. Danh sách: tìm kiếm, tab trạng thái (WS_TABS), `app-mof-data-table` (mã/nội dung/trạng thái/hạn + pagination chân).
+
+## Acceptance
+
+- Không Coming soon; đăng nhập `long.pd` (leader) thấy toàn bộ seed; `hung.lq` chỉ hồ sơ được giao.  
+- Query `?filter=` / `?q=` đồng bộ URL.  
+- 2 theme × 2 ngôn ngữ; không overflow 320–1920.
+
+## Test
+
+`internal-dossier.repository.spec.ts`, `internal-dossiers.component.spec.ts`
+
+## Changelog
+
+| Ngày | Người | Lý do | UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Dùng `mof-data-table` tách bảng khỏi pagination | 142–161 |
+| 2026-10-20 | Auto | G5: OPS-LIST thay Coming soon | 142–161 |

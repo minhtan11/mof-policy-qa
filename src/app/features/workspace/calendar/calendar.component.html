@@ -1,0 +1,92 @@
+<!-- WS-CAL Lịch làm việc SLA — style W-01. -->
+<app-workspace-shell>
+  <app-mof-breadcrumb [items]="crumbs" />
+
+  <section class="hero" aria-labelledby="cal-title">
+    <div class="hero-text">
+      <h1 id="cal-title">{{ 'wsCalendar.title' | t }}</h1>
+      <p class="sub">{{ 'wsCalendar.welcome' | t: { name: auth.user()?.name ?? '' } }}</p>
+    </div>
+  </section>
+
+  <ul class="kpis" role="list">
+    <li class="kpi" data-tone="blue">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="calendar" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsCalendar.kpiAll' | t }}</p>
+        <strong class="k-num">{{ counts().all }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="amber">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="clock" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsCalendar.kpiSoon' | t }}</p>
+        <strong class="k-num">{{ counts().dueSoon }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="red">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="exclamation" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsCalendar.kpiOverdue' | t }}</p>
+        <strong class="k-num">{{ counts().overdue }}</strong>
+      </div>
+    </li>
+  </ul>
+
+  <section class="card" aria-labelledby="list-title">
+    <header class="c-head">
+      <div>
+        <h2 id="list-title">{{ 'wsCalendar.listTitle' | t }}</h2>
+        <p>{{ 'wsCalendar.listHint' | t }}</p>
+      </div>
+      <div class="tools month-tools">
+        <app-mof-icon-button fi="angle-left" size="sm" [label]="'wsCalendar.prevMonth' | t" (click)="prev()" />
+        <app-mof-select
+          class="month"
+          size="sm"
+          icon="calendar"
+          [ngModel]="month()"
+          (ngModelChange)="onMonth($event)"
+          [options]="monthOptions()"
+          [ariaLabel]="'workspace.monthAria' | t"
+        />
+        <app-mof-icon-button fi="angle-right" size="sm" [label]="'wsCalendar.nextMonth' | t" (click)="next()" />
+      </div>
+    </header>
+
+    @if (rows().length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'workspace.colDue' | t }}</th>
+              <th>{{ 'workspace.colCode' | t }}</th>
+              <th>{{ 'workspace.colContent' | t }}</th>
+              <th>{{ 'workspace.colStatus' | t }}</th>
+              <th class="act">{{ 'workspace.colActions' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (d of rows(); track d.id) {
+              <tr>
+                <td>{{ d.dueAt | date: 'dd/MM/yyyy' }}</td>
+                <td class="code">
+                  <a [routerLink]="['/workspace/ho-so', d.id]">{{ d.code }}</a>
+                </td>
+                <td class="content"><span>{{ d.question }}</span></td>
+                <td><app-status-badge [status]="d.status" /></td>
+                <td class="act">
+                  <a class="open" [routerLink]="['/workspace/ho-so', d.id]" [attr.aria-label]="'workspace.viewDetail' | t">
+                    <app-mof-fi-icon name="arrow-right" />
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="empty">{{ 'wsCalendar.empty' | t }}</p>
+    }
+  </section>
+</app-workspace-shell>

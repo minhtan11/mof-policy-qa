@@ -185,6 +185,118 @@ td small {
   gap: 12px;
 }
 
+.integration-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px 22px 22px;
+}
+
+.integration-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--mof-line);
+  border-radius: 16px;
+  background: var(--mof-canvas);
+  box-shadow: none;
+}
+
+.integration-card__head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.integration-card h4 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.integration-card p {
+  margin: 6px 0 0;
+  color: var(--mof-muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.integration-endpoint {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--mof-blue-soft) 55%, transparent);
+  color: var(--mof-blue-strong);
+  font-size: 0.72rem;
+  word-break: break-all;
+}
+
+.integration-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--mof-muted);
+  font-size: 0.75rem;
+}
+
+.integration-actions {
+  min-width: 0;
+}
+
+.audit-list {
+  display: grid;
+  gap: 10px;
+  padding: 16px 22px 22px;
+}
+
+.audit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--mof-line);
+  border-radius: 14px;
+  background: var(--mof-canvas);
+}
+
+.audit-row__main {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.audit-row h4 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.audit-row p {
+  margin: 4px 0 0;
+  color: var(--mof-muted);
+  font-size: 0.78rem;
+}
+
+.audit-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--mof-blue-strong);
+}
+
+.audit-row time {
+  flex-shrink: 0;
+  color: var(--mof-muted);
+  font-size: 0.75rem;
+}
+
+.empty-hint {
+  margin: 0;
+  color: var(--mof-muted);
+  font-size: 0.85rem;
+}
+
 @media (max-width: 900px) {
   .admin-head,
   .panel > header,
@@ -197,7 +309,13 @@ td small {
     grid-template-columns: 1fr;
   }
 
-  .report-grid {
+  .report-grid,
+  .integration-grid {
     grid-template-columns: 1fr;
+  }
+
+  .audit-row {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

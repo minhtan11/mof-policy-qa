@@ -1,0 +1,68 @@
+/* Breadcrumb shared — token light/dark; motion nhẹ; không hard-code màu. */
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.mof-bc {
+  min-width: 0;
+  margin: 0 0 0.75rem;
+}
+
+ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.125rem 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--mof-muted);
+  font-size: var(--mof-text-xs);
+  line-height: 1.4;
+}
+
+li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  transition:
+    color 140ms ease,
+    background-color 140ms ease;
+
+  &:hover {
+    color: var(--mof-blue);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    color: var(--mof-blue);
+    outline: 2px solid color-mix(in srgb, var(--mof-blue) 55%, transparent);
+    outline-offset: 2px;
+  }
+}
+
+span[aria-current='page'] {
+  color: var(--mof-blue);
+  font-weight: 600;
+}
+
+.sep {
+  flex: none;
+  font-size: 0.7em;
+  opacity: 0.65;
+  color: var(--mof-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a {
+    transition: none;
+  }
+}

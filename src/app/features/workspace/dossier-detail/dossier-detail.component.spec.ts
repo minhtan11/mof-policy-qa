@@ -6,8 +6,8 @@ import { MockDbService } from '../../../core/mock-api/mock-db.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { WorkflowRepository } from '../../../core/mock-api/workflow.repository';
 
-/** UC-142..UC-161 — G2 workspace actions + workflow gates */
-describe('DossierDetailComponent G2', () => {
+/** UC-142..UC-161 — G5 workspace actions + workflow gates */
+describe('DossierDetailComponent G5', () => {
   async function setup(dossierId: string, clearStorage = true): Promise<void> {
     if (clearStorage) {
       localStorage.clear();
@@ -63,8 +63,11 @@ describe('DossierDetailComponent G2', () => {
     await setup('d-001');
     const workflow = TestBed.inject(WorkflowRepository);
     expect(workflow.canTransition('processing', 'published')).toBe(false);
-    expect(workflow.canTransition('waiting-approval', 'processing')).toBe(true);
+    expect(workflow.canTransition('waiting-approval', 'returned')).toBe(true);
+    expect(workflow.canTransition('waiting-approval', 'processing')).toBe(false);
     expect(workflow.canTransition('waiting-approval', 'published')).toBe(true);
+    expect(workflow.canTransition('approved', 'published')).toBe(true);
     expect(workflow.canTransition('answered', 'published')).toBe(true);
+    expect(workflow.canTransition('answered', 'closed')).toBe(true);
   });
 });

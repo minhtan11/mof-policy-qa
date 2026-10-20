@@ -7,28 +7,6 @@
   max-width: 57rem;
 }
 
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--mof-muted);
-  font-size: var(--mof-text-xs);
-
-  a {
-    color: inherit;
-
-    &:hover,
-    &:focus-visible {
-      color: var(--mof-blue);
-    }
-  }
-
-  [aria-current] {
-    color: var(--mof-ink);
-    font-weight: 600;
-  }
-}
-
 .page-heading {
   margin: clamp(1rem, 0.8rem + 1vw, 1.75rem) 0 clamp(1rem, 0.8rem + 0.8vw, 1.5rem);
 

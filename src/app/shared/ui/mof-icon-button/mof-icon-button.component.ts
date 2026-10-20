@@ -16,8 +16,10 @@ import { MofFiIconComponent } from '../mof-fi-icon/mof-fi-icon.component';
       #btn
       type="button"
       [class]="'mof-icon-btn is-' + size() + ' is-' + variant()"
+      [class.is-active]="active()"
       [attr.aria-label]="label()"
       [attr.title]="label()"
+      [attr.aria-pressed]="active() ? true : null"
       [attr.aria-expanded]="expanded()"
       [attr.aria-haspopup]="haspopup()"
       [attr.aria-controls]="controls()"
@@ -41,6 +43,8 @@ export class MofIconButtonComponent {
   readonly label = input.required<string>();
   readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly variant = input<'ghost' | 'danger' | 'outline'>('ghost');
+  /** Trạng thái bật (toggle): ghim, lọc đang chọn… — đổi màu icon, không chỉ class host. */
+  readonly active = input(false);
   readonly disabled = input(false);
   readonly badge = input(0);
   readonly expanded = input<boolean | null>(null);

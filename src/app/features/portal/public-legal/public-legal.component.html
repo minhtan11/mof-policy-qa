@@ -1,0 +1,165 @@
+<app-page-backdrop />
+<app-portal-header />
+
+<main class="legal">
+  <div class="wide crumb-bar">
+    <app-mof-breadcrumb [items]="crumbs" />
+  </div>
+
+  <section class="hero">
+    <div class="wide hero-inner" appReveal>
+      <div class="hero-text">
+        <p class="eyebrow">{{ 'legal.eyebrow' | t }}</p>
+        <h1>{{ 'legal.titleBefore' | t }}<span class="accent">{{ 'legal.titleAccent' | t }}</span>{{ 'legal.titleAfter' | t }}</h1>
+        <p class="sub">{{ 'legal.intro' | t }}</p>
+      </div>
+      <img class="art" src="assets/illustrations/lookup-docs.svg" alt="" width="320" height="240" />
+    </div>
+  </section>
+
+  <div class="wide body">
+    <form class="card filters" role="search" (ngSubmit)="search($event)" novalidate>
+      <span class="tile" aria-hidden="true"><app-mof-fi-icon name="search" /></span>
+      <div class="fields">
+        <div class="field grow">
+          <label for="legal-q">{{ 'legal.searchLabel' | t }}</label>
+          <app-mof-input
+            id="legal-q"
+            type="search"
+            prefixIcon="search"
+            [placeholder]="'legal.searchPlaceholder' | t"
+            [ngModel]="keyword()"
+            (ngModelChange)="keyword.set($event)"
+            name="q"
+          />
+        </div>
+        <div class="field status">
+          <app-mof-select
+            [label]="'legal.status' | t"
+            icon="filter"
+            [options]="statusOptions()"
+            [ngModel]="state().status ?? ''"
+            (ngModelChange)="setStatus($event)"
+            name="status"
+          />
+        </div>
+        <app-mof-button type="submit" icon="search" [label]="'action.search' | t" />
+      </div>
+    </form>
+
+    <section class="card results" [attr.aria-label]="'legal.resultsLabel' | t">
+      <div class="toolbar">
+        <p class="total" aria-live="polite">
+          {{ 'legal.totalLabel' | t }} <strong>{{ results().length }}</strong> {{ 'legal.totalUnit' | t }}
+        </p>
+        @if (state().q || state().status) {
+          <app-mof-button variant="ghost" size="sm" icon="close" [label]="'legal.clearFilters' | t" (click)="clearFilters()" />
+        }
+      </div>
+
+      @if (results().length) {
+        <!-- Desktop / tablet: bảng -->
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'legal.code' | t }}</th>
+                <th scope="col">{{ 'legal.name' | t }}</th>
+                <th scope="col">{{ 'legal.issuer' | t }}</th>
+                <th scope="col">{{ 'legal.effective' | t }}</th>
+                <th scope="col">{{ 'legal.status' | t }}</th>
+                <th scope="col" class="act-h">{{ 'legal.detail' | t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (doc of results(); track trackDoc($index, doc)) {
+                <tr [attr.data-id]="doc.id" [attr.data-status]="doc.status" [class.open]="isOpen(doc.id)">
+                  <td class="code" [attr.data-label]="'legal.code' | t">
+                    <span class="file" aria-hidden="true"><app-mof-fi-icon name="document" /></span>
+                    <strong>{{ doc.code }}</strong>
+                  </td>
+                  <td class="title" [attr.data-label]="'legal.name' | t">
+                    <span class="clamp" [title]="doc.title">{{ doc.title }}</span>
+                  </td>
+                  <td [attr.data-label]="'legal.issuer' | t">{{ doc.issuer }}</td>
+                  <td class="date" [attr.data-label]="'legal.effective' | t">{{ doc.effectiveFrom | date: 'dd/MM/yyyy' }}</td>
+                  <td [attr.data-label]="'legal.status' | t">
+                    <app-mof-badge [label]="'legal.st.' + doc.status | t" [tone]="statusTone(doc.status)" />
+                  </td>
+                  <td class="act" [attr.data-label]="'legal.detail' | t">
+                    <app-mof-icon-button
+                      [fi]="isOpen(doc.id) ? 'angle-small-up' : 'angle-small-down'"
+                      variant="outline"
+                      [label]="'legal.toggleDetail' | t"
+                      [expanded]="isOpen(doc.id)"
+                      (click)="toggleExpand(doc.id)"
+                    />
+                  </td>
+                </tr>
+                @if (isOpen(doc.id)) {
+                  <tr class="detail-row" [attr.data-for]="doc.id">
+                    <td colspan="6">
+                      <dl class="detail">
+                        <div>
+                          <dt>{{ 'legal.code' | t }}</dt>
+                          <dd>{{ doc.code }}</dd>
+                        </div>
+                        <div>
+                          <dt>{{ 'legal.name' | t }}</dt>
+                          <dd>{{ doc.title }}</dd>
+                        </div>
+                        <div>
+                          <dt>{{ 'legal.issuer' | t }}</dt>
+                          <dd>{{ doc.issuer }}</dd>
+                        </div>
+                        <div>
+                          <dt>{{ 'legal.issuedAt' | t }}</dt>
+                          <dd>{{ doc.issuedAt | date: 'dd/MM/yyyy' }}</dd>
+                        </div>
+                        <div>
+                          <dt>{{ 'legal.effective' | t }}</dt>
+                          <dd>{{ doc.effectiveFrom | date: 'dd/MM/yyyy' }}</dd>
+                        </div>
+                        @if (doc.effectiveTo) {
+                          <div>
+                            <dt>{{ 'legal.effectiveTo' | t }}</dt>
+                            <dd>{{ doc.effectiveTo | date: 'dd/MM/yyyy' }}</dd>
+                          </div>
+                        }
+                        <div>
+                          <dt>{{ 'legal.status' | t }}</dt>
+                          <dd><app-mof-badge [label]="'legal.st.' + doc.status | t" [tone]="statusTone(doc.status)" /></dd>
+                        </div>
+                        <div>
+                          <dt>{{ 'legal.version' | t }}</dt>
+                          <dd>{{ doc.version }}</dd>
+                        </div>
+                        <div>
+                          <dt>{{ 'legal.chapters' | t }}</dt>
+                          <dd>{{ doc.chapters }}</dd>
+                        </div>
+                        <div>
+                          <dt>{{ 'legal.source' | t }}</dt>
+                          <dd>{{ 'legal.source.' + doc.source | t }}</dd>
+                        </div>
+                      </dl>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="empty">
+          <img src="assets/illustrations/lookup-docs.svg" alt="" width="160" height="120" />
+          <h2>{{ 'legal.emptyTitle' | t }}</h2>
+          <p>{{ 'legal.emptyBody' | t }}</p>
+          <app-mof-button variant="soft" size="sm" icon="close" [label]="'legal.clearFilters' | t" (click)="clearFilters()" />
+        </div>
+      }
+    </section>
+  </div>
+</main>
+
+<app-portal-footer />

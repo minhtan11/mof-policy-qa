@@ -19,9 +19,14 @@ export class StatusBadgeComponent {
       new: 'info',
       received: 'info',
       processing: 'warn',
+      'awaiting-clarification': 'warn',
+      'awaiting-collaboration': 'warn',
       'waiting-approval': 'neutral',
+      returned: 'warn',
+      approved: 'success',
       answered: 'success',
       published: 'success',
+      closed: 'neutral',
       rejected: 'neutral',
     };
     return map[this.status()];

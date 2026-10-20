@@ -1,41 +1,40 @@
-# Màn PUB-soon — Coming soon (placeholder cổng)
+# Màn PUB/WS-soon — Coming soon (placeholder)
 
 Changed on: 2026-10-20  
 Changed by: Auto  
-Change reason: Tách route Hướng dẫn / VBPL khỏi `/portal/tra-cuu` để menu không sáng nhiều submenu cùng lúc; tạm dùng màn placeholder chung  
-Affected UC: UC-162..UC-165  
-MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/06-huong-dan-va-van-ban.mdc`
+Change reason: Portal `/portal/huong-dan` và `/portal/van-ban` đã chuyển sang màn nghiệp vụ thật; Coming soon còn dùng cho workspace sidebar  
+Affected UC: UC-142..UC-149, UC-162..UC-165  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/06-huong-dan-va-van-ban.mdc` (portal đã tách), workspace shell MDC
 
 ## Màn hình
 
 | Mục | Giá trị |
 |---|---|
-| Route | `/portal/huong-dan`, `/portal/van-ban` (cùng component) |
-| Actor | Người dân / doanh nghiệp |
-| Quyền | Công khai |
-| Trạng thái | `mocked` (placeholder) |
+| Route | Các mục workspace “Sắp có” (`WS_SOON_PAGES`) — **không** còn `/portal/huong-dan`, `/portal/van-ban` |
+| Actor | Cán bộ nội bộ (workspace) |
+| Quyền | Theo `internalGuard` |
+| Trạng thái | `mocked` (placeholder workspace) |
 
 ## Người dùng làm gì
 
-1. Vào menu **Giới thiệu → Hướng dẫn** hoặc **Văn bản pháp luật**.  
-2. Thấy trang “Sắp ra mắt” với tiêu đề theo route `data.titleKey`.  
-3. Có thể về trang chủ hoặc sang tra cứu hỏi đáp.
+1. Chọn mục sidebar workspace chưa có màn đầy đủ.  
+2. Thấy trang “Sắp ra mắt” với tiêu đề/icon theo `route.data`.  
+3. Quay về tổng quan hoặc trang trước.
 
-## Dữ liệu vào / ra
+## Cross-ref portal
 
-- Vào: `ActivatedRoute.data` — `titleKey`, `bodyKey` (i18n).  
-- Ra: không ghi dữ liệu.
+- Hướng dẫn: `features/portal/guide/guide.mdc` → `/portal/huong-dan`  
+- VBPL công khai: `features/portal/public-legal/public-legal.mdc` → `/portal/van-ban`
 
 ## Acceptance
 
-- `/portal/huong-dan` và `/portal/van-ban` không dùng chung route với tra cứu.  
-- Trên `/portal/tra-cuu` chỉ submenu **Tra cứu hỏi đáp** (Dịch vụ công) sáng — không sáng Hướng dẫn / VBPL.  
-- 2 theme × 2 ngôn ngữ.
+- Workspace coming-soon vẫn hoạt động với `shell: 'workspace'`.  
+- Portal Hướng dẫn / VBPL không còn load component này.
 
 ## Test mapping
 
 - `coming-soon.component.spec.ts`  
-- `portal-header.component.spec.ts` — tối đa một submenu `.current` trên `/portal/tra-cuu`
+- `portal-header.component.spec.ts` — active nav trên `/portal/huong-dan`, `/portal/van-ban`
 
 ## Changelog
 
@@ -43,3 +42,5 @@ MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/06-huong-dan-va-van-ban.mdc`
 |---|---|---|---|
 | 2026-10-20 | Auto | Thêm màn placeholder + route riêng Hướng dẫn / VBPL | UC-162..UC-165 |
 | 2026-10-20 | Grok Bot | R30: thiết kế mới (minh hoạ xanh/trắng, badge Sắp ra mắt, icon + tên tính năng, «Tính năng đang được xây dựng», nút Về tổng quan / Quay lại). Route data thêm `icon`, `shell:'workspace'` (bọc trong khung workspace) cho 10 mục sidebar/tài khoản | UC-142..UC-149, UC-162..UC-165 |
+| 2026-10-20 | Auto | Portal: breadcrumb qua `app-mof-breadcrumb` | UC-162..UC-165 |
+| 2026-10-20 | Auto | Portal Hướng dẫn / VBPL tách sang guide + public-legal; Coming soon chỉ còn workspace | UC-142..UC-149, UC-162..UC-165 |

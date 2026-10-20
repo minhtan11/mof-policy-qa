@@ -40,7 +40,7 @@ form {
   padding: 0.25rem 0.25rem 0.25rem 0.875rem;
   border: 1px solid color-mix(in srgb, var(--mof-blue) 45%, var(--mof-line));
   border-radius: 0.75rem;
-  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--mof-blue) 14%, transparent);
+  box-shadow: none;
 
   .lead {
     color: var(--mof-blue);
@@ -174,7 +174,7 @@ kbd {
   font-size: var(--mof-text-sm);
   text-align: left;
   cursor: text;
-  transition: border-color var(--mof-fast) ease, box-shadow var(--mof-fast) ease;
+  transition: border-color var(--mof-fast) ease;
 
   &:hover {
     border-color: color-mix(in srgb, var(--mof-blue) 40%, var(--mof-line));
@@ -183,7 +183,7 @@ kbd {
   &:focus-visible {
     outline: none;
     border-color: var(--mof-blue);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mof-blue) 16%, transparent);
+    box-shadow: none;
   }
 
   .lead {

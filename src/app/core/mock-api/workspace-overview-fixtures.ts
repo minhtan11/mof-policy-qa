@@ -9,16 +9,43 @@ export type WsTone = 'blue' | 'amber' | 'violet' | 'green' | 'red' | 'teal' | 's
 
 /** Tab “Hồ sơ cần chú ý” → các trạng thái. `all` = đang mở. Giá trị khớp ?filter= của sidebar (R29). */
 export const WS_TABS: { id: WsTab; labelKey: string; statuses: DossierStatus[] }[] = [
-  { id: 'all', labelKey: 'workspace.filterAll', statuses: ['new', 'received', 'processing', 'waiting-approval'] },
+  {
+    id: 'all',
+    labelKey: 'workspace.filterAll',
+    statuses: [
+      'new',
+      'received',
+      'processing',
+      'awaiting-clarification',
+      'awaiting-collaboration',
+      'waiting-approval',
+      'returned',
+      'approved',
+    ],
+  },
   { id: 'new', labelKey: 'workspace.filterNew', statuses: ['new', 'received'] },
-  { id: 'processing', labelKey: 'workspace.filterProcessing', statuses: ['processing'] },
-  { id: 'waiting-approval', labelKey: 'workspace.filterApproval', statuses: ['waiting-approval'] },
+  {
+    id: 'processing',
+    labelKey: 'workspace.filterProcessing',
+    statuses: ['processing', 'awaiting-clarification', 'awaiting-collaboration', 'returned'],
+  },
+  { id: 'waiting-approval', labelKey: 'workspace.filterApproval', statuses: ['waiting-approval', 'approved'] },
   { id: 'answered', labelKey: 'workspace.filterAnswered', statuses: ['answered'] },
-  { id: 'closed', labelKey: 'workspace.filterClosed', statuses: ['published', 'rejected'] },
+  { id: 'closed', labelKey: 'workspace.filterClosed', statuses: ['published', 'closed', 'rejected'] },
 ];
 
-export const WS_OPEN_STATUSES: DossierStatus[] = WS_TABS[0].statuses;
-export const WS_DONE_STATUSES: DossierStatus[] = ['answered', 'published'];
+/** Trạng thái đang mở (SLA / KPI) — gồm nhánh chờ bổ sung / phối hợp / trả sửa / đã duyệt chưa phát hành. */
+export const WS_OPEN_STATUSES: DossierStatus[] = [
+  'new',
+  'received',
+  'processing',
+  'awaiting-clarification',
+  'awaiting-collaboration',
+  'waiting-approval',
+  'returned',
+  'approved',
+];
+export const WS_DONE_STATUSES: DossierStatus[] = ['answered', 'published', 'closed'];
 
 /** Ngưỡng “sắp quá hạn” (giờ). */
 export const WS_NEAR_DUE_HOURS = 48;
@@ -51,14 +78,17 @@ export const WS_TOPIC_VISUALS: Record<string, { icon: string; tone: WsTone }> = 
 };
 
 /**
- * Phạm vi hồ sơ theo vai trò: `all` = toàn bộ; `assigned` = hồ sơ được giao cho chính cán bộ (assignedTo = tên).
- * Tiếp nhận thấy toàn bộ (cần tiếp nhận/phân công); chuyên viên chỉ thấy hồ sơ của mình.
+ * Phạm vi hồ sơ khớp ROLE_PERMISSIONS.scope:
+ * `all` | `unit` (handlingUnitId) | `assigned` (assignedTo) | `none`.
+ * Tiếp nhận: thấy hồ sơ mới/đã nhận (tiếp nhận toàn cục) + hồ sơ thuộc đơn vị mình.
  */
-export const WS_ROLE_SCOPE: Record<UserRole, 'all' | 'assigned' | 'none'> = {
+export type WsDataScope = 'all' | 'unit' | 'assigned' | 'none';
+
+export const WS_ROLE_SCOPE: Record<UserRole, WsDataScope> = {
   public: 'none',
-  reception: 'all',
+  reception: 'unit',
   specialist: 'assigned',
-  leader: 'all',
+  leader: 'unit',
   coordinator: 'all',
   'system-admin': 'all',
 };

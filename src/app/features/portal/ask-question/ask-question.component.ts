@@ -20,6 +20,8 @@ import { Dossier } from '../../../core/models/domain.models';
 import { MofFiIconComponent } from '../../../shared/ui/mof-fi-icon/mof-fi-icon.component';
 import { MofFieldErrorComponent } from '../../../shared/ui/mof-field-error/mof-field-error.component';
 import { PageBackdropComponent } from '../../../shared/ui/page-backdrop/page-backdrop.component';
+import { MofBreadcrumbComponent } from '../../../shared/ui/mof-breadcrumb/mof-breadcrumb.component';
+import { MofBreadcrumbItem } from '../../../shared/ui/mof-breadcrumb/mof-breadcrumb.model';
 
 /**
  * Screen PUB-02 | Citizen/business | Wizard submit policy question with similar/consent. | UC-100..UC-113 | Permission: public submit
@@ -42,6 +44,7 @@ import { PageBackdropComponent } from '../../../shared/ui/page-backdrop/page-bac
     MofFiIconComponent,
     MofFieldErrorComponent,
     PageBackdropComponent,
+    MofBreadcrumbComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ask-question.component.html',
@@ -61,6 +64,12 @@ export class AskQuestionComponent {
   readonly stepError = signal('');
   /** Bước xa nhất đã tới (để giữ dấu check khi quay lại). */
   readonly furthest = signal(0);
+
+  /** Breadcrumb ngoài heading — F5 vẫn đánh dấu đúng `/portal/hoi-dap`. */
+  readonly crumbs: readonly MofBreadcrumbItem[] = [
+    { labelKey: 'ask.breadcrumb', link: '/portal' },
+    { labelKey: 'nav.ask', link: '/portal/hoi-dap' },
+  ];
 
   readonly topicOptions = computed(() => this.db.topics.map((topic) => ({ label: topic.name, value: topic.id })));
   readonly priorityOptions = computed(() => [

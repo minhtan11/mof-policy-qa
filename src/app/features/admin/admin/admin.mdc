@@ -1,42 +1,45 @@
-# Màn A-01..A-08 — Quản trị hệ thống
+# Màn A-01..A-09 — Quản trị hệ thống
 
 Changed on: 2026-10-20  
-Changed by: Codex  
-Change reason: G4 — tab vận hành, AI models, 16 báo cáo  
-Affected UC: UC-009..UC-099, UC-127..UC-134, UC-188..UC-203  
-MDC nhóm: `docs/nghiep-vu/03-admin/01`…`07`, `02-can-bo/07-bao-cao-dashboard.mdc`
+Changed by: Auto  
+Change reason: G5 P3 — tab Tích hợp + Nhật ký; 16 báo cáo §XVII  
+Affected UC: UC-009..UC-099, UC-127..UC-134, UC-176..UC-187, UC-188..UC-203  
+MDC nhóm: `docs/nghiep-vu/03-admin/01`…`09`, `02-can-bo/07-bao-cao-dashboard.mdc`
 
 ## Màn hình
 
 | Mục | Giá trị |
 |---|---|
-| Route | `/admin` (guard `adminGuard`) |
+| Route | `/admin` (guard `adminGuard`); `?tab=` đồng bộ tab |
 | Actor | `system-admin` |
 | Trạng thái | `mocked` |
 
 ## Tab
 
-| Tab | Việc mock |
-|---|---|
-| Tổ chức | Cây đơn vị, thêm, bật/tắt, lĩnh vực tiếp nhận |
-| Người dùng | Danh sách, che email, khóa/mở |
-| Phân quyền | Ma trận role → permission → scope |
-| Danh mục | CRUD nhẹ + toggle active |
-| Workflow | Tạo nháp, kích hoạt, cập nhật SLA |
-| Văn bản | Tìm, thêm nháp, ban hành |
-| AI | Trạng thái model + gợi ý advisory / duyệt |
-| Vận hành | Job mock, backup, reset seed |
-| Báo cáo | 16 định nghĩa, chọn kỳ, sinh số liệu + biểu đồ |
+| Tab | `?tab=` | Việc mock |
+|---|---|---|
+| Tổ chức | `org` (mặc định) | Cây đơn vị, thêm, bật/tắt, lĩnh vực tiếp nhận |
+| Người dùng | `users` | Danh sách, che email, khóa/mở |
+| Phân quyền | `roles` | Ma trận role → permission → scope |
+| Danh mục | `catalog` | CRUD nhẹ + toggle active |
+| Workflow | `workflow` | Tạo nháp, kích hoạt, cập nhật SLA |
+| Văn bản | `legal` | Tìm, thêm nháp, ban hành |
+| AI | `ai` | Trạng thái model + gợi ý advisory / duyệt |
+| Vận hành | `ops` | Job mock, backup, reset seed |
+| Tích hợp | `integration` | VNeID/SSO, Email, SMS, Storage, Webhook, VBPQ — test + toggle |
+| Nhật ký | `audit` | Fixture + flatten timeline; lọc action type |
+| Báo cáo | `reports` | 16 định nghĩa §XVII, chọn kỳ, sinh số liệu + biểu đồ |
 
 ## Acceptance
 
 - Shared kit + Reactive Forms; copy qua i18n vi/en.  
 - Không hiện mật khẩu / email đầy đủ.  
-- Toast không kèm PII.
+- Toast không kèm PII.  
+- Surface-card theo chuẩn W-01 cho tích hợp / audit.
 
 ## Test
 
-`organization.repository.spec.ts`, `admin-account.repository.spec.ts`, `catalog.repository.spec.ts`, `permission.repository.spec.ts`, `workflow.repository.spec.ts`, `report.repository.spec.ts`
+`organization.repository.spec.ts`, `admin-account.repository.spec.ts`, `catalog.repository.spec.ts`, `permission.repository.spec.ts`, `workflow.repository.spec.ts`, `report.repository.spec.ts`, `integration.repository.spec.ts`, `audit.repository.spec.ts`
 
 ## Changelog
 
@@ -44,3 +47,4 @@ MDC nhóm: `docs/nghiep-vu/03-admin/01`…`07`, `02-can-bo/07-bao-cao-dashboard.
 |---|---|---|---|
 | 2026-10-20 | Codex | G3 admin P1 đầy đủ tab + i18n | 9–83, 188–203 |
 | 2026-10-20 | Codex | G4 ops + 16 reports + AI models | 84–99, 188–203 |
+| 2026-10-20 | Auto | G5 P3: tab integration + audit; báo cáo §XVII | 52–59, 176–187, 188–203 |

@@ -6,14 +6,23 @@ export type UserRole =
   | 'coordinator'
   | 'system-admin';
 
+/**
+ * Trạng thái hồ sơ — G5 bám dac-ta §4.3 (rút gọn mã kỹ thuật, đủ nhánh thao tác được).
+ * Nháp/đã gửi công khai map `new`; chờ ĐV gộp vào `received`+handlingUnitId.
+ */
 export type DossierStatus =
   | 'new'
   | 'received'
   | 'processing'
+  | 'awaiting-clarification'
+  | 'awaiting-collaboration'
   | 'waiting-approval'
+  | 'returned'
+  | 'approved'
   | 'answered'
   | 'published'
-  /** Từ chối tiếp nhận / không thuộc phạm vi (round 28 — người dân thấy ở “Câu hỏi của tôi”). */
+  | 'closed'
+  /** Không tiếp nhận / ngoài phạm vi. */
   | 'rejected';
 
 export interface PortalUser {
@@ -23,6 +32,8 @@ export interface PortalUser {
   /** Tên đăng nhập ngắn (mock) — đăng nhập được bằng username hoặc email. */
   username?: string;
   organization?: string;
+  /** Đơn vị xử lý — data scope `unit` (khớp AdminAccount.organizationId). */
+  organizationId?: string;
   role: UserRole;
   avatar: string;
 }
@@ -89,6 +100,8 @@ export interface Dossier {
   status: DossierStatus;
   priority: 'normal' | 'high' | 'urgent';
   assignedTo?: string;
+  /** Đơn vị đang giữ hồ sơ — lọc data scope `unit`. */
+  handlingUnitId?: string;
   answer?: string;
   legalBasis: string[];
   attachments: string[];
@@ -181,6 +194,44 @@ export interface AiModelInfo {
   purpose: string;
   version: string;
   status: 'online' | 'degraded' | 'offline';
+}
+
+/** Kênh tích hợp ngoài — UC-052..UC-059 (adapter mock, chưa API thật) */
+export type IntegrationKind = 'vneid-sso' | 'email' | 'sms' | 'storage' | 'webhook' | 'vbpq';
+
+export type IntegrationStatus = 'connected' | 'disconnected' | 'degraded' | 'mock';
+
+export interface IntegrationChannel {
+  id: string;
+  kind: IntegrationKind;
+  nameKey: string;
+  descriptionKey: string;
+  enabled: boolean;
+  status: IntegrationStatus;
+  lastCheckedAt: string;
+  endpointHint: string;
+}
+
+/** Nhật ký audit bất biến — UC-176..UC-187 / admin audit tab */
+export type AuditActionType =
+  | 'login'
+  | 'status-change'
+  | 'assign'
+  | 'approve'
+  | 'publish'
+  | 'recall'
+  | 'config'
+  | 'integration'
+  | 'note'
+  | 'timeline';
+
+export interface AuditLogEntry {
+  id: string;
+  actionType: AuditActionType;
+  actor: string;
+  at: string;
+  dossierCode?: string;
+  summaryKey: string;
 }
 
 export interface CatalogEntry {

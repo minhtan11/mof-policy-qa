@@ -1,8 +1,8 @@
 # Admin — Cấu hình tích hợp
 
 Changed on: 2026-10-20  
-Changed by: Codex  
-Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Changed by: Auto  
+Change reason: G5 P3 — tab Admin Tích hợp + IntegrationRepository mock  
 Affected UC: UC-052..UC-059
 
 ## Ai / màn hình
@@ -10,16 +10,31 @@ Affected UC: UC-052..UC-059
 | Mục | Nội dung |
 |---|---|
 | Actor | Quản trị hệ thống |
-| Trạng thái | `blocked` / adapter mock (chưa API thật) |
+| Route | `/admin?tab=integration` |
+| Màn | Tab Tích hợp trên A-01..A-09 |
+| MDC màn | `src/app/features/admin/admin/admin.mdc` |
+| Trạng thái | `mocked` (adapter cục bộ); tích hợp production vẫn `blocked` |
 
 ## Phạm vi
 
-VNeID thật, email/SMS, kho lưu trữ, webhook, SSO/AD — chỉ mô phỏng cho đến khi có hợp đồng/API.
+VNeID/SSO, Email, SMS, Storage, Webhook, đồng bộ VBPQ — chỉ mô phỏng qua `IntegrationRepository` / `INTEGRATION_CHANNELS`. Không gọi API thật.
+
+## Cán bộ làm gì
+
+1. Mở tab **Tích hợp**.  
+2. Xem trạng thái từng kênh (connected / disconnected / degraded / mock).  
+3. **Kiểm tra kết nối** → toast mock + cập nhật `lastCheckedAt`.  
+4. **Bật / Tắt** kênh → cập nhật `enabled` + trạng thái.
 
 ## Acceptance
 
 - UI không tuyên bố đã kết nối production.  
-- Mỗi kênh có adapter riêng để thay mock sau này.
+- Mỗi kênh có adapter/fixture riêng để thay mock sau này.  
+- Toast + i18n vi/en; surface-card theo W-01.
+
+## Test
+
+`integration.repository.spec.ts`
 
 ## Changelog
 
@@ -27,3 +42,4 @@ VNeID thật, email/SMS, kho lưu trữ, webhook, SSO/AD — chỉ mô phỏng c
 |---|---|---|---|
 | 2026-10-20 | Codex | Khởi tạo; đánh dấu blocked tích hợp thật | 52–59 |
 | 2026-10-20 | Codex | Chuyển `03-admin`, tiếng Việt | 52–59 |
+| 2026-10-20 | Auto | G5 P3: tab Admin + repository mock E2E | 52–59 |

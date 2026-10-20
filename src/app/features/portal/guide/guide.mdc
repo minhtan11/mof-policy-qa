@@ -1,0 +1,48 @@
+# Màn PUB-guide — Hướng dẫn sử dụng cổng
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Thay Coming soon bằng màn hướng dẫn E2E (hành trình + FAQ mock)  
+Affected UC: UC-162..UC-165  
+MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/06-huong-dan-va-van-ban.mdc`
+
+## Màn hình
+
+| Mục | Giá trị |
+|---|---|
+| Route | `/portal/huong-dan` |
+| Actor | Người dân / doanh nghiệp |
+| Quyền | Công khai |
+| Dữ liệu | `GuideRepository` ← `guide-fixtures.ts` |
+| Trạng thái | `mocked` |
+
+## Bố cục
+
+- Chrome cổng: `PageBackdrop` + `PortalHeader` + `PortalFooter`.
+- Breadcrumb **Giới thiệu › Hướng dẫn** (`app-mof-breadcrumb`) ngoài hero.
+- Hero sáng (token `--mof-mine-hero-*` + ảnh trụ sở), CTA Gửi câu hỏi / Tra cứu.
+- Ba thẻ hành trình: Gửi hỏi · Theo dõi hồ sơ · Đánh giá (bước + CTA).
+- Khối FAQ accordion từ fixture (mở một câu tại một thời điểm).
+
+## Luồng
+
+1. Vào **Giới thiệu → Hướng dẫn** trên header (chỉ mục này sáng).  
+2. Đọc các bước; bấm CTA sang `/portal/hoi-dap` hoặc `/portal/cau-hoi-cua-toi`.  
+3. Mở/đóng FAQ.
+
+## Acceptance
+
+- Không còn Coming soon trên `/portal/huong-dan`.  
+- Không mock data trong component; shared kit; 2 theme × 2 ngôn ngữ.  
+- Nav active: chỉ **Giới thiệu → Hướng dẫn**.
+
+## Test mapping
+
+- `guide.component.spec.ts`, `guide.repository.spec.ts`  
+- `portal-header.component.spec.ts` (active nav)
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Tạo màn hướng dẫn thay Coming soon | UC-162..UC-165 |

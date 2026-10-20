@@ -1,0 +1,36 @@
+# Shared UI — `app-mof-breadcrumb`
+
+Changed on: 2026-10-20  
+Changed by: Auto  
+Change reason: Breadcrumb core dùng chung — click điều hướng, F5 vẫn đánh dấu đúng trang hiện tại  
+Affected UC: điều hướng portal/workspace (UC-100..UC-113, UC-142..UC-149, UC-162..UC-165)
+
+## API
+
+| Input | Mặc định | Ghi chú |
+|---|---|---|
+| `items` | `[]` | `MofBreadcrumbItem[]`: `label` / `labelKey`, `link?`, `queryParams?`, `current?` |
+| `ariaLabelKey` | `nav.breadcrumb` | Key i18n cho `<nav aria-label>` |
+
+## Hành vi
+
+1. **Click tới lui**: mục có `link` và không phải trang hiện tại → `<a routerLink>` (+ `queryParams` nếu có).
+2. **Refresh / load thẳng URL**: theo dõi `Router` (`url` ban đầu + `NavigationEnd`) → khớp `link` (chuẩn hoá path, bỏ slash thừa; có `queryParams` thì phải khớp query) → mục khớp sâu nhất nhận `aria-current="page"` và **không** còn là link.
+3. **Ép current**: `current: true` thắng khớp URL (dùng khi nhãn động / URL không đủ).
+4. **Fallback**: không mục nào khớp → mục cuối. Danh sách rỗng hoặc toàn nhãn trống → không render `<nav>`.
+5. **A11y / i18n / theme**: `<nav>` + `<ol>/<li>`; separator icon; màu token light/dark; `prefers-reduced-motion`.
+
+## Dùng ở đâu
+
+- Portal: `ask-question`, `my-questions`, `guide`, `public-legal`, `coming-soon` (workspace; ngoài hero/heading).
+- Workspace tổng quan: **không** nhúng trong hero (trang gốc — bỏ crumb giả «Tổng quan › Công việc»).
+
+## Test mapping
+
+- `mof-breadcrumb.component.spec.ts` — chuẩn hoá path/query; resolve current (flag / khớp / fallback); lọc nhãn rỗng; F5 đúng current; đổi route cập nhật current; ép `current`; empty không render.
+
+## Changelog
+
+| Changed on | Changed by | Change reason | Affected UC |
+|---|---|---|---|
+| 2026-10-20 | Auto | Thêm shared breadcrumb + helper khớp URL; gắn portal; gỡ crumb trong hero W-01 | xem trên |

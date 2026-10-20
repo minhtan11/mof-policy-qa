@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.mof-dt__scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* Chỉ hiện / tách chân khi có nội dung projected (pagination…). */
+.mof-dt__foot:not(:has(*)) {
+  display: none;
+}
+
+.mof-dt__foot:has(*) {
+  margin-top: 0.75rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--mof-border);
+  background: var(--mof-surface);
+}
+
+/* Tránh double-gap khi pagination đã có margin-top an toàn toàn cục. */
+:host ::ng-deep .mof-dt__foot app-mof-pagination {
+  margin-top: 0;
+}
+
+/* Kiểu bảng dùng chung — projected từ feature nên cần pierce. */
+:host ::ng-deep table.mof-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--mof-text-sm);
+
+  th,
+  td {
+    padding: 0.75rem 0.625rem;
+    border-bottom: 1px solid var(--mof-border);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    color: var(--mof-muted);
+    font-weight: 600;
+    font-size: var(--mof-text-xs);
+    white-space: nowrap;
+  }
+
+  tbody tr.is-late {
+    background: color-mix(in srgb, var(--mof-tone-red) 6%, transparent);
+  }
+}
+
+/* Bỏ border đáy hàng cuối khi có footer — đường kẻ do .mof-dt__foot đảm nhiệm. */
+:host:has(.mof-dt__foot > *) ::ng-deep table.mof-tbl tbody tr:last-child td {
+  border-bottom: 0;
+}

@@ -7,28 +7,6 @@
   max-width: 40rem;
 }
 
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--mof-muted);
-  font-size: var(--mof-text-xs);
-
-  a {
-    color: inherit;
-
-    &:hover,
-    &:focus-visible {
-      color: var(--mof-blue);
-    }
-  }
-
-  [aria-current] {
-    color: var(--mof-ink);
-    font-weight: 600;
-  }
-}
-
 .soon-ws {
   display: grid;
   place-items: start center;

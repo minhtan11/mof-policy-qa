@@ -32,8 +32,8 @@ export interface MineQuery {
 const NEAR_MS = 48 * 3_600_000;
 
 export function mineStatus(s: DossierStatus): MineStatus {
-  if (s === 'waiting-approval') return 'waiting';
-  if (s === 'answered' || s === 'published') return 'answered';
+  if (s === 'waiting-approval' || s === 'approved') return 'waiting';
+  if (s === 'answered' || s === 'published' || s === 'closed') return 'answered';
   if (s === 'rejected') return 'rejected';
   return 'processing';
 }

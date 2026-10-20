@@ -1,0 +1,14 @@
+---
+description: Nút nghiệp vụ trong cùng action bar phải cùng chiều cao / size thống nhất
+globs: src/app/**/*.{html,scss,ts}
+alwaysApply: true
+---
+
+# Nút nghiệp vụ đồng đều
+
+1. Trong cùng một hàng action (tiếp nhận / từ chối / trình duyệt / phê duyệt…), mọi `app-mof-button` **cùng `size`** (mặc định `md`). Chiều cao do token `--mof-btn-h-sm|md|lg` trên host `mof-button` — không CSS riêng làm to/nhỏ từng nút.
+2. Không để một nút có icon và nút cạnh không icon tạo cảm giác “cái to cái nhỏ”: hoặc gắn icon cho cả nhóm, hoặc dựa vào chiều cao cố định của kit (đã khóa trên `:host[data-size]`).
+3. Cấm override `padding` / `height` / `min-height` / `font-size` trên `app-mof-button` hoặc `.mof-btn` trong feature SCSS trừ khi chỉnh toàn bộ shared kit.
+4. Primary trong action bar: **không dùng drop-shadow** và không `translateY` hover — màu đặc + bóng tạo ảo giác “to hơn” dù cùng `height`. Viền 1px (cùng màu nền với primary) để mép khớp secondary.
+5. Action bar dùng `display: flex; align-items: center; gap` thống nhất; mobile có thể `flex: 1` đều nhau, vẫn giữ cùng chiều cao.
+6. Focus form control: không glow/`box-shadow` vòng ngoài — chỉ đổi `border-color` (xem AGENTS §4.10).

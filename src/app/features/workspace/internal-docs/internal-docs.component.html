@@ -1,0 +1,77 @@
+<app-workspace-shell>
+  <app-mof-breadcrumb [items]="crumbs" />
+
+  <section class="hero" aria-labelledby="tpl-title">
+    <div class="hero-text">
+      <h1 id="tpl-title">{{ 'wsInternalDocs.title' | t }}</h1>
+      <p class="sub">{{ 'wsInternalDocs.welcome' | t }}</p>
+    </div>
+  </section>
+
+  <ul class="kpis" role="list">
+    <li class="kpi" data-tone="blue">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="document" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsInternalDocs.kpiAll' | t }}</p>
+        <strong class="k-num">{{ counts().all }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="green">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="check-circle" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'wsInternalDocs.kpiActive' | t }}</p>
+        <strong class="k-num">{{ counts().active }}</strong>
+      </div>
+    </li>
+  </ul>
+
+  <section class="card attention" aria-labelledby="list-title">
+    <header class="c-head">
+      <div>
+        <h2 id="list-title">{{ 'wsInternalDocs.listTitle' | t }}</h2>
+        <p>{{ 'wsInternalDocs.listHint' | t }}</p>
+      </div>
+      <div class="tools">
+        <label class="search">
+          <app-mof-fi-icon name="search" aria-hidden="true" />
+          <span class="sr-only">{{ 'wsInternalDocs.searchLabel' | t }}</span>
+          <input
+            type="search"
+            [placeholder]="'wsInternalDocs.searchPlaceholder' | t"
+            [value]="qInput()"
+            (input)="qInput.set($any($event.target).value)"
+            (keydown.enter)="applySearch()"
+            (keydown.escape)="clearSearch()"
+          />
+        </label>
+      </div>
+    </header>
+
+    @if (rows().length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'wsInternalDocs.colCode' | t }}</th>
+              <th>{{ 'wsInternalDocs.colTitle' | t }}</th>
+              <th>{{ 'wsInternalDocs.colUsage' | t }}</th>
+              <th>{{ 'wsInternalDocs.colStatus' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of rows(); track t.id) {
+              <tr>
+                <td class="code">{{ t.code }}</td>
+                <td class="content"><span>{{ t.title }}</span></td>
+                <td>{{ t.usageCount }}</td>
+                <td>{{ (t.active ? 'wsInternalDocs.active' : 'wsInternalDocs.inactive') | t }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="empty">{{ 'wsInternalDocs.empty' | t }}</p>
+    }
+  </section>
+</app-workspace-shell>

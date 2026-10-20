@@ -83,6 +83,10 @@ export class DossierDetailComponent {
     dueAt: [''],
   });
 
+  readonly clarifyForm = this.fb.nonNullable.group({
+    text: [''],
+  });
+
   readonly recallForm = this.fb.nonNullable.group({
     reason: [''],
   });
@@ -105,7 +109,16 @@ export class DossierDetailComponent {
 
   canReceive = computed(() => {
     const status = this.dossier()?.status;
-    return !!status && ['new'].includes(status) && this.hasRole(['reception', 'coordinator', 'system-admin']);
+    return !!status && status === 'new' && this.hasRole(['reception', 'coordinator', 'system-admin']);
+  });
+
+  canReject = computed(() => {
+    const status = this.dossier()?.status;
+    return (
+      !!status &&
+      ['new', 'received', 'processing'].includes(status) &&
+      this.hasRole(['reception', 'coordinator', 'system-admin'])
+    );
   });
 
   canAssign = computed(() => {
@@ -115,10 +128,31 @@ export class DossierDetailComponent {
 
   canDraft = computed(() => {
     const status = this.dossier()?.status;
-    return status === 'processing' && this.hasRole(['specialist', 'coordinator', 'system-admin']);
+    return (
+      !!status &&
+      ['processing', 'returned'].includes(status) &&
+      this.hasRole(['specialist', 'coordinator', 'system-admin'])
+    );
   });
 
   canSubmit = computed(() => this.canDraft());
+
+  canClarify = computed(() => {
+    return this.dossier()?.status === 'processing' && this.hasRole(['specialist', 'coordinator', 'system-admin']);
+  });
+
+  canCollaborate = computed(() => {
+    return this.dossier()?.status === 'processing' && this.hasRole(['specialist', 'coordinator', 'system-admin']);
+  });
+
+  canResume = computed(() => {
+    const status = this.dossier()?.status;
+    return (
+      !!status &&
+      ['awaiting-clarification', 'awaiting-collaboration', 'returned'].includes(status) &&
+      this.hasRole(['specialist', 'leader', 'coordinator', 'system-admin'])
+    );
+  });
 
   canReturn = computed(() => {
     return this.dossier()?.status === 'waiting-approval' && this.hasRole(['leader', 'coordinator', 'system-admin']);
@@ -132,7 +166,16 @@ export class DossierDetailComponent {
     const status = this.dossier()?.status;
     return (
       !!status &&
-      ['answered', 'waiting-approval'].includes(status) &&
+      ['answered', 'approved', 'waiting-approval'].includes(status) &&
+      this.hasRole(['leader', 'coordinator', 'system-admin'])
+    );
+  });
+
+  canClose = computed(() => {
+    const status = this.dossier()?.status;
+    return (
+      !!status &&
+      ['answered', 'published'].includes(status) &&
       this.hasRole(['leader', 'coordinator', 'system-admin'])
     );
   });
@@ -140,11 +183,6 @@ export class DossierDetailComponent {
   canRecall = computed(() => {
     const item = this.dossier();
     return !!item && item.status === 'published' && item.isPublic && this.hasRole(['leader', 'coordinator', 'system-admin']);
-  });
-
-  canCollaborate = computed(() => {
-    const status = this.dossier()?.status;
-    return !!status && ['processing', 'waiting-approval'].includes(status) && this.hasRole(['specialist', 'coordinator', 'system-admin']);
   });
 
   canAuditNote = computed(() => this.hasRole(['specialist', 'leader', 'coordinator', 'system-admin', 'reception']));
@@ -179,13 +217,18 @@ export class DossierDetailComponent {
     this.transition('received', 'dossier.toastReceive', 'Tiếp nhận hồ sơ', 'Hồ sơ đã được tiếp nhận vào hàng đợi xử lý.');
   }
 
+  reject(): void {
+    this.transition('rejected', 'dossier.toastReject', 'Từ chối tiếp nhận', 'Hồ sơ ngoài phạm vi hoặc không đủ điều kiện tiếp nhận.');
+  }
+
   assign(): void {
     const name = this.draftForm.controls.assignee.value;
     if (!name) {
       this.toast.show({ severity: 'warn', summary: this.i18n.t('dossier.errAssign'), detail: this.dossier()?.code ?? '' });
       return;
     }
-    const ok = this.db.assign(this.id, name, this.actorName());
+    const unitId = USERS.find((u) => u.name === name)?.organizationId;
+    const ok = this.db.assign(this.id, name, this.actorName(), unitId);
     if (!ok) {
       this.toast.show({ severity: 'warn', summary: this.i18n.t('dossier.errTransition'), detail: this.dossier()?.code ?? '' });
       return;
@@ -207,12 +250,31 @@ export class DossierDetailComponent {
     );
   }
 
+  requestClarify(): void {
+    const text = this.clarifyForm.controls.text.value.trim();
+    if (!text) {
+      this.toast.show({ severity: 'warn', summary: this.i18n.t('dossier.errClarify'), detail: this.dossier()?.code ?? '' });
+      return;
+    }
+    const saved = this.db.requestClarification(this.id, text, this.actorName());
+    if (!saved) {
+      this.toast.show({ severity: 'warn', summary: this.i18n.t('dossier.errTransition'), detail: this.dossier()?.code ?? '' });
+      return;
+    }
+    this.clarifyForm.reset({ text: '' });
+    this.toast.show({ severity: 'success', summary: this.i18n.t('dossier.toastClarify'), detail: this.dossier()?.code ?? '' });
+  }
+
+  resumeProcessing(): void {
+    this.transition('processing', 'dossier.toastResume', 'Tiếp tục xử lý', 'Hồ sơ đã được đưa lại trạng thái đang xử lý.');
+  }
+
   returnForRevision(): void {
-    this.transition('processing', 'dossier.toastReturn', 'Trả sửa dự thảo', 'Lãnh đạo yêu cầu chỉnh sửa trước khi duyệt.');
+    this.transition('returned', 'dossier.toastReturn', 'Trả sửa dự thảo', 'Lãnh đạo yêu cầu chỉnh sửa trước khi duyệt.');
   }
 
   approveOnly(): void {
-    this.transition('answered', 'dossier.toastApprove', 'Phê duyệt nội dung', 'Dự thảo đã được phê duyệt, chờ xuất bản.');
+    this.transition('approved', 'dossier.toastApprove', 'Phê duyệt nội dung', 'Dự thảo đã được phê duyệt, chờ xuất bản.');
   }
 
   publish(): void {
@@ -244,6 +306,10 @@ export class DossierDetailComponent {
       'Phê duyệt và công khai',
       'Câu trả lời đã được phê duyệt và công khai trên cổng thông tin.',
     );
+  }
+
+  close(): void {
+    this.transition('closed', 'dossier.toastClose', 'Đóng hồ sơ', 'Hồ sơ đã được đóng trên hệ thống nội bộ.');
   }
 
   recall(): void {

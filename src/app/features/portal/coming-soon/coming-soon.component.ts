@@ -15,6 +15,8 @@ import { PageBackdropComponent } from '../../../shared/ui/page-backdrop/page-bac
 import { MofButtonComponent } from '../../../shared/ui/mof-button/mof-button.component';
 import { MofFiIconComponent } from '../../../shared/ui/mof-fi-icon/mof-fi-icon.component';
 import { WorkspaceShellComponent } from '../../../shared/ui/workspace-shell/workspace-shell.component';
+import { MofBreadcrumbComponent } from '../../../shared/ui/mof-breadcrumb/mof-breadcrumb.component';
+import { MofBreadcrumbItem } from '../../../shared/ui/mof-breadcrumb/mof-breadcrumb.model';
 
 export interface ComingSoonData {
   titleKey: string;
@@ -35,6 +37,7 @@ export interface ComingSoonData {
     MofFiIconComponent,
     WorkspaceShellComponent,
     NgTemplateOutlet,
+    MofBreadcrumbComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './coming-soon.component.html',
@@ -56,6 +59,12 @@ export class ComingSoonComponent {
   readonly workspace = computed(() => this.data().shell === 'workspace');
   readonly homeRoute = computed(() => (this.workspace() ? '/workspace' : '/portal'));
   readonly homeKey = computed(() => (this.workspace() ? 'comingSoon.backOverview' : 'comingSoon.backHome'));
+
+  /** Portal only — ngoài card; mục cuối (không link) = trang hiện tại sau F5. */
+  readonly crumbs = computed<readonly MofBreadcrumbItem[]>(() => [
+    { labelKey: 'nav.home', link: '/portal' },
+    { labelKey: this.titleKey() },
+  ]);
 
   /** Quay lại trang trước; mở thẳng (không có lịch sử trong app) thì về trang chủ/tổng quan. */
   back(): void {

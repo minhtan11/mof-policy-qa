@@ -1,12 +1,13 @@
+<!-- W-02 Chi tiết hồ sơ — surface/hero bám W-01. -->
 <app-workspace-shell [title]="'dossier.title' | t">
-  <div class="crumb">
+  <nav class="crumb" [attr.aria-label]="'dossier.crumbHome' | t">
     <a routerLink="/workspace">{{ 'dossier.crumbHome' | t }}</a>
-    <span>›</span>
+    <span aria-hidden="true">›</span>
     <span>{{ dossier()?.code }}</span>
-  </div>
+  </nav>
 
   @if (dossier(); as item) {
-    <div class="detail-head">
+    <header class="detail-head">
       <div>
         <div class="status-row">
           <app-status-badge [status]="item.status" />
@@ -20,9 +21,27 @@
         </p>
       </div>
 
-      <div class="actions" [formGroup]="draftForm">
+      <div class="actions" [formGroup]="draftForm" role="group" [attr.aria-label]="'dossier.title' | t">
         @if (canReceive()) {
           <app-mof-button [label]="'dossier.receive' | t" icon="inbox" [loading]="saving()" (click)="receive()" />
+        }
+        @if (canReject()) {
+          <app-mof-button
+            [label]="'dossier.reject' | t"
+            icon="close"
+            variant="secondary"
+            [loading]="saving()"
+            (click)="reject()"
+          />
+        }
+        @if (canResume()) {
+          <app-mof-button
+            [label]="'dossier.resume' | t"
+            icon="arrow-right"
+            variant="soft"
+            [loading]="saving()"
+            (click)="resumeProcessing()"
+          />
         }
         @if (canSubmit()) {
           <app-mof-button
@@ -35,13 +54,20 @@
         @if (canReturn()) {
           <app-mof-button
             [label]="'dossier.return' | t"
+            icon="arrow-left"
             variant="secondary"
             [loading]="saving()"
             (click)="returnForRevision()"
           />
         }
         @if (canApprove()) {
-          <app-mof-button [label]="'dossier.approve' | t" variant="soft" [loading]="saving()" (click)="approveOnly()" />
+          <app-mof-button
+            [label]="'dossier.approve' | t"
+            icon="check"
+            variant="soft"
+            [loading]="saving()"
+            (click)="approveOnly()"
+          />
           <app-mof-button
             [label]="'dossier.approvePublish' | t"
             icon="check"
@@ -49,7 +75,7 @@
             (click)="approveAndPublish()"
           />
         }
-        @if (canPublish() && item.status === 'answered') {
+        @if (canPublish() && (item.status === 'answered' || item.status === 'approved')) {
           <app-mof-button
             [label]="'dossier.publish' | t"
             icon="check"
@@ -57,8 +83,17 @@
             (click)="publish()"
           />
         }
+        @if (canClose()) {
+          <app-mof-button
+            [label]="'dossier.close' | t"
+            icon="close"
+            variant="secondary"
+            [loading]="saving()"
+            (click)="close()"
+          />
+        }
       </div>
-    </div>
+    </header>
 
     <div class="detail-grid">
       <div class="main-col">
@@ -121,7 +156,23 @@
           </section>
         }
 
-        @if (canCollaborate()) {
+        @if (canClarify()) {
+          <section class="surface-card detail-card" [formGroup]="clarifyForm">
+            <header>
+              <div>
+                <p class="eyebrow">{{ 'dossier.clarifyEyebrow' | t }}</p>
+                <h3>{{ 'dossier.clarifyTitle' | t }}</h3>
+              </div>
+            </header>
+            <app-mof-textarea formControlName="text" [rows]="3" [placeholder]="'dossier.clarifyPlaceholder' | t" />
+            <footer>
+              <span>{{ 'dossier.clarifyHint' | t }}</span>
+              <app-mof-button [label]="'dossier.clarifySubmit' | t" icon="send" (click)="requestClarify()" />
+            </footer>
+          </section>
+        }
+
+        @if (canCollaborate() || item.collaborations?.length) {
           <section class="surface-card detail-card" [formGroup]="collabForm">
             <header>
               <div>
@@ -129,19 +180,21 @@
                 <h3>{{ 'dossier.collabTitle' | t }}</h3>
               </div>
             </header>
-            <div class="assign-row">
-              <app-mof-select
-                formControlName="unitId"
-                [options]="unitOptions()"
-                [placeholder]="'dossier.collabUnit' | t"
-              />
-              <app-mof-input formControlName="dueAt" [placeholder]="'dossier.collabDue' | t" />
-            </div>
-            <app-mof-textarea formControlName="note" [rows]="3" [placeholder]="'dossier.collabNote' | t" />
-            <footer>
-              <span>{{ 'dossier.collabHint' | t }}</span>
-              <app-mof-button [label]="'dossier.collabSubmit' | t" icon="send" (click)="requestCollab()" />
-            </footer>
+            @if (canCollaborate()) {
+              <div class="assign-row">
+                <app-mof-select
+                  formControlName="unitId"
+                  [options]="unitOptions()"
+                  [placeholder]="'dossier.collabUnit' | t"
+                />
+                <app-mof-input formControlName="dueAt" [placeholder]="'dossier.collabDue' | t" />
+              </div>
+              <app-mof-textarea formControlName="note" [rows]="3" [placeholder]="'dossier.collabNote' | t" />
+              <footer>
+                <span>{{ 'dossier.collabHint' | t }}</span>
+                <app-mof-button [label]="'dossier.collabSubmit' | t" icon="send" (click)="requestCollab()" />
+              </footer>
+            }
             @if (item.collaborations?.length) {
               <ul class="collab-list">
                 @for (c of item.collaborations; track c.id) {

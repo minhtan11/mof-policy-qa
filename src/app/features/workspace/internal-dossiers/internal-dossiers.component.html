@@ -1,0 +1,134 @@
+<!-- OPS-LIST Hồ sơ nội bộ — style bám W-01 tổng quan. -->
+<app-workspace-shell>
+  <app-mof-breadcrumb [items]="crumbs()" />
+
+  <section class="hero" aria-labelledby="int-title">
+    <div class="hero-text">
+      <h1 id="int-title">{{ 'internalDossiers.title' | t }}</h1>
+      <p class="sub">{{ 'internalDossiers.welcome' | t: { name: auth.user()?.name ?? '' } }}</p>
+    </div>
+  </section>
+
+  <ul class="kpis" role="list">
+    <li class="kpi" data-tone="blue">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="folder-tree" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'internalDossiers.kpiAll' | t }}</p>
+        <strong class="k-num">{{ repo.kpi().all }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="amber">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="folder" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'internalDossiers.kpiOpen' | t }}</p>
+        <strong class="k-num">{{ repo.kpi().open }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="violet">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="hourglass-end" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'workspace.filterProcessing' | t }}</p>
+        <strong class="k-num">{{ repo.kpi().processing }}</strong>
+      </div>
+    </li>
+    <li class="kpi" data-tone="red">
+      <span class="k-ico" aria-hidden="true"><app-mof-fi-icon name="bell" /></span>
+      <div class="k-body">
+        <p class="k-label">{{ 'internalDossiers.kpiOverdue' | t }}</p>
+        <strong class="k-num">{{ repo.kpi().overdue }}</strong>
+      </div>
+    </li>
+  </ul>
+
+  <section class="card attention" aria-labelledby="list-title">
+    <header class="c-head">
+      <div>
+        <h2 id="list-title">{{ 'internalDossiers.listTitle' | t }}</h2>
+        <p>{{ 'internalDossiers.listHint' | t }}</p>
+      </div>
+      <div class="tools">
+        <label class="search">
+          <app-mof-fi-icon name="search" aria-hidden="true" />
+          <span class="sr-only">{{ 'internalDossiers.searchLabel' | t }}</span>
+          <input
+            type="search"
+            [placeholder]="'internalDossiers.searchPlaceholder' | t"
+            [value]="qInput()"
+            (input)="onSearch($any($event.target).value)"
+            (keydown.enter)="applySearch()"
+            (keydown.escape)="clearSearch()"
+          />
+        </label>
+      </div>
+    </header>
+
+    <div class="tabs" role="tablist" [attr.aria-label]="'internalDossiers.tabsAria' | t">
+      @for (t of tabs; track t.id; let i = $index) {
+        <button
+          type="button"
+          role="tab"
+          class="tab"
+          [class.on]="tab() === t.id"
+          [attr.aria-selected]="tab() === t.id"
+          [attr.tabindex]="tab() === t.id ? 0 : -1"
+          (click)="setTab(t.id)"
+          (keydown)="onTabKey($event, i)"
+        >
+          {{ t.labelKey | t }}
+          <span class="t-n">{{ repo.counts()[t.id] }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="panel" role="tabpanel">
+      @if (pageRows().length) {
+        <app-mof-data-table>
+          <table class="mof-tbl">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'workspace.colCode' | t }}</th>
+                <th scope="col">{{ 'workspace.colContent' | t }}</th>
+                <th scope="col">{{ 'workspace.colStatus' | t }}</th>
+                <th scope="col">{{ 'workspace.colDue' | t }}</th>
+                <th scope="col" class="act">{{ 'workspace.colActions' | t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (d of pageRows(); track d.id) {
+                <tr [class.is-late]="overdue(d)">
+                  <td class="code">
+                    <span class="f-ico" [attr.data-tone]="topicTone(d)" aria-hidden="true">
+                      <app-mof-fi-icon name="file" />
+                    </span>
+                    <a [routerLink]="['/workspace/ho-so', d.id]">{{ d.code }}</a>
+                  </td>
+                  <td class="content"><span [attr.title]="d.question">{{ d.question }}</span></td>
+                  <td><app-status-badge [status]="d.status" /></td>
+                  <td [class.late-txt]="overdue(d)">{{ d.dueAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                  <td class="act">
+                    <a class="open" [routerLink]="['/workspace/ho-so', d.id]" [attr.aria-label]="'workspace.openDossier' | t: { code: d.code }">
+                      <app-mof-fi-icon name="arrow-small-right" />
+                    </a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <app-mof-pagination
+            mofTableFoot
+            layout="per-page"
+            [edges]="true"
+            [page]="page()"
+            [pageSize]="size()"
+            [total]="total()"
+            [pageSizes]="pageSizes"
+            (pageChange)="onPage($event)"
+            (pageSizeChange)="onSize($event)"
+          />
+        </app-mof-data-table>
+      } @else {
+        <p class="empty">{{ 'internalDossiers.empty' | t }}</p>
+      }
+    </div>
+  </section>
+</app-workspace-shell>

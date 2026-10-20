@@ -94,12 +94,23 @@ describe('workspace overview repository', () => {
     expect(t[0]).toMatchObject({ icon: 'receipt', tone: 'blue' });
   });
 
-  it('scopes dossiers by role: specialist sees only assigned, reception/leader see all, public none', () => {
+  it('scopes dossiers by role: specialist assigned; reception/leader unit (+ intake); public none', () => {
     expect(scopeFor(LIST, user('hung.lq')).length).toBe(2);
+    // LIST không gắn handlingUnitId → unit scope vẫn thấy (hồ sơ chưa gán đơn vị).
     expect(scopeFor(LIST, user('ha.tt')).length).toBe(LIST.length);
     expect(scopeFor(LIST, user('long.pd')).length).toBe(LIST.length);
     expect(scopeFor(LIST, user('minhanh'))).toEqual([]);
     expect(scopeFor(LIST, null)).toEqual([]);
+    const unitScoped = [
+      d({ status: 'processing', handlingUnitId: 'org-tax', assignedTo: 'X' }),
+      d({ status: 'processing', handlingUnitId: 'org-budget', assignedTo: 'Y' }),
+      d({ status: 'new' }),
+    ];
+    expect(scopeFor(unitScoped, user('long.pd')).map((x) => x.handlingUnitId ?? x.status)).toEqual([
+      'org-tax',
+      'new',
+    ]);
+    expect(scopeFor(unitScoped, user('ha.tt')).map((x) => x.status)).toEqual(['new']);
   });
 
   it('repository applies the signed-in user scope to the mock DB', () => {
@@ -107,12 +118,15 @@ describe('workspace overview repository', () => {
     TestBed.configureTestingModule({});
     const auth = TestBed.inject(AuthService);
     const repo = TestBed.inject(WorkspaceOverviewRepository);
-    auth.loginWithCredentials('ha.tt', DEMO_DEFAULT_PASSWORD, false);
+    auth.loginWithCredentials('ngoc.db', DEMO_DEFAULT_PASSWORD, false);
     const all = repo.scoped().length;
     auth.loginWithCredentials('hung.lq', DEMO_DEFAULT_PASSWORD, false);
     const mine = repo.scoped();
     expect(mine.length).toBeLessThanOrEqual(all);
     expect(mine.every((x) => x.assignedTo === 'Lê Quốc Hưng')).toBe(true);
+    auth.loginWithCredentials('ha.tt', DEMO_DEFAULT_PASSWORD, false);
+    const unit = repo.scoped();
+    expect(unit.length).toBeLessThanOrEqual(all);
     localStorage.clear();
   });
 });
