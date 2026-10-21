@@ -3,6 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MofButtonComponent } from '../mof-button/mof-button.component';
 import { MofFiIconComponent } from '../mof-fi-icon/mof-fi-icon.component';
 import { MofIconButtonComponent } from '../mof-icon-button/mof-icon-button.component';
+import { MofTooltipDirective } from '../mof-tooltip/mof-tooltip.directive';
 
 /**
  * Vùng đính kèm dùng chung: dropzone viền đứt (kéo-thả) + nút "Chọn tệp"; chip tệp có icon theo loại, tên,
@@ -11,7 +12,7 @@ import { MofIconButtonComponent } from '../mof-icon-button/mof-icon-button.compo
  */
 @Component({
   selector: 'app-mof-file-upload',
-  imports: [MofButtonComponent, MofFiIconComponent, MofIconButtonComponent],
+  imports: [MofTooltipDirective, MofButtonComponent, MofFiIconComponent, MofIconButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MofFileUploadComponent), multi: true }],
   templateUrl: './mof-file-upload.component.html',

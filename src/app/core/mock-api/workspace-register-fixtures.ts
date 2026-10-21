@@ -1,6 +1,6 @@
 /**
- * Fixture sổ văn bản đến / mẫu trả lời nội bộ — dùng cho màn workspace G5
- * (van-ban-den, tai-lieu-noi-bo). Liên kết hồ sơ tùy chọn qua dossierId.
+ * Kiểu sổ văn bản đến và mẫu trả lời nội bộ.
+ * Dòng sổ đến được ghép từ `INCOMING_LINKS` + bảng hồ sơ trong `IncomingDocsRepository`.
  */
 
 export type IncomingDocStatus = 'new' | 'distributed' | 'processing' | 'done';
@@ -26,47 +26,6 @@ export interface AnswerTemplateRef {
   usageCount: number;
   active: boolean;
 }
-
-export const INCOMING_DOC_FIXTURES: IncomingDocRef[] = [
-  {
-    id: 'in-001',
-    code: 'VBĐ-2026-0142',
-    title: 'Công văn hỏi về hoàn thuế GTGT quý III/2026',
-    sender: 'Công ty TNHH Minh Anh',
-    receivedAt: '2026-10-12T09:20:00',
-    status: 'distributed',
-    dossierId: 'd-001',
-    dossierCode: 'CSTC-2026-001284',
-  },
-  {
-    id: 'in-002',
-    code: 'VBĐ-2026-0158',
-    title: 'Đề nghị hướng dẫn chính sách ưu đãi thuế thu nhập DN',
-    sender: 'Sở Tài chính Hà Nội',
-    receivedAt: '2026-10-15T14:05:00',
-    status: 'processing',
-    dossierId: 'd-002',
-    dossierCode: 'CSTC-2026-001279',
-  },
-  {
-    id: 'in-003',
-    code: 'VBĐ-2026-0166',
-    title: 'Văn bản chuyển tiếp câu hỏi về phí, lệ phí',
-    sender: 'Văn phòng Chính phủ',
-    receivedAt: '2026-10-18T08:40:00',
-    status: 'new',
-  },
-  {
-    id: 'in-004',
-    code: 'VBĐ-2026-0171',
-    title: 'Phản hồi bổ sung hồ sơ hỏi đáp chính sách hải quan',
-    sender: 'Chi cục Hải quan cửa khẩu',
-    receivedAt: '2026-10-19T11:15:00',
-    status: 'done',
-    dossierId: 'd-003',
-    dossierCode: 'CSTC-2026-001261',
-  },
-];
 
 /** Fallback khi catalog chưa có type answer-template. */
 export const ANSWER_TEMPLATE_FIXTURES: AnswerTemplateRef[] = [

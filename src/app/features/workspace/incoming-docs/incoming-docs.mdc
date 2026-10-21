@@ -1,8 +1,8 @@
 # Màn WS-IN — Văn bản đến (`/workspace/van-ban-den`)
 
-Changed on: 2026-10-20  
+Changed on: 2026-10-21  
 Changed by: Auto  
-Change reason: G5 — sổ văn bản đến mock thay Coming soon  
+Change reason: Sổ văn bản đến ghép từ liên kết + bảng hồ sơ  
 Affected UC: UC-142..UC-149  
 MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`
 
@@ -13,7 +13,7 @@ MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`
 | Route | `/workspace/van-ban-den` (`internalGuard`) |
 | Actor | Cán bộ nội bộ (`WS_ROLE_MATRIX.incoming`) |
 | Trạng thái | `mocked` |
-| Dữ liệu | `IncomingDocsRepository` + `INCOMING_DOC_FIXTURES` |
+| Dữ liệu | `IncomingDocsRepository` ghép `INCOMING_LINKS` với hồ sơ trong `MockDbService` |
 
 ## Acceptance
 
@@ -29,3 +29,4 @@ MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`
 | Ngày | Người | Lý do | UC |
 |---|---|---|---|
 | 2026-10-20 | Auto | G5: WS-IN thay Coming soon | 142–149 |
+| 2026-10-21 | Auto | Tiêu đề và người gửi văn bản đến lấy từ hồ sơ được liên kết | 142–149 |

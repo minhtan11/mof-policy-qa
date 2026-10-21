@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, signal, effect } from '@angular/core';
+import { MofTooltipDirective } from '../mof-tooltip/mof-tooltip.directive';
 
 /**
  * Ô lỗi dưới trường form — luôn giữ sẵn chiều cao một dòng (token `--mof-field-error-h`) nên khi lỗi xuất hiện
@@ -6,6 +7,7 @@ import { ChangeDetectionStrategy, Component, input, signal, effect } from '@angu
  * Truyền chuỗi đã dịch (i18n) qua `message`; null/'' = không lỗi.
  */
 @Component({
+  imports: [MofTooltipDirective],
   selector: 'app-mof-field-error',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './mof-field-error.component.html',

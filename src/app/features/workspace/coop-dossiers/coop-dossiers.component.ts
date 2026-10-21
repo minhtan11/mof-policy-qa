@@ -23,12 +23,13 @@ import {
 } from '../../../core/mock-api/coop-dossier.repository';
 import { WS_TOPIC_VISUALS } from '../../../core/mock-api/workspace-overview-fixtures';
 import { Dossier } from '../../../core/models/domain.models';
+import { MofTooltipDirective } from '../../../shared/ui/mof-tooltip/mof-tooltip.directive';
 
 export const COOP_PAGE_SIZES = [10, 20, 50];
 const TAB_IDS = COOP_COLLAB_TABS.map((t) => t.id);
 
 @Component({
-  imports: [
+  imports: [MofTooltipDirective, 
     WorkspaceShellComponent,
     RouterLink,
     DatePipe,

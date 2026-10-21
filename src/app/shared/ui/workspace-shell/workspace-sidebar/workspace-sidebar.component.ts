@@ -21,10 +21,12 @@ import { AuthService } from '../../../../core/auth/auth.service';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { I18nService } from '../../../../core/i18n/i18n.service';
 import { MockDbService } from '../../../../core/mock-api/mock-db.service';
+import { scopeFor, tabCounts } from '../../../../core/mock-api/workspace-overview.repository';
 import { AnchoredHandle, anchorFloating } from '../../../../core/overlay/floating';
 import { WorkspaceShellState } from '../../../../core/workspace/workspace-shell.state';
 import { WS_HOME, WS_SUPPORT_PHONE, WsNavGroup, WsNavItem, isItemActive, visibleGroups } from '../../../../core/workspace/workspace-nav';
 import { MofFiIconComponent } from '../../mof-fi-icon/mof-fi-icon.component';
+import { MofTooltipDirective } from '../../mof-tooltip/mof-tooltip.directive';
 
 interface Tip {
   text: string;
@@ -46,12 +48,12 @@ function parseUrl(url: string): { path: string; query: Record<string, string> } 
  * - Rail (thu gọn, ~4.25rem): emblem, icon Tổng quan + icon mỗi nhóm (bấm → flyout menu qua core overlay, đặt bên phải),
  *   nút » nổi ở mép, icon hỗ trợ; tooltip cho mọi icon (một phần tử fixed dùng chung — không bị menu cuộn cắt).
  * - Mở rộng (~15.5rem): header thương hiệu + nút «, “Tổng quan” pill, nhóm có tiêu đề + nút chevron gập/mở,
- *   mục icon + nhãn + badge đếm (MockDbService), thẻ Hỗ trợ kỹ thuật; vùng menu cuộn độc lập.
+ *   mục icon + nhãn + badge đếm (cùng phạm vi và nhóm tab với Tổng quan), thẻ Hỗ trợ kỹ thuật; vùng menu cuộn độc lập.
  * Drawer (< 1024): luôn ở chế độ mở rộng; shell lo scrim/focus trap. Lọc theo vai trò; nhóm chứa route hiện tại tự mở.
  */
 @Component({
   selector: 'app-workspace-sidebar',
-  imports: [RouterLink, TranslatePipe, MofFiIconComponent],
+  imports: [MofTooltipDirective, RouterLink, TranslatePipe, MofFiIconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './workspace-sidebar.component.html',
   styleUrl: './workspace-sidebar.component.scss',
@@ -88,14 +90,15 @@ export class WorkspaceSidebarComponent {
   );
   private readonly loc = computed(() => parseUrl(this.url()));
 
+  /** Cùng phạm vi vai trò và cùng nhóm trạng thái với tab Tổng quan (`tabCounts` + `scopeFor`). */
   readonly counts = computed(() => {
-    this.db.dossiers();
+    const tabs = tabCounts(scopeFor(this.db.dossiers(), this.auth.user()));
     return {
-      all: this.db.activeQueue('all').length,
-      new: this.db.activeQueue('new').length,
-      processing: this.db.activeQueue('processing').length,
-      'waiting-approval': this.db.activeQueue('waiting-approval').length,
-    } as Record<string, number>;
+      all: tabs.all,
+      new: tabs.new,
+      processing: tabs.processing,
+      'waiting-approval': tabs['waiting-approval'],
+    };
   });
 
   readonly flyout = signal<WsNavGroup | null>(null);
@@ -144,11 +147,16 @@ export class WorkspaceSidebarComponent {
   readonly activeGroup = computed(() => this.groups().find((g) => g.items.some((i) => this.isActive(i))) ?? null);
 
   badge(item: WsNavItem): number | null {
-    return item.badge ? (this.counts()[item.badge] ?? null) : null;
+    if (!item.badge) return null;
+    const counts = this.counts();
+    if (item.badge === 'all' || item.badge === 'new' || item.badge === 'processing' || item.badge === 'waiting-approval') {
+      return counts[item.badge];
+    }
+    return null;
   }
 
   groupBadge(g: WsNavGroup): number {
-    return g.items.reduce((s, i) => (i.badge && i.badge !== 'all' ? s + (this.counts()[i.badge] ?? 0) : s), 0);
+    return g.items.reduce((s, i) => s + (i.badge && i.badge !== 'all' ? (this.badge(i) ?? 0) : 0), 0);
   }
 
   open(g: WsNavGroup): boolean {

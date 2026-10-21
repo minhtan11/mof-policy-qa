@@ -1,10 +1,32 @@
-import { Injectable, signal } from '@angular/core';
-import { IncomingDocRef, IncomingDocStatus, INCOMING_DOC_FIXTURES } from './workspace-register-fixtures';
+import { Injectable, computed, inject } from '@angular/core';
+import { IncomingDocRef, IncomingDocStatus } from './workspace-register-fixtures';
+import { INCOMING_LINKS } from './dossier-seed';
+import { MockDbService } from './mock-db.service';
 
-/** Sổ văn bản đến — mock register liên kết hồ sơ tùy chọn. */
+/** Sổ văn bản đến — mã sổ gắn hồ sơ; tiêu đề và người gửi lấy từ bảng hồ sơ. */
 @Injectable({ providedIn: 'root' })
 export class IncomingDocsRepository {
-  readonly docs = signal<IncomingDocRef[]>(structuredClone(INCOMING_DOC_FIXTURES));
+  private readonly db = inject(MockDbService);
+
+  readonly docs = computed<IncomingDocRef[]>(() => {
+    const byId = new Map(this.db.dossiers().map((dossier) => [dossier.id, dossier]));
+    return INCOMING_LINKS.flatMap((link) => {
+      const dossier = byId.get(link.dossierId);
+      if (!dossier) return [];
+      return [
+        {
+          id: link.id,
+          code: link.code,
+          title: dossier.question,
+          sender: dossier.sender,
+          receivedAt: dossier.receivedAt,
+          status: link.status,
+          dossierId: dossier.id,
+          dossierCode: dossier.code,
+        },
+      ];
+    });
+  });
 
   list(status: IncomingDocStatus | 'all' = 'all', q = ''): IncomingDocRef[] {
     const needle = q.trim().toLocaleLowerCase();

@@ -14,6 +14,7 @@ import { HeaderSearchComponent } from './header-search/header-search.component';
 import { HeaderNotificationsComponent } from './header-notifications/header-notifications.component';
 import { HeaderPrefsComponent } from './header-prefs/header-prefs.component';
 import { LangSwitchComponent } from '../lang-switch/lang-switch.component';
+import { MofTooltipDirective } from '../mof-tooltip/mof-tooltip.directive';
 
 interface NavChild {
   key: string;
@@ -42,7 +43,7 @@ interface NavItem {
  */
 @Component({
   selector: 'app-portal-header',
-  imports: [
+  imports: [MofTooltipDirective, 
     RouterLink,
     TranslatePipe,
     MofIconComponent,

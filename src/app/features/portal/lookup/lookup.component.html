@@ -95,10 +95,10 @@
         <div class="tools">
           <app-mof-select class="sort" size="sm" [options]="sortOptions()" [ngModel]="state().sort" (ngModelChange)="setSort($event)" />
           <div class="view-toggle" role="group" [attr.aria-label]="'lookup.view' | t">
-            <button type="button" [class.on]="state().view === 'list'" [attr.aria-pressed]="state().view === 'list'" [attr.aria-label]="'lookup.viewList' | t" [attr.title]="'lookup.viewList' | t" (click)="setView('list')">
+            <button type="button" [class.on]="state().view === 'list'" [attr.aria-pressed]="state().view === 'list'" [attr.aria-label]="'lookup.viewList' | t" [mofTooltip]="'lookup.viewList' | t" (click)="setView('list')">
               <app-mof-fi-icon name="list" />
             </button>
-            <button type="button" [class.on]="state().view === 'grid'" [attr.aria-pressed]="state().view === 'grid'" [attr.aria-label]="'lookup.viewGrid' | t" [attr.title]="'lookup.viewGrid' | t" (click)="setView('grid')">
+            <button type="button" [class.on]="state().view === 'grid'" [attr.aria-pressed]="state().view === 'grid'" [attr.aria-label]="'lookup.viewGrid' | t" [mofTooltip]="'lookup.viewGrid' | t" (click)="setView('grid')">
               <app-mof-fi-icon name="apps" />
             </button>
           </div>

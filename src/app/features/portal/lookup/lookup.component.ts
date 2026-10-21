@@ -16,6 +16,7 @@ import { MofCheckboxComponent } from '../../../shared/ui/mof-checkbox/mof-checkb
 import { MofFiIconComponent } from '../../../shared/ui/mof-fi-icon/mof-fi-icon.component';
 import { MofIconButtonComponent } from '../../../shared/ui/mof-icon-button/mof-icon-button.component';
 import { MofPaginationComponent } from '../../../shared/ui/mof-pagination/mof-pagination.component';
+import { MofTooltipDirective } from '../../../shared/ui/mof-tooltip/mof-tooltip.directive';
 
 export type LookupView = 'list' | 'grid';
 
@@ -78,7 +79,7 @@ export function toParams(s: LookupState): Record<string, string | null> {
  * Dữ liệu: PublicQaRepository (fixture). UC-162..UC-165 | Permission: public.
  */
 @Component({
-  imports: [
+  imports: [MofTooltipDirective, 
     DatePipe,
     DecimalPipe,
     FormsModule,

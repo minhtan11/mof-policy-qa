@@ -97,7 +97,7 @@
                     <a [routerLink]="['/workspace/ho-so', r.dossier.id]">{{ r.dossier.code }}</a>
                   </td>
                   <td>{{ r.collaboration.unitName }}</td>
-                  <td class="content"><span [attr.title]="r.collaboration.note">{{ r.collaboration.note }}</span></td>
+                  <td class="content"><span [mofTooltip]="r.collaboration.note" mofTooltipTruncated>{{ r.collaboration.note }}</span></td>
                   <td>
                     <app-mof-badge
                       [label]="(r.collaboration.status === 'open' ? 'coopDossiers.statusOpen' : 'coopDossiers.statusDone') | t"

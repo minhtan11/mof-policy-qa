@@ -1,8 +1,8 @@
 # Màn OPS-LIST — Hồ sơ nội bộ (`/workspace/ho-so-noi-bo`)
 
-Changed on: 2026-10-20  
+Changed on: 2026-10-21  
 Changed by: Auto  
-Change reason: Bọc danh sách bằng `app-mof-data-table`  
+Change reason: KPI đang mở / đang xử lý đếm cùng tập trạng thái với tab  
 Affected UC: UC-142..UC-161  
 MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `02-soan-tra-loi.mdc`
 
@@ -23,7 +23,8 @@ MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `02-soan-tra-l
 
 ## Acceptance
 
-- Không Coming soon; đăng nhập `long.pd` (leader) thấy toàn bộ seed; `hung.lq` chỉ hồ sơ được giao.  
+- KPI tổng = mọi hồ sơ trong phạm vi; KPI đang mở = tab «Tất cả đang mở»; KPI đang xử lý = tab «Đang xử lý».  
+- Đăng nhập `long.pd` (lãnh đạo Vụ Chính sách thuế) chỉ thấy hồ sơ `handlingUnitId = org-tax`; `hung.lq` chỉ hồ sơ được giao.  
 - Query `?filter=` / `?q=` đồng bộ URL.  
 - 2 theme × 2 ngôn ngữ; không overflow 320–1920.
 
@@ -37,3 +38,4 @@ MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `02-soan-tra-l
 |---|---|---|---|
 | 2026-10-20 | Auto | Dùng `mof-data-table` tách bảng khỏi pagination | 142–161 |
 | 2026-10-20 | Auto | G5: OPS-LIST thay Coming soon | 142–161 |
+| 2026-10-21 | Auto | KPI đang mở/đang xử lý khớp số trên tab; lãnh đạo chỉ thấy đơn vị mình | 142–161 |

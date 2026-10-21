@@ -2,7 +2,7 @@
   class="mof-field-error"
   [class.visible]="!!message()"
   [attr.id]="id()"
-  [attr.title]="message() || null"
+  [mofTooltip]="message()" mofTooltipTruncated
   [attr.aria-hidden]="!message()"
   role="alert"
   aria-live="polite"

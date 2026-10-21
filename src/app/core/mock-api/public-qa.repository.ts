@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { TOPICS } from './demo-data';
-import { PUBLIC_QA, PublicQa, QA_FIXTURE_NOW, QA_TYPES, QaStatus, QaType } from './public-qa-fixtures';
+import { MockDbService } from './mock-db.service';
+import { PublicQa, QA_FIXTURE_NOW, QA_TYPES, QaStatus, QaType, dossierToPublicQa } from './public-qa-fixtures';
 
 export type QaPeriod = 'all' | '7d' | '30d' | '90d' | '365d';
 export type QaSort = 'newest' | 'oldest' | 'views' | 'replies';
@@ -19,13 +20,21 @@ const PERIOD_DAYS: Record<QaPeriod, number> = { all: Infinity, '7d': 7, '30d': 3
 /** Kho hỏi đáp công khai (mock, client-side): tìm kiếm, lọc, sắp xếp, chủ đề phổ biến, câu hỏi nổi bật. */
 @Injectable({ providedIn: 'root' })
 export class PublicQaRepository {
+  private readonly db = inject(MockDbService);
   readonly topics = TOPICS;
+
+  listings(): PublicQa[] {
+    return this.db
+      .dossiers()
+      .map(dossierToPublicQa)
+      .filter((row): row is PublicQa => row !== null);
+  }
 
   search(query: QaQuery, now = QA_FIXTURE_NOW): PublicQa[] {
     const q = (query.q ?? '').trim().toLocaleLowerCase('vi');
     const limit = PERIOD_DAYS[query.period ?? 'all'];
     const t0 = new Date(now).getTime();
-    const items = PUBLIC_QA.filter(
+    const items = this.listings().filter(
       (r) =>
         (!q || [r.code, r.title, r.answer ?? '', r.note ?? ''].join(' ').toLocaleLowerCase('vi').includes(q)) &&
         (!query.topic || r.topicId === query.topic) &&
@@ -45,17 +54,24 @@ export class PublicQaRepository {
 
   /** Số câu hỏi theo loại (toàn kho) — hiển thị cạnh checkbox. */
   typeCounts(): Record<QaType, number> {
-    return Object.fromEntries(QA_TYPES.map((t) => [t, PUBLIC_QA.filter((r) => r.type === t).length])) as Record<QaType, number>;
+    return Object.fromEntries(QA_TYPES.map((t) => [t, this.listings().filter((r) => r.type === t).length])) as Record<QaType, number>;
   }
 
-  /** Chủ đề phổ biến: xếp hạng theo số câu hỏi (fixture TOPICS). */
+  /** Chủ đề phổ biến: đếm hồ sơ đang niêm yết trên kho tra cứu. */
   popularTopics(limit = 5): { id: string; name: string; count: number }[] {
-    return [...TOPICS].sort((a, b) => b.count - a.count).slice(0, limit).map((t) => ({ id: t.id, name: t.name, count: t.count }));
+    const items = this.listings();
+    return TOPICS.map((t) => ({ id: t.id, name: t.name, count: items.filter((row) => row.topicId === t.id).length }))
+      .filter((t) => t.count > 0)
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'vi'))
+      .slice(0, limit);
   }
 
   /** Câu hỏi nổi bật: đã trả lời, nhiều lượt xem nhất. */
   featured(limit = 3): PublicQa[] {
-    return PUBLIC_QA.filter((r) => r.status === 'answered').sort((a, b) => b.views - a.views).slice(0, limit);
+    return this.listings()
+      .filter((r) => r.status === 'answered')
+      .sort((a, b) => b.views - a.views)
+      .slice(0, limit);
   }
 
   topicName(id: string): string {

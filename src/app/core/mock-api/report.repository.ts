@@ -4,6 +4,8 @@ import { MockDbService } from './mock-db.service';
 import { AiAdvisorService } from './ai-advisor.service';
 import { Dossier, ReportDefinition } from '../models/domain.models';
 import { TOPICS } from './demo-data';
+import { ROYALTY_RATE_VND } from './dossier-seed';
+import { WS_OPEN_STATUSES, WS_TABS } from './workspace-overview-fixtures';
 
 export interface ReportRow {
   labelKey: string;
@@ -27,7 +29,7 @@ export class ReportRepository {
     return {
       report: { ...report, lastGenerated: new Date().toISOString() },
       generatedAt: `${from} → ${to}`,
-      rows: this.rowsFor(report.code, this.db.dossiers()),
+      rows: this.rowsFor(report.code, this.inPeriod(this.db.dossiers(), from, to)),
     };
   }
 
@@ -39,23 +41,40 @@ export class ReportRepository {
     return this.generate(report, from, to);
   }
 
+  /** `dd/MM/yyyy`. Ngày không đọc được thì không lọc. */
+  private inPeriod(dossiers: Dossier[], from: string, to: string): Dossier[] {
+    const start = vnDay(from);
+    const end = vnDay(to);
+    if (!start || !end) return dossiers;
+    return dossiers.filter((item) => {
+      const day = item.receivedAt.slice(0, 10);
+      return day >= start && day <= end;
+    });
+  }
+
   private rowsFor(code: string, dossiers: Dossier[]): ReportRow[] {
     const now = Date.now();
-    const open = dossiers.filter((item) => item.status !== 'published' && item.status !== 'answered');
+    const inTab = (tab: string) => {
+      const statuses = WS_TABS.find((item) => item.id === tab)?.statuses ?? [];
+      return dossiers.filter((item) => statuses.includes(item.status));
+    };
+    const open = dossiers.filter((item) => WS_OPEN_STATUSES.includes(item.status));
     const overdue = open.filter((item) => new Date(item.dueAt).getTime() < now);
     const onTime = open.filter((item) => new Date(item.dueAt).getTime() >= now);
     const collabs = dossiers.reduce((sum, item) => sum + (item.collaborations?.length ?? 0), 0);
     const ratings = dossiers.reduce((sum, item) => sum + (item.ratings?.length ?? 0), 0);
+    const starHigh = dossiers.reduce(
+      (sum, item) => sum + (item.ratings?.filter((rating) => rating.stars >= 4).length ?? 0),
+      0,
+    );
     const clarifies = dossiers.reduce((sum, item) => sum + (item.clarifications?.length ?? 0), 0);
     const timelineEvents = dossiers.reduce((sum, item) => sum + item.timeline.length, 0);
-    const returned = dossiers.filter((item) =>
-      item.timeline.some((ev) => /trả|chỉnh sửa|return|revise/i.test(ev.title)),
-    ).length;
+    const returned = inTab('processing').filter((item) => item.status === 'returned').length;
     const suggestions = this.ai.suggestions();
-    const byOrg = new Map<string, number>();
+    const byUnit = new Map<string, number>();
     for (const item of dossiers) {
-      const key = item.organization || '—';
-      byOrg.set(key, (byOrg.get(key) ?? 0) + 1);
+      const key = item.handlingUnitId || 'admin.report.unassigned';
+      byUnit.set(key, (byUnit.get(key) ?? 0) + 1);
     }
     const byAssignee = new Map<string, number>();
     for (const item of dossiers) {
@@ -67,24 +86,24 @@ export class ReportRepository {
       byEmail.set(item.senderEmail, (byEmail.get(item.senderEmail) ?? 0) + 1);
     }
     const repeatSenders = [...byEmail.values()].filter((n) => n > 1).length;
-    const published = dossiers.filter((item) => item.isPublic || item.status === 'published');
-    const answered = dossiers.filter((item) => item.status === 'answered' || item.status === 'published');
+    const published = dossiers.filter((item) => item.status === 'published');
+    const answered = inTab('answered').length + published.length + dossiers.filter((item) => item.status === 'closed').length;
+    const views = dossiers.reduce((sum, item) => sum + (item.portalViews ?? 0), 0);
+    const channel = (id: Dossier['intakeChannel']) => dossiers.filter((item) => (item.intakeChannel ?? 'portal') === id).length;
 
     switch (code) {
       case 'RPT-01':
         return [
           { labelKey: 'admin.report.total', value: dossiers.length },
-          { labelKey: 'admin.report.processing', value: dossiers.filter((i) => i.status === 'processing').length },
-          { labelKey: 'admin.report.waiting', value: dossiers.filter((i) => i.status === 'waiting-approval').length },
-          { labelKey: 'admin.report.answered', value: answered.length },
+          { labelKey: 'admin.report.processing', value: inTab('processing').length },
+          { labelKey: 'admin.report.waiting', value: inTab('waiting-approval').length },
+          { labelKey: 'admin.report.answered', value: answered },
         ];
-      case 'RPT-02': {
-        const units = [...byOrg.values()];
-        return [1, 2, 3].map((n) => ({
-          labelKey: `admin.report.unit${n}`,
-          value: units[n - 1] ?? Math.max(dossiers.length - n, 0),
-        }));
-      }
+      case 'RPT-02':
+        return [...byUnit.entries()]
+          .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+          .slice(0, 3)
+          .map(([, value], index) => ({ labelKey: `admin.report.unit${index + 1}`, value }));
       case 'RPT-03':
         return [
           { labelKey: 'admin.report.onTime', value: onTime.length },
@@ -99,9 +118,9 @@ export class ReportRepository {
       case 'RPT-05':
         return [
           { labelKey: 'admin.report.unanswered', value: open.length },
-          { labelKey: 'admin.report.processing', value: dossiers.filter((i) => i.status === 'processing').length },
-          { labelKey: 'admin.report.waiting', value: dossiers.filter((i) => i.status === 'waiting-approval').length },
-          { labelKey: 'admin.report.new', value: dossiers.filter((i) => i.status === 'new' || i.status === 'received').length },
+          { labelKey: 'admin.report.processing', value: inTab('processing').length },
+          { labelKey: 'admin.report.waiting', value: inTab('waiting-approval').length },
+          { labelKey: 'admin.report.new', value: inTab('new').length },
         ];
       case 'RPT-06':
         return [
@@ -117,50 +136,50 @@ export class ReportRepository {
         ];
       case 'RPT-08':
         return [
-          { labelKey: 'admin.report.returned', value: Math.max(returned, clarifies) },
+          { labelKey: 'admin.report.returned', value: returned },
           { labelKey: 'admin.report.clarify', value: clarifies },
-          { labelKey: 'admin.report.waiting', value: dossiers.filter((i) => i.status === 'waiting-approval').length },
+          { labelKey: 'admin.report.waiting', value: inTab('waiting-approval').length },
         ];
       case 'RPT-09':
         return [
           { labelKey: 'admin.report.complex', value: dossiers.filter((i) => (i.collaborations?.length ?? 0) > 0 || i.priority === 'urgent').length },
           { labelKey: 'admin.report.collab', value: collabs },
-          { labelKey: 'admin.report.extensions', value: Math.max(overdue.length, 1) },
+          { labelKey: 'admin.report.extensions', value: overdue.length },
         ];
       case 'RPT-10':
         return [
-          { labelKey: 'admin.report.answered', value: answered.length },
+          { labelKey: 'admin.report.answered', value: answered },
           { labelKey: 'admin.report.published', value: published.length },
-          { labelKey: 'admin.report.processing', value: dossiers.filter((i) => i.status === 'processing').length },
+          { labelKey: 'admin.report.processing', value: inTab('processing').length },
         ];
       case 'RPT-11':
         return [
-          { labelKey: 'admin.report.ratings', value: ratings || published.length },
-          { labelKey: 'admin.report.starHigh', value: ratings || Math.max(published.length - 1, 1) },
+          { labelKey: 'admin.report.ratings', value: ratings },
+          { labelKey: 'admin.report.starHigh', value: starHigh },
           { labelKey: 'admin.report.clarify', value: clarifies },
         ];
       case 'RPT-12':
         return [
-          { labelKey: 'admin.report.keywordHits', value: dossiers.length * 3 + 12 },
+          { labelKey: 'admin.report.keywordHits', value: views },
           { labelKey: 'admin.report.published', value: published.length },
           { labelKey: 'admin.report.total', value: dossiers.length },
         ];
       case 'RPT-13':
         return [
-          { labelKey: 'admin.report.channelPortal', value: Math.max(dossiers.length - 1, 1) },
-          { labelKey: 'admin.report.channelEmail', value: 1 },
-          { labelKey: 'admin.report.channelPaper', value: 0 },
+          { labelKey: 'admin.report.channelPortal', value: channel('portal') },
+          { labelKey: 'admin.report.channelEmail', value: channel('email') },
+          { labelKey: 'admin.report.channelPaper', value: channel('paper') },
         ];
       case 'RPT-14':
         return [
-          { labelKey: 'admin.report.repeatSenders', value: Math.max(repeatSenders, 1) },
+          { labelKey: 'admin.report.repeatSenders', value: repeatSenders },
           { labelKey: 'admin.report.uniqueSenders', value: byEmail.size },
           { labelKey: 'admin.report.total', value: dossiers.length },
         ];
       case 'RPT-15': {
-        const assignees = [...byAssignee.entries()].slice(0, 3);
+        const assignees = [...byAssignee.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
         if (!assignees.length) {
-          return [{ labelKey: 'admin.report.unassigned', value: dossiers.length }];
+          return [{ labelKey: 'admin.report.unassigned', value: 0 }];
         }
         return assignees.map(([, value], index) => ({
           labelKey: `admin.report.specialist${index + 1}`,
@@ -170,8 +189,8 @@ export class ReportRepository {
       case 'RPT-16':
         return [
           { labelKey: 'admin.report.royaltyItems', value: published.length },
-          { labelKey: 'admin.report.royaltyAmount', value: published.length * 350 },
-          { labelKey: 'admin.report.answered', value: answered.length },
+          { labelKey: 'admin.report.royaltyAmount', value: published.length * ROYALTY_RATE_VND },
+          { labelKey: 'admin.report.answered', value: answered },
         ];
       default: {
         const accepted = suggestions.filter((item) => item.status === 'accepted').length;
@@ -184,4 +203,9 @@ export class ReportRepository {
       }
     }
   }
+}
+
+function vnDay(value: string): string | null {
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim());
+  return match ? `${match[3]}-${match[2]}-${match[1]}` : null;
 }

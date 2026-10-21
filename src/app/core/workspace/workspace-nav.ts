@@ -19,7 +19,7 @@ export interface WsNavItem {
   excludeQuery?: string[];
   /** Tiền tố đường dẫn khác cũng tính là mục này (vd. chi tiết hồ sơ). */
   activePrefixes?: string[];
-  /** Đếm từ MockDbService.activeQueue(status). */
+  /** Khóa đếm sidebar: nhóm tab Tổng quan (`tabCounts`), không phải một trạng thái đơn. */
   badge?: WsQueueBadge;
   /** Chưa có màn hình — route tới trang Sắp ra mắt, gắn tag 'Sắp có'. */
   soon?: boolean;

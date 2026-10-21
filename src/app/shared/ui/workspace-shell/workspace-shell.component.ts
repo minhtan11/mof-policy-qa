@@ -16,6 +16,7 @@ import { HeaderSearchComponent, SearchShortcut } from '../portal-header/header-s
 import { HeaderNotificationsComponent } from '../portal-header/header-notifications/header-notifications.component';
 import { HeaderPrefsComponent } from '../portal-header/header-prefs/header-prefs.component';
 import { WorkspaceSidebarComponent } from './workspace-sidebar/workspace-sidebar.component';
+import { MofTooltipDirective } from '../mof-tooltip/mof-tooltip.directive';
 
 /** Breakpoint drawer (khớp SCSS). */
 export const WS_DRAWER_QUERY = '(max-width: 1023.98px)';
@@ -28,7 +29,7 @@ export const WS_DRAWER_QUERY = '(max-width: 1023.98px)';
  */
 @Component({
   selector: 'app-workspace-shell',
-  imports: [
+  imports: [MofTooltipDirective, 
     RouterLink,
     TranslatePipe,
     LangSwitchComponent,
@@ -169,7 +170,7 @@ export class WorkspaceShellComponent {
     this.userOpen.set(false);
     this.auth.logout();
     this.toast.info('toast.loggedOut');
-    void this.router.navigateByUrl('/portal');
+    void this.router.navigateByUrl('/workspace/login');
   }
 
   private matchDrawer(): boolean {

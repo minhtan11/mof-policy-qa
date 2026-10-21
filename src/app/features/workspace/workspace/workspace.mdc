@@ -1,8 +1,8 @@
 # Màn W-01 — Tổng quan workspace / hàng đợi
 
-Changed on: 2026-10-20  
+Changed on: 2026-10-21  
 Changed by: Auto  
-Change reason: Hàng đợi dùng `app-mof-data-table` — tách bảng khỏi pagination  
+Change reason: Ẩn nút Tạo hồ sơ nội bộ vì đặc tả không có màn này  
 Affected UC: UC-142..UC-149, UC-188..UC-191  
 MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `07-bao-cao-dashboard.mdc`
 
@@ -18,25 +18,28 @@ MDC nhóm: `docs/nghiep-vu/02-can-bo/01-tiep-nhan-phan-cong.mdc`, `07-bao-cao-da
 ## Bố cục (R31)
 
 1. **Hero sáng**: h1, phụ đề, thẻ ngày (cột chữ trái); ảnh trụ sở Bộ (`/assets/hero/mof-hq.jpg`) mờ dần bên phải (token `--mof-ws-hero-*`, ẩn ảnh < 640px). Không breadcrumb trong hero (trang gốc workspace). Thẻ ngày dùng `Intl.DateTimeFormat` theo locale (vd. «Thứ Ba, 20/10/2026») kèm lời chúc. Shell không vẽ page-head (`title` rỗng), nên trang chỉ có 1 h1. Shared breadcrumb: `app-mof-breadcrumb` (xem `shared/ui/mof-breadcrumb/mof-breadcrumb.mdc`).
-2. **4 KPI** (`WS_KPIS`): Chờ tiếp nhận (new+received, xanh, folder), Đang xử lý (amber, clock; gợi ý = số sắp đến hạn 48h), Chờ phê duyệt (tím, user-check), Đúng hạn ước tính (xanh lá; đang mở & chưa quá hạn, kèm %). Mũi tên → `/workspace?filter=…`. Có count-up.
-3. **Hồ sơ cần chú ý**:
-   - ô tìm kiếm (không dấu, debounce 250ms); nút bộ lọc mở popover (core overlay, portal) lọc mức ưu tiên và lĩnh vực; nút + Tạo hồ sơ nội bộ chỉ cho vai trò trong `WS_CAN_CREATE` (hiện là toast «sắp ra mắt», như trước chưa có luồng).
-   - tab pill (`WS_TABS`): Tất cả đang mở / Mới / Đang xử lý / Chờ duyệt / Đã trả lời / Đã đóng, có số đếm; phím ←/→; cuộn ngang trên mobile.
+2. **Bộ lọc chung** (thanh trên KPI): thời gian (`receivedAt`, mặc định mọi thời gian), đơn vị xử lý, lĩnh vực. Cả KPI, tab, danh sách và donut dùng cùng lát cắt.
+3. **5 KPI OPS-01** (`WS_KPIS`): Tiếp nhận (mọi hồ sơ trong lát cắt), Chờ xử lý (đang mở), Đúng hạn / Sắp hạn (≤ 48 giờ) / Quá hạn. Ba lát hạn cộng lại bằng Chờ xử lý. Mũi tên đặt `?kpi=` và danh sách ra đúng số đó. Có count-up.
+4. **Hồ sơ cần chú ý**:
+   - ô tìm kiếm (không dấu, debounce 250ms); nút bộ lọc mở popover (core overlay, portal) lọc mức ưu tiên. Không có nút tạo hồ sơ nội bộ: đặc tả không mô tả màn này.
+   - tab pill (`WS_TABS`): Tất cả đang mở / Mới / Đang xử lý / Chờ duyệt / Đã trả lời / Đã đóng, có số đếm trên lát cắt; phím ←/→. Khi đang xem một KPI, bấm tab thì bỏ `?kpi=`.
    - `app-mof-data-table`: bảng `mof-tbl` (mã, nội dung, trạng thái, hạn; hàng quá hạn `is-late`) + `mof-pagination` chân `[mofTableFoot]`. Khi thẻ hẹp hơn 38rem (container query) bảng chuyển thành thẻ.
-4. **Cột phải** (≥1280; dưới 1280 xuống dưới thành 2 cột):
-   - «Tiến độ xử lý»: donut ApexCharts (`mof-chart`, màu từ `--mof-tone-*`, theo theme). Tâm hiển thị «Tổng số N hồ sơ»; legend Đúng hạn / Sắp quá hạn / Quá hạn / Đã hoàn thành. Chọn tháng lọc theo `receivedAt`, bỏ hồ sơ từ chối.
-   - «Lĩnh vực hồ sơ»: top 5, icon màu, thanh tiến độ, «%(n)», «Xem chi tiết» → `/workspace/tra-cuu`.
+5. **Cột phải** (≥1280; dưới 1280 xuống dưới thành 2 cột):
+   - «Tiến độ xử lý»: donut ApexCharts theo tháng đang lọc (bỏ hồ sơ từ chối). Tâm «Tổng số N hồ sơ»; legend Đúng hạn / Sắp quá hạn / Quá hạn / Đã hoàn thành.
+   - «Lĩnh vực hồ sơ» và «Theo đơn vị»: bấm một dòng để lọc cả màn; bấm lại để bỏ lọc.
 
 ## URL (replaceUrl, bỏ giá trị mặc định)
 
-`?filter=` (tab; khớp mục sidebar R29/R30) · `q` · `priority` · `topic` · `page` · `size` · `month` (yyyy-MM). Đổi tab/tìm/lọc thì về trang 1.
+`?filter=` (tab; khớp mục sidebar) · `kpi` (`intake|pending|on-time|near|overdue`) · `q` · `priority` · `topic` · `unit` · `page` · `size` · `month` (yyyy-MM). Đổi tab/tìm/lọc/KPI thì về trang 1. Không có `month` = mọi thời gian, để tab khớp badge sidebar.
 
 ## Phạm vi theo vai trò (`WS_ROLE_SCOPE`)
 
 | Vai trò | Hồ sơ thấy |
 |---|---|
-| Tiếp nhận, Lãnh đạo, Điều phối, Quản trị | Toàn bộ |
-| Chuyên viên | Chỉ hồ sơ `assignedTo` = mình |
+| Điều phối, Quản trị | Toàn bộ bảng hồ sơ |
+| Lãnh đạo | Hồ sơ có `handlingUnitId` đúng đơn vị mình |
+| Tiếp nhận | Hồ sơ `new` / `received` / `rejected` (mọi đơn vị) và hồ sơ thuộc đơn vị mình |
+| Chuyên viên | Chỉ hồ sơ được giao (`assignedTo` = mình) — EXP-01 |
 | Công dân / chưa đăng nhập | Không có |
 
 ## Chuyển động
@@ -59,3 +62,6 @@ KPI và thẻ có hiệu ứng rise; KPI đếm tăng dần (700ms); thanh lĩnh
 | 2026-10-20 | Codex | Metric + donut SLA theo dữ liệu mock live (G3) | 188–191 |
 | 2026-10-20 | Grok Bot | R31: redesign theo mockup (hero, KPI, hàng đợi có tab/tìm/lọc/phân trang đồng bộ URL, donut theo tháng, lĩnh vực, phạm vi vai trò) | 142–149, 188–191 |
 | 2026-10-20 | Auto | Gỡ crumb trong hero; thẻ ngày gắn cột chữ; breadcrumb core `mof-breadcrumb` | 142–149 |
+| 2026-10-21 | Auto | Phạm vi lãnh đạo chỉ đơn vị mình; hồ sơ chưa gán đơn vị không lộ sang lãnh đạo khác | 142–149 |
+| 2026-10-21 | Auto | Năm KPI OPS-01; lọc thời gian/đơn vị/lĩnh vực; bấm KPI ra đúng danh sách; sidebar đếm cùng phạm vi và nhóm tab | 142–149, 188–191 |
+| 2026-10-21 | Auto | Ẩn nút Tạo hồ sơ nội bộ; đặc tả không có màn tạo hồ sơ từ cổng cán bộ | — |

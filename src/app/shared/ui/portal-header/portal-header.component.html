@@ -94,7 +94,7 @@
             } @else {
               <span class="avatar" aria-hidden="true">{{ user.avatar }}</span>
             }
-            <span class="user-name" [attr.title]="user.name">{{ user.name }}</span>
+            <span class="user-name" [mofTooltip]="user.name" mofTooltipTruncated>{{ user.name }}</span>
             <app-mof-fi-icon class="chev" name="angle-small-down" />
           </button>
           <div class="user-dropdown" id="portal-user-menu" role="menu" [attr.inert]="userOpen() ? null : ''">
@@ -173,15 +173,15 @@
 
       <!-- Tiện ích: hàng chip gọn ngay dưới header drawer -->
       <div class="drawer-tools d-item" style="--i: 0" [attr.aria-label]="'portal.drawer.utilities' | t" role="group">
-        <a class="chip" routerLink="/portal" fragment="lien-he" [attr.title]="'portal.util.sitemap' | t" (click)="closeMenu()"><app-mof-fi-icon name="sitemap" /><span class="lbl">{{ 'portal.util.sitemap' | t }}</span></a>
-        <a class="chip" routerLink="/portal/tra-cuu" [attr.title]="'portal.util.help' | t" (click)="closeMenu()"><app-mof-fi-icon name="interrogation" /><span class="lbl">{{ 'portal.util.help' | t }}</span></a>
+        <a class="chip" routerLink="/portal" fragment="lien-he" [mofTooltip]="'portal.util.sitemap' | t" (click)="closeMenu()"><app-mof-fi-icon name="sitemap" /><span class="lbl">{{ 'portal.util.sitemap' | t }}</span></a>
+        <a class="chip" routerLink="/portal/tra-cuu" [mofTooltip]="'portal.util.help' | t" (click)="closeMenu()"><app-mof-fi-icon name="interrogation" /><span class="lbl">{{ 'portal.util.help' | t }}</span></a>
         <button
           type="button"
           class="chip icon"
           (click)="theme.toggle()"
           [attr.aria-pressed]="theme.theme() === 'dark'"
           [attr.aria-label]="(theme.theme() === 'light' ? 'action.themeDark' : 'action.themeLight') | t"
-          [attr.title]="(theme.theme() === 'light' ? 'action.themeDark' : 'action.themeLight') | t"
+          [mofTooltip]="(theme.theme() === 'light' ? 'action.themeDark' : 'action.themeLight') | t"
         >
           <app-mof-icon [name]="theme.theme() === 'light' ? 'moon' : 'sun'" [size]="16" />
         </button>
@@ -198,7 +198,7 @@
                 <span class="avatar" aria-hidden="true">{{ user.avatar }}</span>
               }
               <span class="du-text">
-                <strong [attr.title]="user.name">{{ user.name }}</strong>
+                <strong [mofTooltip]="user.name" mofTooltipTruncated>{{ user.name }}</strong>
                 <small>{{ user.email }}</small>
               </span>
             </div>

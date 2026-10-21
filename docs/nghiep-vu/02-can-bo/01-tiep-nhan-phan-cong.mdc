@@ -1,8 +1,8 @@
 # Cán bộ — Tiếp nhận, phân loại, phân công
 
-Changed on: 2026-10-20  
+Changed on: 2026-10-21  
 Changed by: Auto  
-Change reason: G5 P1 — từ chối tiếp nhận + data scope unit/assigned + handlingUnitId  
+Change reason: Badge sidebar đếm cùng phạm vi vai trò và cùng nhóm tab với Tổng quan  
 Affected UC: UC-142..UC-149; hỗ trợ AI UC-127..UC-130
 
 ## Ai / màn hình
@@ -35,7 +35,7 @@ Nhận–lọc, giao–trả–từ chối–gộp; SLA tiếp nhận/phân côn
 | `new` / `received` / `processing` | `rejected` | reception, coordinator |
 | `new` / `received` | `processing` | reception, coordinator (+ chọn assignee + `handlingUnitId`) |
 
-- Phạm vi dữ liệu: `WS_ROLE_SCOPE` — reception/leader = `unit`, specialist = `assigned`, coordinator/admin = `all`.  
+- Phạm vi dữ liệu: `WS_ROLE_SCOPE` — reception/leader = `unit`, specialist = `assigned` (hồ sơ được giao), coordinator/admin = `all`. Badge sidebar dùng `scopeFor` + `tabCounts` (cùng nhóm với tab Tổng quan).  
 - Phải đúng trạng thái hiện tại + quyền actor (`WorkflowRepository.canTransition`).  
 - AI không tự phê duyệt / không tự đổi trạng thái cuối.
 
@@ -66,3 +66,5 @@ Nhận–lọc, giao–trả–từ chối–gộp; SLA tiếp nhận/phân côn
 | 2026-10-20 | Grok Bot | R31 Tổng quan công việc: KPI theo phạm vi vai trò, donut tiến độ theo tháng, lĩnh vực, hàng đợi cần chú ý đồng bộ URL | 142–149 |
 | 2026-10-20 | Auto | G5: `/workspace/ho-so-noi-bo` danh sách hồ sơ nội bộ (scope + filter) thay Coming soon | 142–149 |
 | 2026-10-20 | Auto | G5 P1: từ chối tiếp nhận + data scope unit/assigned + handlingUnitId | 142–149 |
+| 2026-10-21 | Auto | Seed một bảng hồ sơ theo người/đơn vị; lãnh đạo không thấy hồ sơ chưa gán đơn vị | 142–149 |
+| 2026-10-21 | Auto | Sidebar hàng đợi đếm theo phạm vi người đăng nhập và nhóm tab (mới, đang xử lý, chờ duyệt, đang mở) | 142–149 |

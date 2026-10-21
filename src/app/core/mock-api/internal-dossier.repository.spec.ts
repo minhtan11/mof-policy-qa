@@ -14,11 +14,16 @@ describe('InternalDossierRepository (UC-142..)', () => {
     const repo = TestBed.inject(InternalDossierRepository);
 
     auth.loginAs('leader');
-    expect(repo.scoped().length).toBe(TestBed.inject(MockDbService).dossiers().length);
-    expect(repo.kpi().all).toBeGreaterThan(0);
+    const db = TestBed.inject(MockDbService);
+    expect(repo.scoped().length).toBeGreaterThan(0);
+    expect(repo.scoped().length).toBeLessThan(db.dossiers().length);
+    expect(repo.scoped().every((d) => d.handlingUnitId === 'org-tax')).toBe(true);
+    expect(repo.kpi().all).toBe(repo.scoped().length);
+    expect(repo.kpi().open).toBe(repo.counts().all);
+    expect(repo.kpi().processing).toBe(repo.counts().processing);
 
     auth.loginAs('specialist');
     expect(repo.scoped().every((d) => d.assignedTo === 'Lê Quốc Hưng')).toBe(true);
-    expect(repo.list('processing', '').every((d) => d.status === 'processing')).toBe(true);
+    expect(repo.list('processing', '').every((d) => ['processing', 'awaiting-clarification', 'awaiting-collaboration', 'returned'].includes(d.status))).toBe(true);
   });
 });

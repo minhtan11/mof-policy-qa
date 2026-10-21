@@ -5,6 +5,7 @@ import { DEMO_DEFAULT_PASSWORD } from './auth-credentials';
 import { TOPICS, USERS } from './demo-data';
 import {
   WorkspaceOverviewRepository,
+  applySlice,
   attentionList,
   computeKpis,
   monthsOf,
@@ -12,6 +13,7 @@ import {
   scopeFor,
   tabCounts,
   topicStats,
+  unitStats,
 } from './workspace-overview.repository';
 
 /** R31 — W-01 Tổng quan công việc: KPI, hàng đợi cần chú ý, tiến độ theo tháng, lĩnh vực, phạm vi vai trò. */
@@ -50,23 +52,34 @@ const LIST: Dossier[] = [
 describe('workspace overview repository', () => {
   const user = (username: string) => USERS.find((u) => u.username === username) as PortalUser;
 
-  it('computes the 4 KPIs (intake = new+received, near-due processing, approval, on-time % of open)', () => {
+  it('computes the 5 OPS-01 KPIs (intake, pending, and the SLA split that sums to pending)', () => {
     const k = computeKpis(LIST, NOW);
     expect(k.map((x) => [x.id, x.value])).toEqual([
-      ['intake', 2],
-      ['processing', 2],
-      ['approval', 1],
-      ['on-time', 4],
+      ['intake', 8],
+      ['pending', 5],
+      ['on-time', 3],
+      ['near', 1],
+      ['overdue', 1],
     ]);
-    expect(k[0].params).toEqual({ n: 1 });
-    expect(k[1].params).toEqual({ n: 1 });
-    expect(k[3].params).toEqual({ pct: 80 });
-    expect(k.map((x) => x.tab)).toEqual(['new', 'processing', 'waiting-approval', 'all']);
+    expect(k[0].params).toEqual({ n: 5 });
+    expect(k[1].params).toEqual({ on: 3, near: 1, late: 1 });
+    expect(k[2].value + k[3].value + k[4].value).toBe(k[1].value);
+  });
+
+  it('filters the shared slice by month, unit and topic, and a KPI drill matches the card', () => {
+    const slice = { month: '2026-10', unit: '', topic: 'tax' };
+    const sliced = applySlice(LIST, slice);
+    expect(sliced).toHaveLength(3);
+    expect(computeKpis(sliced, NOW).map((x) => x.value)).toEqual([3, 3, 2, 1, 0]);
+    expect(unitStats(LIST, []).map((u) => [u.id, u.count])).toEqual([['', 8]]);
+    const base = { q: '', priority: '' as const, topic: 'tax', month: '2026-10', unit: '', kpi: 'near' as const, tab: 'all' as const };
+    expect(attentionList(LIST, base, NOW)).toHaveLength(1);
+    expect(applySlice(LIST, { month: '', unit: '__none__', topic: '' }).every((d) => !d.handlingUnitId)).toBe(true);
   });
 
   it('filters the attention list by tab, accent-insensitive search, priority and topic; sorts by due date', () => {
-    const base = { q: '', priority: '' as const, topic: '' };
-    expect(attentionList(LIST, { ...base, tab: 'all' }).length).toBe(5);
+    const base = { q: '', priority: '' as const, topic: '', month: '', unit: '', kpi: '' as const };
+    expect(attentionList(LIST, { ...base, tab: 'all' }, NOW).length).toBe(5);
     expect(attentionList(LIST, { ...base, tab: 'all' })[0].status).toBe('new');
     expect(attentionList(LIST, { ...base, tab: 'new' }).length).toBe(2);
     expect(attentionList(LIST, { ...base, tab: 'answered' }).length).toBe(1);
@@ -96,9 +109,8 @@ describe('workspace overview repository', () => {
 
   it('scopes dossiers by role: specialist assigned; reception/leader unit (+ intake); public none', () => {
     expect(scopeFor(LIST, user('hung.lq')).length).toBe(2);
-    // LIST không gắn handlingUnitId → unit scope vẫn thấy (hồ sơ chưa gán đơn vị).
-    expect(scopeFor(LIST, user('ha.tt')).length).toBe(LIST.length);
-    expect(scopeFor(LIST, user('long.pd')).length).toBe(LIST.length);
+    expect(scopeFor(LIST, user('ha.tt')).map((x) => x.status).sort()).toEqual(['new', 'received', 'rejected']);
+    expect(scopeFor(LIST, user('long.pd'))).toEqual([]);
     expect(scopeFor(LIST, user('minhanh'))).toEqual([]);
     expect(scopeFor(LIST, null)).toEqual([]);
     const unitScoped = [
@@ -106,10 +118,7 @@ describe('workspace overview repository', () => {
       d({ status: 'processing', handlingUnitId: 'org-budget', assignedTo: 'Y' }),
       d({ status: 'new' }),
     ];
-    expect(scopeFor(unitScoped, user('long.pd')).map((x) => x.handlingUnitId ?? x.status)).toEqual([
-      'org-tax',
-      'new',
-    ]);
+    expect(scopeFor(unitScoped, user('long.pd')).map((x) => x.handlingUnitId)).toEqual(['org-tax']);
     expect(scopeFor(unitScoped, user('ha.tt')).map((x) => x.status)).toEqual(['new']);
   });
 
@@ -124,6 +133,10 @@ describe('workspace overview repository', () => {
     const mine = repo.scoped();
     expect(mine.length).toBeLessThanOrEqual(all);
     expect(mine.every((x) => x.assignedTo === 'Lê Quốc Hưng')).toBe(true);
+    const mineKpis = repo.kpis(NOW);
+    expect(mineKpis[2].value + mineKpis[3].value + mineKpis[4].value).toBe(mineKpis[1].value);
+    auth.loginWithCredentials('long.pd', DEMO_DEFAULT_PASSWORD, false);
+    expect(repo.scoped().every((x) => x.handlingUnitId === 'org-tax')).toBe(true);
     auth.loginWithCredentials('ha.tt', DEMO_DEFAULT_PASSWORD, false);
     const unit = repo.scoped();
     expect(unit.length).toBeLessThanOrEqual(all);

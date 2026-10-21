@@ -50,21 +50,34 @@ export const WS_DONE_STATUSES: DossierStatus[] = ['answered', 'published', 'clos
 /** Ngưỡng “sắp quá hạn” (giờ). */
 export const WS_NEAR_DUE_HOURS = 48;
 
+/** Năm chỉ số OPS-01. Bấm thẻ lọc danh sách bằng `?kpi=`, không đi qua tab trạng thái. */
+export type WsKpiId = 'intake' | 'pending' | 'on-time' | 'near' | 'overdue';
+export const WS_KPI_IDS: WsKpiId[] = ['intake', 'pending', 'on-time', 'near', 'overdue'];
+
+/** Bộ lọc chung của Tổng quan: thời gian (yyyy-MM hoặc rỗng), đơn vị, lĩnh vực. */
+export interface WsSlice {
+  month: string;
+  unit: string;
+  topic: string;
+}
+
+/** Giá trị `?unit=` cho hồ sơ chưa gán đơn vị xử lý. */
+export const WS_UNASSIGNED_UNIT = '__none__';
+
 export interface WsKpiDef {
-  id: 'intake' | 'processing' | 'approval' | 'on-time';
+  id: WsKpiId;
   labelKey: string;
   hintKey: string;
   icon: string;
   tone: WsTone;
-  /** Tab đích khi bấm mũi tên. */
-  tab: WsTab;
 }
 
 export const WS_KPIS: WsKpiDef[] = [
-  { id: 'intake', labelKey: 'workspace.metricNew', hintKey: 'workspace.kpiHintIntake', icon: 'folder', tone: 'blue', tab: 'new' },
-  { id: 'processing', labelKey: 'workspace.metricProcessing', hintKey: 'workspace.kpiHintProcessing', icon: 'clock', tone: 'amber', tab: 'processing' },
-  { id: 'approval', labelKey: 'workspace.metricApproval', hintKey: 'workspace.kpiHintApproval', icon: 'user-check', tone: 'violet', tab: 'waiting-approval' },
-  { id: 'on-time', labelKey: 'workspace.metricOnTime', hintKey: 'workspace.kpiHintOnTime', icon: 'check-circle', tone: 'green', tab: 'all' },
+  { id: 'intake', labelKey: 'workspace.metricIntake', hintKey: 'workspace.kpiHintIntake', icon: 'folder', tone: 'blue' },
+  { id: 'pending', labelKey: 'workspace.metricPending', hintKey: 'workspace.kpiHintPending', icon: 'clock', tone: 'amber' },
+  { id: 'on-time', labelKey: 'workspace.metricOnTime', hintKey: 'workspace.kpiHintOnTime', icon: 'check-circle', tone: 'green' },
+  { id: 'near', labelKey: 'workspace.metricNear', hintKey: 'workspace.kpiHintNear', icon: 'hourglass-end', tone: 'violet' },
+  { id: 'overdue', labelKey: 'workspace.metricOverdue', hintKey: 'workspace.kpiHintOverdue', icon: 'exclamation', tone: 'red' },
 ];
 
 /** Màu + icon (Flaticon rr) theo lĩnh vực. */
@@ -79,8 +92,9 @@ export const WS_TOPIC_VISUALS: Record<string, { icon: string; tone: WsTone }> = 
 
 /**
  * Phạm vi hồ sơ khớp ROLE_PERMISSIONS.scope:
- * `all` | `unit` (handlingUnitId) | `assigned` (assignedTo) | `none`.
- * Tiếp nhận: thấy hồ sơ mới/đã nhận (tiếp nhận toàn cục) + hồ sơ thuộc đơn vị mình.
+ * `all` | `unit` (đúng `handlingUnitId`) | `assigned` (assignedTo) | `none`.
+ * Tiếp nhận: thêm hồ sơ `new` / `received` / `rejected` (hàng chờ và quyết định tiếp nhận), kể cả chưa gán đơn vị.
+ * Hồ sơ chưa gán đơn vị không hiện với lãnh đạo đơn vị khác.
  */
 export type WsDataScope = 'all' | 'unit' | 'assigned' | 'none';
 
@@ -93,5 +107,3 @@ export const WS_ROLE_SCOPE: Record<UserRole, WsDataScope> = {
   'system-admin': 'all',
 };
 
-/** Vai trò được tạo hồ sơ nội bộ (nút ở đầu thẻ hàng đợi). */
-export const WS_CAN_CREATE: UserRole[] = ['reception', 'coordinator', 'system-admin'];

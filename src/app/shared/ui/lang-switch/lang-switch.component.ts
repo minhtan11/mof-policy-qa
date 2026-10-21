@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { AppLocale } from '../../../core/i18n/translations';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { MofTooltipDirective } from '../mof-tooltip/mof-tooltip.directive';
 
 type ViewTransitionDoc = Document & { startViewTransition?: (cb: () => void) => unknown };
 
@@ -12,7 +13,7 @@ type ViewTransitionDoc = Document & { startViewTransition?: (cb: () => void) => 
  */
 @Component({
   selector: 'app-lang-switch',
-  imports: [TranslatePipe],
+  imports: [MofTooltipDirective, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './lang-switch.component.html',
   styleUrl: './lang-switch.component.scss',

@@ -1,8 +1,8 @@
 # Cán bộ — Báo cáo và dashboard
 
-Changed on: 2026-10-20  
+Changed on: 2026-10-21  
 Changed by: Auto  
-Change reason: G5 P3 — 16 báo cáo khớp đúng tên dac-ta §XVII (RPT-01..16)  
+Change reason: Tổng quan đủ năm KPI OPS-01 và lọc thời gian, đơn vị, lĩnh vực theo phạm vi vai trò  
 Affected UC: UC-188..UC-203
 
 ## Ai / màn hình
@@ -17,7 +17,7 @@ Affected UC: UC-188..UC-203
 
 ## Cán bộ làm gì
 
-1. Xem metric + donut SLA trên `/workspace` (tính từ mock DB).  
+1. Xem năm KPI OPS-01 trên `/workspace` (tiếp nhận, chờ xử lý, đúng hạn, sắp hạn, quá hạn), lọc thời gian / đơn vị / lĩnh vực. Lãnh đạo thấy hồ sơ đơn vị mình; điều phối và quản trị thấy toàn bộ; chuyên viên chỉ hồ sơ được giao. Bấm một KPI thì danh sách đúng số đó.  
 2. Lãnh đạo/điều phối mở `/workspace/bao-cao-thong-ke`: 16 định nghĩa, chọn kỳ, sinh tóm tắt + biểu đồ.  
 3. Admin vẫn sinh báo cáo trên tab Báo cáo `/admin?tab=reports`.
 
@@ -25,7 +25,7 @@ Affected UC: UC-188..UC-203
 
 1. Tổng hợp tình hình tiếp nhận và xử lý · 2. Tiến độ theo đơn vị · 3. Tỷ lệ đúng hạn/quá hạn · 4. Phân loại theo lĩnh vực chính sách · 5. Danh sách chưa trả lời · 6. Câu hỏi quá hạn · 7. Lịch sử luân chuyển · 8. Câu hỏi bị trả lại/yêu cầu chỉnh sửa · 9. Câu hỏi phức tạp và gia hạn · 10. Câu hỏi đã trả lời và xuất bản · 11. Chất lượng câu trả lời · 12. Tra cứu hỏi–đáp theo từ khóa · 13. Nguồn/kênh tiếp nhận · 14. Người dùng gửi câu hỏi nhiều lần · 15. Thống kê chuyên viên trả lời · 16. Thanh toán nhuận bút.
 
-Mã `RPT-01`..`RPT-16` trong `REPORTS` (`domain-fixtures.ts`); `ReportRepository.generate` sinh rows mock theo từng mã.
+Mã `RPT-01`..`RPT-16` trong `REPORTS` (`domain-fixtures.ts`). `ReportRepository.generate` đếm trên hồ sơ có `receivedAt` trong kỳ, cùng nhóm trạng thái với tab workspace.
 
 ## Acceptance
 
@@ -48,3 +48,5 @@ Mã `RPT-01`..`RPT-16` trong `REPORTS` (`domain-fixtures.ts`); `ReportRepository
 | 2026-10-20 | Grok Bot | R31 Tổng quan công việc: KPI theo phạm vi vai trò, donut tiến độ theo tháng, lĩnh vực, hàng đợi cần chú ý đồng bộ URL | 188–203 |
 | 2026-10-20 | Auto | G5: `/workspace/bao-cao-thong-ke` thay Coming soon (ReportRepository + chart) | 188–203 |
 | 2026-10-20 | Auto | G5 P3: align tên RPT-01..16 với §XVII + rows theo mã | 188–203 |
+| 2026-10-21 | Auto | Số báo cáo lấy từ bảng hồ sơ trong kỳ; cùng cách gom trạng thái với hàng đợi | 188–203 |
+| 2026-10-21 | Auto | DASH-01/OPS-01: năm KPI và lọc thời gian, đơn vị, lĩnh vực trên cùng phạm vi vai trò | 188–203 |

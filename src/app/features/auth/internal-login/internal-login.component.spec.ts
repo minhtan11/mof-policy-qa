@@ -37,7 +37,10 @@ describe('InternalLoginComponent', () => {
     const { cmp } = setup();
     expect(cmp.demoAccount).toBe('u-reception');
     expect(cmp.form.getRawValue()).toEqual({ identifier: 'ha.tt', password: DEMO_DEFAULT_PASSWORD, remember: true });
-    expect(cmp.accounts.map((u) => u.username)).toEqual(['ha.tt', 'hung.lq', 'long.pd', 'ngoc.db', 'admin']);
+    expect(cmp.accounts.map((u) => u.username)).toEqual([
+      'ha.tt', 'hung.lq', 'long.pd', 'ngoc.db', 'admin',
+      'khoa.tm', 'mai.nt', 'nam.hv', 'trang.pt', 'anh.vd', 'hong.lt',
+    ]);
   });
 
   it('choosing a demo role fills username + default password', () => {

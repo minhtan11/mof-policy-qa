@@ -12,6 +12,12 @@ export const DEMO_CREDENTIALS: Record<string, string> = {
   'u-leader': DEMO_DEFAULT_PASSWORD,
   'u-coordinator': DEMO_DEFAULT_PASSWORD,
   'u-admin': DEMO_DEFAULT_PASSWORD,
+  'u-spec-khoa': DEMO_DEFAULT_PASSWORD,
+  'u-spec-mai': DEMO_DEFAULT_PASSWORD,
+  'u-leader-budget': DEMO_DEFAULT_PASSWORD,
+  'u-spec-trang': DEMO_DEFAULT_PASSWORD,
+  'u-spec-anh': DEMO_DEFAULT_PASSWORD,
+  'u-spec-hong': DEMO_DEFAULT_PASSWORD,
 };
 
 /** Tài khoản điền sẵn trên form đăng nhập cổng. */

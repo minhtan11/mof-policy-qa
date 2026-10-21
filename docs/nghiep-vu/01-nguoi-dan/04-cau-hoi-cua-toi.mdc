@@ -1,8 +1,8 @@
 # Người dân — Câu hỏi của tôi / theo dõi hồ sơ
 
-Changed on: 2026-10-20  
-Changed by: Codex  
-Change reason: Tái cấu trúc MDC theo folder actor + tiếng Việt  
+Changed on: 2026-10-21  
+Changed by: Auto  
+Change reason: Câu hỏi của tôi là các dòng trong bảng hồ sơ chung, lọc theo email  
 Affected UC: UC-110, UC-122, UC-165
 
 ## Ai / màn hình
@@ -55,3 +55,4 @@ Affected UC: UC-110, UC-122, UC-165
 | 2026-10-20 | Codex | Thêm màn câu hỏi của tôi (G1) | 110, 122 |
 | 2026-10-20 | Codex | Chuyển folder người dân, tiếng Việt | 110, 122, 165 |
 | 2026-10-20 | Grok Bot | Round 28: redesign “Câu hỏi của tôi” — lọc trạng thái/lĩnh vực, sắp xếp, phân trang theo URL; trạng thái Từ chối; hạn quá/sắp đến hạn; xem `my-questions.mdc` | 110, 122, 165 |
+| 2026-10-21 | Auto | Bỏ fixture riêng; câu hỏi của người dân là dòng trong `SEED_DOSSIERS` | 110, 122 |

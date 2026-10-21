@@ -10,29 +10,8 @@
     <button type="button" class="head-btn close" data-drawer-close [attr.aria-label]="'wsNav.closeMenu' | t" (click)="closeDrawer.emit()">
       <app-mof-fi-icon name="cross-small" />
     </button>
-  } @else if (!rail()) {
-    <button type="button" class="head-btn" aria-controls="ws-menu" aria-expanded="true" [attr.aria-label]="'wsNav.collapse' | t" [attr.title]="'wsNav.collapse' | t" (click)="state.setCollapsed(true)">
-      <app-mof-fi-icon name="angle-double-small-left" />
-    </button>
   }
 </div>
-
-@if (rail()) {
-  <button
-    type="button"
-    class="edge-toggle"
-    aria-controls="ws-menu"
-    aria-expanded="false"
-    [attr.aria-label]="'wsNav.expand' | t"
-    (click)="state.setCollapsed(false)"
-    (mouseenter)="showTip($event, 'wsNav.expand')"
-    (mouseleave)="hideTip()"
-    (focus)="showTip($event, 'wsNav.expand')"
-    (blur)="hideTip()"
-  >
-    <app-mof-fi-icon name="angle-double-small-right" />
-  </button>
-}
 
 <nav #menu class="menu" id="ws-menu" [attr.aria-label]="'wsNav.aria' | t" (scroll)="onMenuScroll($event)">
   <a
@@ -108,7 +87,7 @@
                   (click)="navigated()"
                 >
                   <app-mof-fi-icon class="ico" [name]="it.icon" />
-                  <span class="label">{{ it.labelKey | t }}</span>
+                  <span class="label" [mofTooltip]="it.labelKey | t" mofTooltipTruncated>{{ it.labelKey | t }}</span>
                   @if (badge(it) !== null) {
                     <span class="badge" [attr.aria-label]="'wsNav.count' | t: { n: badge(it)! }">{{ badge(it) }}</span>
                   }

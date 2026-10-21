@@ -1,9 +1,9 @@
 # AU-02 — Đăng nhập cán bộ (/workspace/login)
 
-Changed on: 2026-10-20  
-Changed by: Grok Bot  
-Change reason: Thiết kế lại theo mockup, dùng chung khung với đăng nhập cổng; bỏ lối đăng nhập chỉ chọn vai trò  
-Affected UC: UC-01..UC-08, UC-16, UC-31..UC-40
+Changed on: 2026-10-21  
+Changed by: Auto  
+Change reason: Đăng xuất cán bộ từ workspace/admin quay về `/workspace/login`  
+Affected UC: UC-01..UC-08
 
 ## Giao diện
 
@@ -17,6 +17,7 @@ Affected UC: UC-01..UC-08, UC-16, UC-31..UC-40
 - Tài khoản công dân (đúng mật khẩu) → "Tài khoản này không có quyền truy cập hệ thống nội bộ" (inline + toast lỗi), không lưu phiên.
 - Sai tên/mật khẩu → "Tên đăng nhập hoặc mật khẩu không đúng" (inline + toast). Form lỗi → toast cảnh báo.
 - Thành công → toast "Chào mừng, {name}"; `system-admin` → `/admin`, còn lại → `/workspace`.
+- Đăng xuất từ khung workspace hoặc admin quay lại `/workspace/login`.
 - Ghi nhớ: bật = localStorage, tắt = sessionStorage (như cổng).
 - Vai trò mô phỏng chỉ điền sẵn username + mật khẩu mặc định; mặc định chọn và điền tài khoản nội bộ đầu tiên (`DEMO_INTERNAL_PREFILL_USER_ID`). Người dùng sửa thì giá trị gõ vào được dùng.
 
@@ -41,3 +42,4 @@ Affected UC: UC-01..UC-08, UC-16, UC-31..UC-40
 |---|---|---|---|
 | 2026-10-20 | Grok Bot | Thiết kế lại theo mockup, auth-shell dùng chung, chỉ tài khoản nội bộ, bỏ đăng nhập chỉ chọn vai trò | UC-01..UC-08, UC-16, UC-31..UC-40 |
 | 2026-10-20 | Grok Bot | Panel trái: lớp phủ chéo (đậm sau chữ, trong dần ở góc dưới-phải), ảnh trụ sở ở nửa dưới như portal, text-shadow nhẹ; biến thể tối | UC-01..UC-08 |
+| 2026-10-21 | Auto | Đăng xuất cán bộ (workspace/admin) quay về trang này | UC-01..UC-08 |

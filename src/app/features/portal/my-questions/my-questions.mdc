@@ -1,8 +1,8 @@
 # Màn PUB-03 — Câu hỏi của tôi
 
-Changed on: 2026-10-20  
+Changed on: 2026-10-21  
 Changed by: Auto  
-Change reason: Breadcrumb dùng `app-mof-breadcrumb` đặt ngoài hero  
+Change reason: Câu hỏi của tôi đọc cùng bảng hồ sơ `SEED_DOSSIERS`  
 Affected UC: UC-110, UC-122, UC-165  
 MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/04-cau-hoi-cua-toi.mdc`
 
@@ -13,7 +13,7 @@ MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/04-cau-hoi-cua-toi.mdc`
 | Route | `/portal/cau-hoi-cua-toi` |
 | Actor | Người dân / doanh nghiệp (đăng nhập hoặc khách) |
 | Phạm vi dữ liệu | Khớp `senderEmail` (không phân biệt hoa thường) |
-| Dữ liệu | `MyQuestionRepository` → `MockDbService` (fixture `my-questions-fixtures.ts`) |
+| Dữ liệu | `MyQuestionRepository` → `MockDbService` (cùng bảng `SEED_DOSSIERS`, lọc `senderEmail`) |
 | Trạng thái | `mocked` |
 
 ## Bố cục
@@ -48,7 +48,7 @@ MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/04-cau-hoi-cua-toi.mdc`
 
 ## Dữ liệu
 
-- `MY_QUESTIONS_FIXTURES` (23 hồ sơ) + `d-001` = 24 hồ sơ cho `minhanh@example.vn`, đủ 4 nhóm trạng thái, hạn quá/sắp/còn.
+- Hồ sơ của `minhanh@example.vn` nằm trong `SEED_DOSSIERS`, đủ 4 nhóm trạng thái người dân thấy và có hạn quá hạn / sắp đến hạn.
 - `MockDbService` seed = `SEED_DOSSIERS`; storage `dossiers.v2` (di trú từ v1: giữ hồ sơ tự gửi).
 
 ## Acceptance
@@ -65,3 +65,4 @@ MDC nhóm: `docs/nghiep-vu/01-nguoi-dan/04-cau-hoi-cua-toi.mdc`
 | 2026-10-20 | Codex | Viết lại tiếng Việt; path MDC nhóm mới | 110, 122, 165 |
 | 2026-10-20 | Grok Bot | Round 28: redesign theo mockup — hero sáng, thẻ email (validate giữ chỗ, toast), bảng sticky + thẻ mobile, lọc/sắp xếp/phân trang URL (mof-pagination per-page), trạng thái `rejected`, fixture 24 hồ sơ, chống nháy | 110, 122, 165 |
 | 2026-10-20 | Auto | Đổi sang `app-mof-breadcrumb` đặt ngoài hero | 110, 122, 165 |
+| 2026-10-21 | Auto | Hồ sơ người dân là các dòng của bảng seed chung, lọc theo email | 110, 122 |

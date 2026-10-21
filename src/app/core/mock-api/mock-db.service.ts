@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { DOSSIERS, TOPICS } from './demo-data';
-import { MY_QUESTIONS_FIXTURES } from './my-questions-fixtures';
+import { TOPICS, USERS } from './demo-data';
+import { SEED_DOSSIERS } from './dossier-seed';
 import {
   Dossier,
   DossierAuditNote,
@@ -10,11 +10,11 @@ import {
   DossierStatus,
 } from '../models/domain.models';
 
-const STORAGE_KEY = 'mof-policy-qa.dossiers.v2';
-/** v1 = trước round 28 (chưa có lịch sử minhanh). Khi nâng cấp: giữ hồ sơ người dùng tự gửi. */
-const LEGACY_STORAGE_KEY = 'mof-policy-qa.dossiers.v1';
-/** Seed = hồ sơ nghiệp vụ + lịch sử “Câu hỏi của tôi” của tài khoản demo. */
-export const SEED_DOSSIERS: Dossier[] = [...DOSSIERS, ...MY_QUESTIONS_FIXTURES];
+export { SEED_DOSSIERS };
+
+const STORAGE_KEY = 'mof-policy-qa.dossiers.v3';
+/** Bản seed cũ. Khi nâng cấp chỉ giữ hồ sơ người dùng tự gửi (id không thuộc seed mới). */
+const LEGACY_STORAGE_KEYS = ['mof-policy-qa.dossiers.v2', 'mof-policy-qa.dossiers.v1'];
 const LAST_EMAIL_KEY = 'mof-policy-qa.last-sender-email.v1';
 
 export interface InternalSearchFilter {
@@ -48,6 +48,8 @@ export class MockDbService {
       dueAt: new Date(now.getTime() + 7 * 86_400_000).toISOString(),
       status: 'new',
       priority: input.priority ?? 'normal',
+      intakeChannel: 'portal',
+      listedOnPortal: false,
       legalBasis: [],
       isPublic: false,
       answer: '',
@@ -301,6 +303,7 @@ export class MockDbService {
   /** Reset seed demo — xóa persistence hồ sơ về dữ liệu gốc. */
   resetSeed(): void {
     localStorage.removeItem(STORAGE_KEY);
+    for (const key of LEGACY_STORAGE_KEYS) localStorage.removeItem(key);
     localStorage.removeItem(LAST_EMAIL_KEY);
     this.dossiers.set(structuredClone(SEED_DOSSIERS));
   }
@@ -311,14 +314,17 @@ export class MockDbService {
     if (!target || !['new', 'received'].includes(target.status) || !assigneeName.trim()) {
       return false;
     }
+    const name = assigneeName.trim();
+    const officer = USERS.find((user) => user.name === name);
     this.commit(
       this.dossiers().map((item) =>
         item.id === id
           ? {
               ...item,
               status: 'processing' as const,
-              assignedTo: assigneeName.trim(),
-              handlingUnitId: handlingUnitId ?? item.handlingUnitId,
+              assignedTo: name,
+              assigneeId: officer?.id ?? item.assigneeId,
+              handlingUnitId: handlingUnitId ?? officer?.organizationId ?? item.handlingUnitId,
               timeline: [
                 ...item.timeline.map((event) => ({
                   ...event,
@@ -327,7 +333,7 @@ export class MockDbService {
                 {
                   at: new Date().toLocaleString('vi-VN'),
                   title: 'Phân công xử lý',
-                  description: `Đã giao hồ sơ cho ${assigneeName.trim()}.`,
+                  description: `Đã giao hồ sơ cho ${name}.`,
                   actor,
                   state: 'current' as const,
                 },
@@ -415,15 +421,14 @@ export class MockDbService {
       return JSON.parse(saved) as Dossier[];
     }
     const seed = structuredClone(SEED_DOSSIERS);
-    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
-    if (!legacy) {
-      return seed;
-    }
-    // Di trú v1 → v2: giữ hồ sơ tự gửi (id không thuộc seed) + bản cập nhật của hồ sơ seed cũ.
-    const old = JSON.parse(legacy) as Dossier[];
-    const byId = new Map(old.map((d) => [d.id, d]));
     const seedIds = new Set(seed.map((d) => d.id));
-    return [...old.filter((d) => !seedIds.has(d.id)), ...seed.map((d) => byId.get(d.id) ?? d)];
+    for (const key of LEGACY_STORAGE_KEYS) {
+      const legacy = localStorage.getItem(key);
+      if (!legacy) continue;
+      const old = JSON.parse(legacy) as Dossier[];
+      return [...old.filter((d) => !seedIds.has(d.id)), ...seed];
+    }
+    return seed;
   }
 
   private commit(value: Dossier[]): void {

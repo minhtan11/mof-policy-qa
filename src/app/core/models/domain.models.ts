@@ -6,6 +6,12 @@ export type UserRole =
   | 'coordinator'
   | 'system-admin';
 
+/** Kênh tiếp nhận hồ sơ — khớp danh mục `intake-method`. */
+export type IntakeChannel = 'portal' | 'email' | 'paper';
+
+/** Loại câu hỏi trên kho tra cứu công khai. */
+export type PortalQaType = 'policy' | 'procedure' | 'guidance' | 'feedback';
+
 /**
  * Trạng thái hồ sơ — G5 bám dac-ta §4.3 (rút gọn mã kỹ thuật, đủ nhánh thao tác được).
  * Nháp/đã gửi công khai map `new`; chờ ĐV gộp vào `received`+handlingUnitId.
@@ -100,8 +106,19 @@ export interface Dossier {
   status: DossierStatus;
   priority: 'normal' | 'high' | 'urgent';
   assignedTo?: string;
-  /** Đơn vị đang giữ hồ sơ — lọc data scope `unit`. */
+  /** Khóa cán bộ xử lý (`USERS.id`). Cùng người với `assignedTo`. */
+  assigneeId?: string;
+  /** Khóa người gửi (`SEED_PARTIES.id`). */
+  senderId?: string;
+  /** Đơn vị đang giữ hồ sơ — lọc data scope `unit`. Trùng đơn vị của `assigneeId` khi đã giao. */
   handlingUnitId?: string;
+  /** Kênh tiếp nhận. */
+  intakeChannel?: IntakeChannel;
+  /** Niêm yết trên kho tra cứu. Hồ sơ `published` luôn được niêm yết. */
+  listedOnPortal?: boolean;
+  portalType?: PortalQaType;
+  portalViews?: number;
+  portalReplies?: number;
   answer?: string;
   legalBasis: string[];
   attachments: string[];

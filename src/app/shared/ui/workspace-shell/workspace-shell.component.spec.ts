@@ -28,7 +28,13 @@ describe('WorkspaceShellComponent', () => {
     })) as unknown as typeof window.matchMedia;
     vi.useFakeTimers();
     localStorage.clear();
-    TestBed.configureTestingModule({ imports: [Host], providers: [provideRouter([{ path: 'workspace', component: Host }])] });
+    TestBed.configureTestingModule({
+      imports: [Host],
+      providers: [provideRouter([
+        { path: 'workspace', component: Host },
+        { path: 'workspace/login', component: Host },
+      ])],
+    });
     TestBed.inject(AuthService).loginWithCredentials('ha.tt', DEMO_DEFAULT_PASSWORD, false);
     await TestBed.inject(Router).navigateByUrl('/workspace');
     const f = TestBed.createComponent(Host);
@@ -84,5 +90,18 @@ describe('WorkspaceShellComponent', () => {
     expect(state.drawerOpen()).toBe(false);
     expect(document.documentElement.classList.contains('mof-scroll-lock')).toBe(false);
     expect(document.activeElement).toBe(btn);
+  });
+
+  it('logout clears the session and returns to the internal login', async () => {
+    const { el, f } = await setup(false);
+    const auth = TestBed.inject(AuthService);
+    const router = TestBed.inject(Router);
+    (el.querySelector('.user-btn') as HTMLButtonElement).click();
+    f.detectChanges();
+    (el.querySelector('button.logout') as HTMLButtonElement).click();
+    await vi.runAllTimersAsync();
+    f.detectChanges();
+    expect(auth.user()).toBeNull();
+    expect(router.url).toBe('/workspace/login');
   });
 });

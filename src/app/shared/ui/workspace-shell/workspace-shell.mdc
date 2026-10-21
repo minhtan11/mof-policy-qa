@@ -7,7 +7,7 @@ globs: src/app/shared/ui/workspace-shell/**,src/app/core/workspace/**
 - Dùng ở: `workspace`, `internal-search`, `dossier-detail`, `admin` (mỗi trang tự bọc `<app-workspace-shell title eyebrow>`).
 - **Sidebar, một component với hai chế độ** (không phải hai sidebar):
   - Rail `--mof-ws-rail-w` (4.5rem): emblem, icon có tooltip (một tooltip fixed dùng chung), mục active là ô brand đặc, nút tròn » «Mở rộng menu», icon hỗ trợ ở đáy. Bấm icon nhóm thì mở flyout qua `anchorFloating` (`strategy:'portal'`, `placement:'inline-end'`). Flyout hỗ trợ Esc, mũi tên, Tab và click ngoài để đóng.
-  - Mở rộng `--mof-ws-side-w` (15.75rem): header thương hiệu + «, 'Tổng quan' là pill rộng hết cỡ, nhóm có tiêu đề in hoa và chevron, badge đếm lấy từ `MockDbService.activeQueue`, thẻ hỗ trợ `WS_SUPPORT_PHONE`. Menu cuộn riêng, vị trí cuộn được giữ trong state và mục active được cuộn vào tầm nhìn.
+  - Mở rộng `--mof-ws-side-w` (15.75rem): header thương hiệu + «, 'Tổng quan' là pill rộng hết cỡ, nhóm có tiêu đề in hoa và chevron, badge đếm bằng `scopeFor` + `tabCounts` (cùng phạm vi vai trò và nhóm trạng thái với tab Tổng quan), thẻ hỗ trợ `WS_SUPPORT_PHONE`. Menu cuộn riêng, vị trí cuộn được giữ trong state và mục active được cuộn vào tầm nhìn.
 - **State** `WorkspaceShellState` lưu:
   - `mof.ws.sidebar.collapsed` ('1'/'0')
   - `mof.ws.sidebar.groups` (JSON)
@@ -45,6 +45,7 @@ R = tiếp nhận, S = chuyên viên, L = lãnh đạo, C = điều phối, A = 
 | Kho dữ liệu | | | ✓ | ✓ | ✓ |
 | Hệ thống (Quản trị, Người dùng, Phân quyền, Danh mục, Cấu hình, AI, Vận hành) | | | | | ✓ |
 - **Header 1 hàng (sticky)**: hamburger, header-search dạng pill (Ctrl K, shortcuts lấy từ nav), theme toggle, chuông (`WorkspaceNotificationRepository`), VI/EN, user pill (avatar + tên + đơn vị · vai trò). Dropdown gồm Tuỳ chọn (theme, ngôn ngữ) và Đăng xuất; không có mục Hồ sơ vì chưa có route.
+- **Đăng xuất** (workspace và admin, cùng shell): xóa phiên, toast, chuyển về `/workspace/login` — không về cổng người dân.
 - Token: `--mof-ws-*` trong `styles-tokens.css` (light/dark). i18n: `wsNav.*`, `ws.*`, `wsNotif.*`.
 - Spec: `workspace-sidebar.component.spec.ts`, `workspace-shell.component.spec.ts`, `workspace-nav.spec.ts`, `workspace-notification.repository.spec.ts`, `coming-soon.component.spec.ts`.
 
@@ -55,3 +56,5 @@ R = tiếp nhận, S = chuyên viên, L = lãnh đạo, C = điều phối, A = 
 | 2026-10-20 | Auto | Nhãn theme trong Tuỳ chọn (header-prefs) và nút theme header đổi sáng ↔ tối theo trạng thái | UC-142..UC-149 |
 | 2026-10-20 | Grok Bot | R30: các mục mockup chưa có màn được hiển thị với tag «Sắp có» và route Sắp ra mắt riêng; ma trận vai trò `WS_ROLE_MATRIX`; Hồ sơ cá nhân trong menu tài khoản; nhóm đổi tên thành Hồ sơ – Công việc / Tra cứu – Tiện ích | UC-142..UC-149, UC-18..UC-30 |
 | 2026-10-20 | Grok Bot | R31: `title` thành tuỳ chọn; rỗng thì không vẽ page-head (trang Tổng quan tự dựng hero + h1). Các trang khác không đổi | UC-142..UC-149 |
+| 2026-10-21 | Auto | Badge hàng đợi theo phạm vi người đăng nhập và nhóm tab Tổng quan | UC-142..UC-149 |
+| 2026-10-21 | Auto | Đăng xuất từ khung workspace/admin về `/workspace/login` thay vì `/portal` | UC-001..UC-008 |

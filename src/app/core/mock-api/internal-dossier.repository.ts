@@ -21,12 +21,12 @@ export class InternalDossierRepository {
   readonly kpi = computed(() => {
     const list = this.scoped();
     const now = Date.now();
-    const open = list.filter((d) => ['new', 'received', 'processing', 'waiting-approval'].includes(d.status));
+    const counts = tabCounts(list);
     return {
       all: list.length,
-      open: open.length,
-      overdue: open.filter((d) => isOverdue(d, now)).length,
-      processing: list.filter((d) => d.status === 'processing').length,
+      open: counts.all,
+      overdue: list.filter((d) => isOverdue(d, now)).length,
+      processing: counts.processing,
     };
   });
 

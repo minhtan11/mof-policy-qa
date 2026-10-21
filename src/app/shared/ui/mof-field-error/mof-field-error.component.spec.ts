@@ -21,7 +21,8 @@ describe('MofFieldErrorComponent', () => {
     fixture.detectChanges();
     expect(p.classList.contains('visible')).toBe(true);
     expect(p.textContent?.trim()).toBe('Vui lòng nhập mật khẩu.');
-    expect(p.getAttribute('title')).toBe('Vui lòng nhập mật khẩu.');
+    // Tooltip dùng chung (mofTooltip, chỉ khi bị cắt) thay title native.
+    expect(p.hasAttribute('title')).toBe(false);
 
     fixture.componentInstance.msg.set(null);
     fixture.detectChanges();

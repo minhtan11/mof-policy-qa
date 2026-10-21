@@ -39,17 +39,22 @@ describe('WorkspaceComponent (Tổng quan công việc)', () => {
     return { h, el, cmp, router, flush, repo: TestBed.inject(WorkspaceOverviewRepository) };
   }
 
-  it('renders hero (h1, localized date), 4 KPI cards from the repository and KPI links to filtered queues', async () => {
-    const { el, repo } = await setup();
+  it('renders hero (h1, localized date), 5 KPI cards from the repository and a KPI drill-down of the same length', async () => {
+    const { el, repo, cmp, router, flush } = await setup();
     expect(el.querySelector('.crumbs')).toBeNull();
     expect(el.querySelectorAll('h1').length).toBe(1);
     expect(el.querySelector('h1')?.textContent).toContain('Tổng quan công việc');
     expect(el.querySelector('.date-card strong')?.textContent).toBe('Thứ Ba, 20/10/2026');
     const kpis = [...el.querySelectorAll('.kpi')];
-    expect(kpis.length).toBe(4);
+    expect(kpis.length).toBe(5);
     const values = repo.kpis(Date.now()).map((k) => String(k.value));
     expect(kpis.map((k) => k.querySelector('.k-num')?.textContent?.trim())).toEqual(values);
-    expect(kpis[1].querySelector('a.k-go')?.getAttribute('href')).toBe('/workspace?filter=processing');
+    expect(el.querySelector('[aria-label="Tạo hồ sơ nội bộ"]')).toBeNull();
+    const overdue = repo.kpis(Date.now()).find((k) => k.id === 'overdue')!;
+    (kpis[4].querySelector('a.k-go') as HTMLAnchorElement).click();
+    await flush();
+    expect(router.url).toContain('kpi=overdue');
+    expect(cmp.rows().length).toBe(overdue.value);
   });
 
   it('syncs tabs with ?filter= and search with ?q= (debounced, replaceUrl)', async () => {
@@ -92,9 +97,9 @@ describe('WorkspaceComponent (Tổng quan công việc)', () => {
 
   it('filters the progress donut by month (?month=) with centre total and legend', async () => {
     const { el, router, flush, cmp, repo } = await setup();
-    expect(cmp.selectedMonth()).toBe('2026-10');
-    const oct = repo.progress('2026-10', Date.now());
-    expect(el.querySelector('.center strong')?.textContent).toBe(String(oct.total));
+    expect(cmp.month()).toBe('');
+    const all = repo.progress('', Date.now());
+    expect(el.querySelector('.center strong')?.textContent).toBe(String(all.total));
     cmp.setMonth('2026-09');
     await flush();
     expect(router.url).toBe('/workspace?month=2026-09');
@@ -102,6 +107,7 @@ describe('WorkspaceComponent (Tổng quan công việc)', () => {
     expect(el.querySelector('.center strong')?.textContent).toBe(String(sep.total));
     const legend = [...el.querySelectorAll('.legend b')].map((b) => +b.textContent!);
     expect(legend).toEqual([sep.onTime, sep.nearDue, sep.overdue, sep.done]);
+    expect(cmp.kpis()[0].value).toBe(repo.kpisFor({ month: '2026-09', unit: '', topic: '' }, Date.now())[0].value);
   });
 
   it('lists topics with percentage + count', async () => {
@@ -111,9 +117,24 @@ describe('WorkspaceComponent (Tổng quan công việc)', () => {
     expect(el.querySelector('.t-list li .t-val')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(`${first.pct}% (${first.count})`);
   });
 
-  it('role scoping: specialist only sees assigned dossiers and has no create action', async () => {
-    const { cmp } = await setup('/workspace', 'hung.lq');
+  it('role scoping: specialist only sees assigned dossiers', async () => {
+    const { el, cmp } = await setup('/workspace', 'hung.lq');
     expect(cmp.rows().every((d) => d.assignedTo === 'Lê Quốc Hưng')).toBe(true);
-    expect(cmp.canCreate()).toBe(false);
+    expect(el.querySelector('[aria-label="Tạo hồ sơ nội bộ"]')).toBeNull();
+    expect(cmp.kpis()[0].value).toBe(cmp.repo.scoped().length);
+  });
+
+  it('leader overview stays inside the unit and a unit filter narrows the intake KPI', async () => {
+    const leader = await setup('/workspace', 'long.pd');
+    expect(leader.cmp.rows().every((d) => d.handlingUnitId === 'org-tax')).toBe(true);
+    expect(leader.cmp.kpis()[0].value).toBe(leader.repo.scoped().length);
+    TestBed.resetTestingModule();
+    vi.useRealTimers();
+    const coord = await setup('/workspace', 'ngoc.db');
+    coord.cmp.setUnit('org-tax');
+    await coord.flush();
+    expect(coord.router.url).toContain('unit=org-tax');
+    expect(coord.cmp.rows().every((d) => d.handlingUnitId === 'org-tax')).toBe(true);
+    expect(coord.cmp.kpis()[0].value).toBe(coord.repo.scoped().filter((d) => d.handlingUnitId === 'org-tax').length);
   });
 });

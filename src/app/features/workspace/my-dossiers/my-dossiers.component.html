@@ -113,7 +113,7 @@
                     </span>
                     <a [routerLink]="['/workspace/ho-so', d.id]">{{ d.code }}</a>
                   </td>
-                  <td class="content"><span [attr.title]="d.question">{{ d.question }}</span></td>
+                  <td class="content"><span [mofTooltip]="d.question" mofTooltipTruncated>{{ d.question }}</span></td>
                   <td><app-status-badge [status]="d.status" /></td>
                   <td [class.late-txt]="overdue(d)">{{ d.dueAt | date: 'dd/MM/yyyy HH:mm' }}</td>
                   <td class="act">

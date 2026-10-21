@@ -4,6 +4,8 @@ import { Router, provideRouter } from '@angular/router';
 import { WorkspaceSidebarComponent } from './workspace-sidebar.component';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { DEMO_DEFAULT_PASSWORD } from '../../../../core/mock-api/auth-credentials';
+import { MockDbService } from '../../../../core/mock-api/mock-db.service';
+import { scopeFor, tabCounts } from '../../../../core/mock-api/workspace-overview.repository';
 import { WorkspaceShellState } from '../../../../core/workspace/workspace-shell.state';
 
 @Component({ template: '' })
@@ -71,6 +73,25 @@ describe('WorkspaceSidebarComponent', () => {
     expect(el.querySelector('a.item[href="/workspace/tra-cuu"] .soon-tag')).toBeNull();
   });
 
+  it('counts queue badges with the signed-in role scope and the overview tab groups', async () => {
+    const specialist = await setup('hung.lq');
+    const db = TestBed.inject(MockDbService);
+    const auth = TestBed.inject(AuthService);
+    const tabs = tabCounts(scopeFor(db.dossiers(), auth.user()));
+    expect(specialist.cmp.counts()).toEqual({
+      all: tabs.all,
+      new: tabs.new,
+      processing: tabs.processing,
+      'waiting-approval': tabs['waiting-approval'],
+    });
+    expect(tabs.all).toBe(tabs.new + tabs.processing + tabs['waiting-approval']);
+    TestBed.resetTestingModule();
+    const coord = await setup('ngoc.db');
+    const wide = tabCounts(scopeFor(TestBed.inject(MockDbService).dossiers(), TestBed.inject(AuthService).user()));
+    expect(wide.all).toBeGreaterThan(tabs.all);
+    expect(coord.cmp.counts().all).toBe(wide.all);
+  });
+
   it('marks the active item from path + query and shows repository badge counts', async () => {
     const { el, router, flush } = await setup('ha.tt', '/workspace?filter=new');
     expect(el.querySelector('.item.active')?.textContent).toContain('Mới tiếp nhận');
@@ -83,12 +104,12 @@ describe('WorkspaceSidebarComponent', () => {
 
   it('persists the collapsed (rail) mode', async () => {
     const { el, f, state } = await setup();
-    (el.querySelector('.head-btn') as HTMLButtonElement).click();
+    // Nút đóng/mở nằm ở header shell (☰), sidebar chỉ phản ánh state.
+    state.toggleCollapsed();
     f.detectChanges();
     expect(state.collapsed()).toBe(true);
     expect(localStorage.getItem('mof.ws.sidebar.collapsed')).toBe('1');
     expect(el.classList.contains('rail') || f.debugElement.nativeElement.classList.contains('rail')).toBe(true);
-    expect(el.querySelector('.edge-toggle')).not.toBeNull();
     expect(el.querySelector('.g-title')).toBeNull();
     const saved = localStorage.getItem('mof.ws.sidebar.collapsed')!;
     TestBed.resetTestingModule();
@@ -145,9 +166,9 @@ describe('WorkspaceSidebarComponent', () => {
 
   it('rail: tooltips carry each icon label', async () => {
     const { el, f } = await setup('ha.tt', '/workspace', { 'mof.ws.sidebar.collapsed': '1' });
-    el.querySelector('.edge-toggle')!.dispatchEvent(new MouseEvent('mouseenter'));
+    el.querySelector('.rail-btn')!.dispatchEvent(new MouseEvent('mouseenter'));
     f.detectChanges();
-    expect(el.querySelector('.tip')?.textContent).toBe('Mở rộng menu');
+    expect(el.querySelector('.tip')?.textContent).toBe('Hồ sơ – Công việc');
     expect(el.querySelector('.rail-btn')?.getAttribute('aria-label')).toBe('Hồ sơ – Công việc');
   });
 });

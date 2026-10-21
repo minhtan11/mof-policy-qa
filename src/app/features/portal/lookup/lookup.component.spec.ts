@@ -3,13 +3,14 @@ import { Router, convertToParamMap, provideRouter } from '@angular/router';
 import { LOOKUP_PAGE_SIZE, LookupComponent, parseLookup, toParams } from './lookup.component';
 import { MofPaginationComponent } from '../../../shared/ui/mof-pagination/mof-pagination.component';
 import { By } from '@angular/platform-browser';
-import { PUBLIC_QA } from '../../../core/mock-api/public-qa-fixtures';
+import { PublicQaRepository } from '../../../core/mock-api/public-qa.repository';
 
 /** UC-162..UC-165 — tra cứu: tìm kiếm, lọc, sắp xếp, kiểu hiển thị, đồng bộ query params, trạng thái rỗng. */
 describe('LookupComponent', () => {
   afterEach(() => vi.useRealTimers());
 
   async function setup(url = '/portal/tra-cuu') {
+    localStorage.clear();
     vi.useFakeTimers();
     TestBed.configureTestingModule({
       imports: [LookupComponent],
@@ -42,8 +43,9 @@ describe('LookupComponent', () => {
     const { f, cmp } = await setup();
     expect(f.nativeElement.querySelector('.skeleton')).toBeNull();
     expect(f.nativeElement.querySelectorAll('article.qa').length).toBe(LOOKUP_PAGE_SIZE);
-    expect(cmp.pages()).toBe(Math.ceil(PUBLIC_QA.length / LOOKUP_PAGE_SIZE));
-    expect(f.nativeElement.querySelector('app-mof-pagination .range')?.textContent?.replace(/\s+/g, ' ')).toContain(`1–${LOOKUP_PAGE_SIZE} / ${PUBLIC_QA.length}`);
+    const total = TestBed.inject(PublicQaRepository).search({}).length;
+    expect(cmp.pages()).toBe(Math.ceil(total / LOOKUP_PAGE_SIZE));
+    expect(f.nativeElement.querySelector('app-mof-pagination .range')?.textContent?.replace(/\s+/g, ' ')).toContain(`1–${LOOKUP_PAGE_SIZE} / ${total}`);
   });
 
   it('pages via ?page= and page size via ?size= (reset to page 1)', async () => {
@@ -51,7 +53,8 @@ describe('LookupComponent', () => {
     f.debugElement.query(By.directive(MofPaginationComponent)).componentInstance.pageChange.emit(3);
     await flush();
     expect(router.url).toContain('page=3');
-    expect(cmp.visible()[0].id).toBe(`qa-${2 * LOOKUP_PAGE_SIZE + 1}`);
+    const ordered = TestBed.inject(PublicQaRepository).search({});
+    expect(cmp.visible()[0].id).toBe(ordered[2 * LOOKUP_PAGE_SIZE].id);
     cmp.setSize(12);
     await flush();
     expect(router.url).toContain('size=12');
@@ -70,7 +73,7 @@ describe('LookupComponent', () => {
     cmp.search();
     await flush();
     expect(router.url).toContain('q=CSTC-2026-000140');
-    expect(cmp.results().map((r) => r.id)).toEqual(['qa-1']);
+    expect(cmp.results().map((r) => r.code)).toEqual(['CSTC-2026-000140']);
   });
 
   it('applies filters only on "Áp dụng bộ lọc" and resets them', async () => {
@@ -101,7 +104,8 @@ describe('LookupComponent', () => {
     await flush();
     expect(router.url).toContain('sort=views');
     expect(router.url).not.toContain('page=');
-    expect(cmp.results()[0].views).toBe(Math.max(...PUBLIC_QA.map((r) => r.views)));
+    const maxViews = Math.max(...TestBed.inject(PublicQaRepository).search({}).map((r) => r.views));
+    expect(cmp.results()[0].views).toBe(maxViews);
     const before = Array.from(f.nativeElement.querySelectorAll('article.qa')) as Element[];
     const list = f.nativeElement.querySelector('.list');
     cmp.setView('grid');

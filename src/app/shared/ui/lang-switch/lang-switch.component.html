@@ -11,7 +11,8 @@
         class="lang-opt"
         [class.active]="i18n.locale() === loc"
         [attr.aria-pressed]="i18n.locale() === loc"
-        [attr.title]="(loc === 'vi' ? 'action.langVi' : 'action.langEn') | t"
+        [attr.aria-label]="(loc === 'vi' ? 'action.langVi' : 'action.langEn') | t"
+        [mofTooltip]="(loc === 'vi' ? 'action.langVi' : 'action.langEn') | t"
         [attr.lang]="loc"
         (click)="set(loc)"
       >

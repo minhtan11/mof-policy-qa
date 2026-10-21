@@ -56,9 +56,9 @@ describe('MyQuestionsComponent', () => {
   it('signed in: prefills the account email and auto-loads the first page', async () => {
     const { cmp, rows, f } = await setup();
     expect(cmp.emailCtrl.value).toBe(MY_QUESTIONS_DEMO_EMAIL);
-    expect(cmp.results().length).toBe(24);
+    expect(cmp.results().length).toBeGreaterThan(MINE_PAGE_SIZE);
     expect(rows().length).toBe(MINE_PAGE_SIZE);
-    expect(f.nativeElement.querySelector('.total strong').textContent.trim()).toBe('24');
+    expect(f.nativeElement.querySelector('.total strong').textContent.trim()).toBe(String(cmp.results().length));
   });
 
   it('validates the email in a reserved error slot (no layout shift)', async () => {
@@ -105,7 +105,7 @@ describe('MyQuestionsComponent', () => {
     expect(cmp.results().every((r) => r.topicId === 'other' && r.status === 'rejected')).toBe(true);
     cmp.clearFilters();
     await flush();
-    expect(cmp.results().length).toBe(24);
+    expect(cmp.results().length).toBeGreaterThan(MINE_PAGE_SIZE);
   });
 
   it('sorts via ?sort= (oldest first) and resets the page', async () => {
@@ -122,16 +122,18 @@ describe('MyQuestionsComponent', () => {
     const { f, cmp, router, flush, rows } = await setup();
     const instance = cmp;
     const firstIds = cmp.visible().map((r) => r.id);
-    f.debugElement.query(By.directive(MofPaginationComponent)).componentInstance.pageChange.emit(3);
+    const total = cmp.results().length;
+    const last = Math.ceil(total / MINE_PAGE_SIZE);
+    f.debugElement.query(By.directive(MofPaginationComponent)).componentInstance.pageChange.emit(last);
     await flush();
-    expect(router.url).toContain('page=3');
-    expect(rows().length).toBe(4);
+    expect(router.url).toContain(`page=${last}`);
+    expect(rows().length).toBe(total - MINE_PAGE_SIZE * (last - 1));
     expect(cmp.visible().some((r) => firstIds.includes(r.id))).toBe(false);
     cmp.setSize(20);
     await flush();
     expect(router.url).toContain('size=20');
     expect(router.url).not.toContain('page=');
-    expect(rows().length).toBe(20);
+    expect(rows().length).toBe(Math.min(20, total));
     expect(f.componentInstance).toBe(instance);
     expect(f.nativeElement.querySelector('app-mof-pagination .per-page')).not.toBeNull();
   });

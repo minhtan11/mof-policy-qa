@@ -25,7 +25,7 @@
           aria-controls="ws-sidebar"
           [attr.aria-expanded]="mobile() ? state.drawerOpen() : !state.collapsed()"
           [attr.aria-label]="(mobile() ? 'wsNav.openMenu' : state.collapsed() ? 'wsNav.expand' : 'wsNav.collapse') | t"
-          [attr.title]="(mobile() ? 'wsNav.openMenu' : state.collapsed() ? 'wsNav.expand' : 'wsNav.collapse') | t"
+          [mofTooltip]="(mobile() ? 'wsNav.openMenu' : state.collapsed() ? 'wsNav.expand' : 'wsNav.collapse') | t"
           (click)="toggleSidebar()"
         >
           <app-mof-fi-icon name="menu-burger" />
@@ -58,7 +58,7 @@
               >
                 <span class="avatar" aria-hidden="true">{{ user.avatar }}</span>
                 <span class="who">
-                  <b [attr.title]="user.name">{{ user.name }}</b>
+                  <b [mofTooltip]="user.name" mofTooltipTruncated>{{ user.name }}</b>
                   <small>{{ user.organization }} · {{ roleKey() | t }}</small>
                 </span>
                 <app-mof-fi-icon class="chev" name="angle-small-down" />
