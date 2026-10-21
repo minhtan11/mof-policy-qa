@@ -15,27 +15,21 @@
   </section>
 
   <div class="slice-bar" role="group" [attr.aria-label]="'workspace.sliceAria' | t">
-    <app-mof-select
-      size="sm"
-      icon="calendar"
+    <app-mof-select icon="calendar"
       [label]="'workspace.monthAria' | t"
       [options]="monthOptions()"
       [ngModel]="month()"
       (ngModelChange)="setMonth($event)"
       [ariaLabel]="'workspace.monthAria' | t"
     />
-    <app-mof-select
-      size="sm"
-      icon="building"
+    <app-mof-select icon="building"
       [label]="'workspace.unitLabel' | t"
       [options]="unitOptions()"
       [ngModel]="unit()"
       (ngModelChange)="setUnit($event)"
       [ariaLabel]="'workspace.unitLabel' | t"
     />
-    <app-mof-select
-      size="sm"
-      icon="apps"
+    <app-mof-select icon="apps"
       [label]="'workspace.topicLabel' | t"
       [options]="topicOptions()"
       [ngModel]="topic()"
@@ -68,130 +62,179 @@
     }
   </ul>
 
-  <div class="ov-grid">
-    <section class="card attention" aria-labelledby="att-title">
+  <div class="ov-cards">
+    <section class="card progress" aria-labelledby="pg-title">
       <header class="c-head">
-        <div>
-          <h2 id="att-title">{{ 'workspace.queueTitle' | t }}</h2>
-          <p>{{ 'workspace.queueHint' | t }}</p>
-        </div>
-        <div class="tools">
-          <label class="search">
-            <app-mof-fi-icon name="search" aria-hidden="true" />
-            <span class="sr-only">{{ 'workspace.searchLabel' | t }}</span>
-            <input
-              type="search"
-              [placeholder]="'workspace.searchPlaceholder' | t"
-              [value]="qInput()"
-              (input)="onSearch($any($event.target).value)"
-              (keydown.enter)="applySearch()"
-              (keydown.escape)="clearSearch()"
-            />
-          </label>
-          <span #filterBtn class="filter-btn" [class.on]="activeFilters() > 0">
-            <button
-              type="button"
-              aria-haspopup="dialog"
-              aria-controls="ov-filters"
-              [attr.aria-expanded]="filterOpen()"
-              [attr.aria-label]="'workspace.filters' | t"
-              [mofTooltip]="'workspace.filters' | t"
-              (click)="toggleFilters()"
-            >
-              <app-mof-fi-icon name="filter" />
-            </button>
-            @if (activeFilters()) {
-              <span class="f-count" aria-hidden="true">{{ activeFilters() }}</span>
-            }
-          </span>
-        </div>
+        <h2 id="pg-title">{{ 'workspace.progress' | t }}</h2>
       </header>
+      <div class="prog-body">
+      <div class="donut">
+        <app-mof-chart [options]="chartOptions()" />
+        <div class="center" aria-hidden="true">
+          <small>{{ 'workspace.totalLabel' | t }}</small>
+          <strong>{{ progress().total }}</strong>
+          <small>{{ 'workspace.dossierUnit' | t }}</small>
+        </div>
+      </div>
+      <p class="sr-only" aria-live="polite">{{ 'workspace.progressSr' | t: { total: progress().total, on: progress().onTime, near: progress().nearDue, late: progress().overdue, done: progress().done } }}</p>
+      <ul class="legend" role="list">
+        @for (l of legend(); track l.key) {
+          <li [attr.data-tone]="l.tone"><i aria-hidden="true"></i><span>{{ l.key | t }}</span><b>{{ l.n }}</b></li>
+        }
+      </ul>
+      </div>
+    </section>
 
-      @if (kpi()) {
-        <p class="kpi-lens" role="status">
-          <span>{{ kpiLens() }}</span>
-          <button type="button" class="link" (click)="setTab('all')">{{ 'workspace.clearKpi' | t }}</button>
-        </p>
-      }
+    <section class="card topics" aria-labelledby="tp-title">
+      <header class="c-head">
+        <h2 id="tp-title">{{ 'workspace.topicsTitle' | t }}</h2>
+        <a class="more" routerLink="/workspace/tra-cuu">{{ 'workspace.viewDetail' | t }} <app-mof-fi-icon name="arrow-small-right" aria-hidden="true" /></a>
+      </header>
+      <ul class="t-list" role="list">
+        @for (t of topicStats().slice(0, 5); track t.id) {
+          <li [attr.data-tone]="t.tone">
+            <button type="button" class="t-hit" [class.on]="topic() === t.id" [attr.aria-pressed]="topic() === t.id" (click)="setTopic(topic() === t.id ? '' : t.id)">
+              <span class="t-ico" aria-hidden="true"><app-mof-fi-icon [name]="t.icon" /></span>
+              <span class="t-main">
+                <span class="t-row">
+                  <span class="t-name">{{ t.name }}</span>
+                  <span class="t-val">{{ t.pct }}% <small>({{ t.count }})</small></span>
+                </span>
+                <span class="bar" aria-hidden="true"><i [style.width.%]="t.pct"></i></span>
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
 
-      <div class="tabs" role="tablist" [attr.aria-label]="'workspace.tabsAria' | t">
-        @for (t of tabs; track t.id; let i = $index) {
+    <section class="card topics" aria-labelledby="unit-title">
+      <header class="c-head">
+        <h2 id="unit-title">{{ 'workspace.unitsTitle' | t }}</h2>
+      </header>
+      <ul class="t-list" role="list">
+        @for (u of unitStats().slice(0, 5); track u.id) {
+          <li data-tone="blue">
+            <button type="button" class="t-hit" [class.on]="unit() === unitValue(u.id)" [attr.aria-pressed]="unit() === unitValue(u.id)" (click)="setUnit(unit() === unitValue(u.id) ? '' : unitValue(u.id))">
+              <span class="t-ico" aria-hidden="true"><app-mof-fi-icon name="building" /></span>
+              <span class="t-main">
+                <span class="t-row">
+                  <span class="t-name">{{ unitLabel(u.id, u.name) }}</span>
+                  <span class="t-val">{{ u.pct }}% <small>({{ u.count }})</small></span>
+                </span>
+                <span class="bar" aria-hidden="true"><i [style.width.%]="u.pct"></i></span>
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <section class="card attention" aria-labelledby="att-title">
+    <header class="c-head">
+      <div>
+        <h2 id="att-title">{{ 'workspace.queueTitle' | t }}</h2>
+        <p>{{ 'workspace.queueHint' | t }}</p>
+      </div>
+      <div class="tools">
+        <label class="search">
+          <app-mof-fi-icon name="search" aria-hidden="true" />
+          <span class="sr-only">{{ 'workspace.searchLabel' | t }}</span>
+          <input
+            type="search"
+            [placeholder]="'workspace.searchPlaceholder' | t"
+            [value]="qInput()"
+            (input)="onSearch($any($event.target).value)"
+            (keydown.enter)="applySearch()"
+            (keydown.escape)="clearSearch()"
+          />
+        </label>
+        <span #filterBtn class="filter-btn" [class.on]="activeFilters() > 0">
           <button
             type="button"
-            role="tab"
-            class="tab"
-            [attr.data-tab]="t.id"
-            [class.on]="!kpi() && tab() === t.id"
-            [attr.aria-selected]="!kpi() && tab() === t.id"
-            [attr.tabindex]="(!kpi() && tab() === t.id) || (kpi() && i === 0) ? 0 : -1"
-            aria-controls="att-panel"
-            (click)="setTab(t.id)"
-            (keydown)="onTabKey($event, i)"
+            aria-haspopup="dialog"
+            aria-controls="ov-filters"
+            [attr.aria-expanded]="filterOpen()"
+            [attr.aria-label]="'workspace.filters' | t"
+            [mofTooltip]="'workspace.filters' | t"
+            (click)="toggleFilters()"
           >
-            {{ t.labelKey | t }}
-            <span class="t-n">{{ tabCounts()[t.id] }}</span>
+            <app-mof-fi-icon name="filter" />
           </button>
-        }
+          @if (activeFilters()) {
+            <span class="f-count" aria-hidden="true">{{ activeFilters() }}</span>
+          }
+        </span>
       </div>
+    </header>
 
-      <div id="att-panel" role="tabpanel" class="panel">
-        @if (pageRows().length) {
-          <app-mof-data-table>
-            <table class="mof-tbl">
-              <thead>
-                <tr>
-                  <th scope="col">{{ 'workspace.colCode' | t }}</th>
-                  <th scope="col">{{ 'workspace.colContent' | t }}</th>
-                  <th scope="col">{{ 'workspace.colStatus' | t }}</th>
-                  <th scope="col">{{ 'workspace.colDue' | t }}</th>
-                  <th scope="col" class="act">{{ 'workspace.colActions' | t }}</th>
+    @if (kpi()) {
+      <p class="kpi-lens" role="status">
+        <span>{{ kpiLens() }}</span>
+        <button type="button" class="link" (click)="setTab('all')">{{ 'workspace.clearKpi' | t }}</button>
+      </p>
+    }
+
+    <div class="tabs" role="tablist" [attr.aria-label]="'workspace.tabsAria' | t">
+      @for (t of tabs; track t.id; let i = $index) {
+        <button
+          type="button"
+          role="tab"
+          class="tab"
+          [attr.data-tab]="t.id"
+          [class.on]="!kpi() && tab() === t.id"
+          [attr.aria-selected]="!kpi() && tab() === t.id"
+          [attr.tabindex]="(!kpi() && tab() === t.id) || (kpi() && i === 0) ? 0 : -1"
+          aria-controls="att-panel"
+          (click)="setTab(t.id)"
+          (keydown)="onTabKey($event, i)"
+        >
+          {{ t.labelKey | t }}
+          <span class="t-n">{{ tabCounts()[t.id] }}</span>
+        </button>
+      }
+    </div>
+
+    <div id="att-panel" role="tabpanel" class="panel">
+      @if (pageRows().length) {
+        <app-mof-data-table>
+          <table class="mof-tbl">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'workspace.colCode' | t }}</th>
+                <th scope="col">{{ 'workspace.colContent' | t }}</th>
+                <th scope="col">{{ 'workspace.colStatus' | t }}</th>
+                <th scope="col">{{ 'workspace.colDue' | t }}</th>
+                <th scope="col" class="act">{{ 'workspace.colActions' | t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (d of pageRows(); track d.id) {
+                <tr [class.is-late]="overdue(d)">
+                  <td class="code">
+                    <span class="f-ico" [attr.data-tone]="topicTone(d)" aria-hidden="true"><app-mof-fi-icon name="file" /></span>
+                    <a [routerLink]="['/workspace/ho-so', d.id]">{{ d.code }}</a>
+                  </td>
+                  <td class="content"><span [mofTooltip]="d.question" mofTooltipTruncated>{{ d.question }}</span></td>
+                  <td class="status"><app-status-badge [status]="d.status" /></td>
+                  <td class="due">
+                    <span><app-mof-fi-icon name="clock" aria-hidden="true" /> {{ d.dueAt | date: 'dd/MM/yyyy' }}</span>
+                    @if (overdue(d)) {
+                      <span class="sr-only">({{ 'workspace.overdue' | t }})</span>
+                    }
+                  </td>
+                  <td class="act">
+                    <a class="row-go" [routerLink]="['/workspace/ho-so', d.id]" [attr.aria-label]="'workspace.openDossier' | t: { code: d.code }">
+                      <app-mof-fi-icon name="arrow-small-right" />
+                    </a>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                @for (d of pageRows(); track d.id) {
-                  <tr [class.is-late]="overdue(d)">
-                    <td class="code">
-                      <span class="f-ico" [attr.data-tone]="topicTone(d)" aria-hidden="true"><app-mof-fi-icon name="file" /></span>
-                      <a [routerLink]="['/workspace/ho-so', d.id]">{{ d.code }}</a>
-                    </td>
-                    <td class="content"><span [mofTooltip]="d.question" mofTooltipTruncated>{{ d.question }}</span></td>
-                    <td class="status"><app-status-badge [status]="d.status" /></td>
-                    <td class="due">
-                      <span><app-mof-fi-icon name="clock" aria-hidden="true" /> {{ d.dueAt | date: 'dd/MM/yyyy' }}</span>
-                      @if (overdue(d)) {
-                        <span class="sr-only">({{ 'workspace.overdue' | t }})</span>
-                      }
-                    </td>
-                    <td class="act">
-                      <a class="row-go" [routerLink]="['/workspace/ho-so', d.id]" [attr.aria-label]="'workspace.openDossier' | t: { code: d.code }">
-                        <app-mof-fi-icon name="arrow-small-right" />
-                      </a>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-            <app-mof-pagination
-              mofTableFoot
-              layout="per-page"
-              [edges]="true"
-              [page]="currentPage()"
-              [total]="rows().length"
-              [pageSize]="size()"
-              [pageSizes]="pageSizes"
-              (pageChange)="setPage($event)"
-              (pageSizeChange)="setSize($event)"
-            />
-          </app-mof-data-table>
-        } @else {
-          <div class="empty" role="status">
-            <app-mof-fi-icon name="folder-open" aria-hidden="true" />
-            <p>{{ 'workspace.empty' | t }}</p>
-            @if (q() || activeFilters() || topic() || unit() || month() || kpi()) {
-              <app-mof-button size="sm" variant="secondary" [label]="'workspace.resetFilters' | t" (click)="clearSearch(); resetFilters()" />
-            }
-          </div>
+              }
+            </tbody>
+          </table>
           <app-mof-pagination
+            mofTableFoot
             layout="per-page"
             [edges]="true"
             [page]="currentPage()"
@@ -201,82 +244,33 @@
             (pageChange)="setPage($event)"
             (pageSizeChange)="setSize($event)"
           />
-        }
-      </div>
-    </section>
-
-    <aside class="side">
-      <section class="card progress" aria-labelledby="pg-title">
-        <header class="c-head">
-          <h2 id="pg-title">{{ 'workspace.progress' | t }}</h2>
-        </header>
-        <div class="donut">
-          <app-mof-chart [options]="chartOptions()" />
-          <div class="center" aria-hidden="true">
-            <small>{{ 'workspace.totalLabel' | t }}</small>
-            <strong>{{ progress().total }}</strong>
-            <small>{{ 'workspace.dossierUnit' | t }}</small>
-          </div>
+        </app-mof-data-table>
+      } @else {
+        <div class="empty" role="status">
+          <app-mof-fi-icon name="folder-open" aria-hidden="true" />
+          <p>{{ 'workspace.empty' | t }}</p>
+          @if (q() || activeFilters() || topic() || unit() || month() || kpi()) {
+            <app-mof-button size="sm" variant="secondary" [label]="'workspace.resetFilters' | t" (click)="clearSearch(); resetFilters()" />
+          }
         </div>
-        <p class="sr-only" aria-live="polite">{{ 'workspace.progressSr' | t: { total: progress().total, on: progress().onTime, near: progress().nearDue, late: progress().overdue, done: progress().done } }}</p>
-        <ul class="legend" role="list">
-          @for (l of legend(); track l.key) {
-            <li [attr.data-tone]="l.tone"><i aria-hidden="true"></i><span>{{ l.key | t }}</span><b>{{ l.n }}</b></li>
-          }
-        </ul>
-      </section>
-
-      <section class="card topics" aria-labelledby="tp-title">
-        <header class="c-head">
-          <h2 id="tp-title">{{ 'workspace.topicsTitle' | t }}</h2>
-          <a class="more" routerLink="/workspace/tra-cuu">{{ 'workspace.viewDetail' | t }} <app-mof-fi-icon name="arrow-small-right" aria-hidden="true" /></a>
-        </header>
-        <ul class="t-list" role="list">
-          @for (t of topicStats(); track t.id) {
-            <li [attr.data-tone]="t.tone">
-              <button type="button" class="t-hit" [class.on]="topic() === t.id" [attr.aria-pressed]="topic() === t.id" (click)="setTopic(topic() === t.id ? '' : t.id)">
-                <span class="t-ico" aria-hidden="true"><app-mof-fi-icon [name]="t.icon" /></span>
-                <span class="t-main">
-                  <span class="t-row">
-                    <span class="t-name">{{ t.name }}</span>
-                    <span class="t-val">{{ t.pct }}% <small>({{ t.count }})</small></span>
-                  </span>
-                  <span class="bar" aria-hidden="true"><i [style.width.%]="t.pct"></i></span>
-                </span>
-              </button>
-            </li>
-          }
-        </ul>
-      </section>
-
-      <section class="card topics" aria-labelledby="unit-title">
-        <header class="c-head">
-          <h2 id="unit-title">{{ 'workspace.unitsTitle' | t }}</h2>
-        </header>
-        <ul class="t-list" role="list">
-          @for (u of unitStats(); track u.id) {
-            <li data-tone="blue">
-              <button type="button" class="t-hit" [class.on]="unit() === unitValue(u.id)" [attr.aria-pressed]="unit() === unitValue(u.id)" (click)="setUnit(unit() === unitValue(u.id) ? '' : unitValue(u.id))">
-                <span class="t-ico" aria-hidden="true"><app-mof-fi-icon name="building" /></span>
-                <span class="t-main">
-                  <span class="t-row">
-                    <span class="t-name">{{ unitLabel(u.id, u.name) }}</span>
-                    <span class="t-val">{{ u.pct }}% <small>({{ u.count }})</small></span>
-                  </span>
-                  <span class="bar" aria-hidden="true"><i [style.width.%]="u.pct"></i></span>
-                </span>
-              </button>
-            </li>
-          }
-        </ul>
-      </section>
-    </aside>
-  </div>
+        <app-mof-pagination
+          layout="per-page"
+          [edges]="true"
+          [page]="currentPage()"
+          [total]="rows().length"
+          [pageSize]="size()"
+          [pageSizes]="pageSizes"
+          (pageChange)="setPage($event)"
+          (pageSizeChange)="setSize($event)"
+        />
+      }
+    </div>
+  </section>
 
   @if (filterOpen()) {
     <div #filterPop id="ov-filters" class="ov-filters" role="dialog" [attr.aria-label]="'workspace.filters' | t" (keydown)="onFilterKey($event)">
       <p class="f-title">{{ 'workspace.filters' | t }}</p>
-      <app-mof-select size="sm" [label]="'workspace.priorityLabel' | t" [options]="priorityOptions()" [ngModel]="priority()" (ngModelChange)="setPriority($event)" />
+      <app-mof-select [label]="'workspace.priorityLabel' | t" [options]="priorityOptions()" [ngModel]="priority()" (ngModelChange)="setPriority($event)" />
       <div class="f-actions">
         <button type="button" class="link" (click)="resetFilters()">{{ 'workspace.resetFilters' | t }}</button>
         <app-mof-button size="sm" [label]="'workspace.applyClose' | t" (click)="closeFilters(true)" />

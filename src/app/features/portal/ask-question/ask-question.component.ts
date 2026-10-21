@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { MofFileIconComponent } from '../../../shared/ui/mof-file-icon/mof-file-icon.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -29,6 +30,7 @@ import { MofBreadcrumbItem } from '../../../shared/ui/mof-breadcrumb/mof-breadcr
  */
 @Component({
   imports: [
+    MofFileIconComponent,
     PortalHeaderComponent,
     ReactiveFormsModule,
     RouterLink,

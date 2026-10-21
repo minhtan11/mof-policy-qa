@@ -27,7 +27,7 @@
     <ul class="chips">
       @for (name of files(); track name) {
         <li class="chip" [attr.data-kind]="kind(name)">
-          <span class="chip-ico" aria-hidden="true"><app-mof-fi-icon [name]="iconFor(name)" /></span>
+          <app-mof-file-icon class="chip-ico" [fileName]="name" [size]="32" />
           <span class="chip-text">
             <strong [mofTooltip]="name" mofTooltipTruncated>{{ name }}</strong>
             @if (sizeLabel(name)) {

@@ -1,0 +1,94 @@
+<div class="mdp" [class.is-open]="open()" [class.is-invalid]="invalid() || typedError()" [class.is-disabled]="isDisabled()">
+  <div
+    class="mof-field"
+    role="group"
+    [attr.id]="id() || null"
+    [attr.aria-label]="placeholder() || ('datePicker.choose' | t)"
+    [attr.aria-invalid]="invalid() || typedError() ? 'true' : null"
+    (mousedown)="focusField($event)"
+    (focusout)="onGroupFocusOut($event)"
+    (paste)="onPaste($event)"
+  >
+    @for (k of segKeys; track k; let i = $index) {
+      @if (i > 0) {
+        <span class="sep" aria-hidden="true">/</span>
+      }
+      <span class="seg-wrap">
+        <span class="sizer" aria-hidden="true">{{ 'datePicker.ph.' + k | t }}</span>
+        <span class="sizer" aria-hidden="true">{{ i === 2 ? '0000' : '00' }}</span>
+        <input
+          #seg
+          class="seg"
+          [class.seg-year]="i === 2"
+          type="text"
+          inputmode="numeric"
+          autocomplete="off"
+          [attr.maxlength]="segLen[i]"
+          [value]="segs()[i]"
+          [placeholder]="'datePicker.ph.' + k | t"
+          [disabled]="isDisabled()"
+          [attr.aria-label]="'datePicker.' + k | t"
+          [attr.aria-haspopup]="i === 0 ? 'dialog' : null"
+          [attr.aria-expanded]="i === 0 ? open() : null"
+          (focus)="onSegFocus($event)"
+          (keydown)="onSegKey(i, $event)"
+          (input)="onSegInput(i, $event)"
+        />
+      </span>
+    }
+  </div>  <button
+    type="button"
+    class="trigger"
+    [disabled]="isDisabled()"
+    [attr.aria-label]="'datePicker.open' | t"
+    (click)="toggle()"
+  >
+    <app-mof-fi-icon name="calendar" />
+  </button>
+
+  @if (open()) {
+    <div class="panel" role="dialog" [class.above]="above()" [attr.aria-label]="'datePicker.choose' | t" (keydown)="onPanelKey($event)">
+      <div class="head">
+        <button type="button" class="nav" [attr.aria-label]="'datePicker.prev' | t" (click)="shiftMonth(-1)">
+          <app-mof-fi-icon name="angle-small-left" />
+        </button>
+        <b aria-live="polite">{{ monthLabel() }}</b>
+        <button type="button" class="nav" [attr.aria-label]="'datePicker.next' | t" (click)="shiftMonth(1)">
+          <app-mof-fi-icon name="angle-small-right" />
+        </button>
+      </div>
+
+      <div class="wd" aria-hidden="true">
+        @for (w of weekdays(); track $index) {
+          <span>{{ w }}</span>
+        }
+      </div>
+
+      <div #grid class="grid" role="grid" (keydown)="onGridKey($event)">
+        @for (d of days(); track d.iso) {
+          <button
+            type="button"
+            role="gridcell"
+            class="day"
+            [class.outside]="d.outside"
+            [class.today]="d.today"
+            [class.selected]="d.selected"
+            [disabled]="d.disabled"
+            [attr.aria-selected]="d.selected"
+            [attr.aria-label]="d.iso"
+            [attr.data-focused]="d.iso === focused()"
+            [tabindex]="d.iso === focused() ? 0 : -1"
+            (click)="pick(d)"
+          >
+            {{ d.day }}
+          </button>
+        }
+      </div>
+
+      <div class="foot">
+        <button type="button" class="link" [disabled]="todayDisabled()" (click)="pickToday()">{{ 'datePicker.today' | t }}</button>
+        <button type="button" class="link muted" (click)="clear()">{{ 'datePicker.clear' | t }}</button>
+      </div>
+    </div>
+  }
+</div>

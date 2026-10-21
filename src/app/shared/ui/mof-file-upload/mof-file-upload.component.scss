@@ -88,24 +88,7 @@
 }
 
 .chip-ico {
-  display: grid;
-  place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.625rem;
-  background: var(--mof-blue-soft);
-  color: var(--mof-blue);
-  line-height: 0;
-
-  [data-kind='pdf'] & {
-    background: color-mix(in srgb, var(--mof-danger) 12%, transparent);
-    color: var(--mof-danger);
-  }
-
-  [data-kind='picture'] & {
-    background: color-mix(in srgb, var(--mof-success) 14%, transparent);
-    color: var(--mof-success);
-  }
+  flex: none;
 }
 
 .chip-text {

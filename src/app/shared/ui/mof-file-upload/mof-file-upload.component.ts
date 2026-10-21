@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, input, output, signal, viewChild } from '@angular/core';
+import { MofFileIconComponent } from '../mof-file-icon/mof-file-icon.component';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MofButtonComponent } from '../mof-button/mof-button.component';
 import { MofFiIconComponent } from '../mof-fi-icon/mof-fi-icon.component';
@@ -12,7 +13,7 @@ import { MofTooltipDirective } from '../mof-tooltip/mof-tooltip.directive';
  */
 @Component({
   selector: 'app-mof-file-upload',
-  imports: [MofTooltipDirective, MofButtonComponent, MofFiIconComponent, MofIconButtonComponent],
+  imports: [MofFileIconComponent, MofTooltipDirective, MofButtonComponent, MofFiIconComponent, MofIconButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MofFileUploadComponent), multi: true }],
   templateUrl: './mof-file-upload.component.html',

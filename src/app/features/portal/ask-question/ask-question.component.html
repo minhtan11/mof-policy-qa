@@ -130,7 +130,7 @@
                         @if (form.controls.attachments.value.length) {
                           <ul class="file-list">
                             @for (f of form.controls.attachments.value; track f) {
-                              <li><app-mof-fi-icon name="clip" /> {{ f }}</li>
+                              <li><app-mof-file-icon [fileName]="f" [size]="20" /> {{ f }}</li>
                             }
                           </ul>
                         } @else {

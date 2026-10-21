@@ -395,7 +395,7 @@ export class WorkspaceComponent {
     return {
       chart: {
         type: 'donut',
-        height: 240,
+        height: 156,
         toolbar: { show: false },
         fontFamily: 'inherit',
         background: 'transparent',

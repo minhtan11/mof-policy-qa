@@ -19,6 +19,9 @@ import { MofCheckboxComponent } from '../../../shared/ui/mof-checkbox/mof-checkb
 import { MofIconComponent } from '../../../shared/ui/mof-icon/mof-icon.component';
 import { DossierStatus, UserRole } from '../../../core/models/domain.models';
 import { USERS } from '../../../core/mock-api/demo-data';
+import { MofDatePickerComponent, toIso } from '../../../shared/ui/mof-date-picker/mof-date-picker.component';
+import { MofFileIconComponent } from '../../../shared/ui/mof-file-icon/mof-file-icon.component';
+import { MofTooltipDirective } from '../../../shared/ui/mof-tooltip/mof-tooltip.directive';
 import { OrganizationRepository } from '../../../core/mock-api/organization.repository';
 
 /** Screen W-02 | Reception/specialist/leader/coordinator | Tiếp nhận→xuất bản + thu hồi, phối hợp, bút phê. | UC-142..UC-161, UC-176..UC-187 */
@@ -37,6 +40,9 @@ import { OrganizationRepository } from '../../../core/mock-api/organization.repo
     MofInputComponent,
     MofCheckboxComponent,
     MofIconComponent,
+    MofTooltipDirective,
+    MofDatePickerComponent,
+    MofFileIconComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dossier-detail.component.html',
@@ -57,6 +63,41 @@ export class DossierDetailComponent {
   readonly id = this.route.snapshot.paramMap.get('id') ?? '';
   readonly dossier = computed(() => this.db.dossiers().find((item) => item.id === this.id));
   readonly aiSuggestions = computed(() => this.ai.suggestions().filter((item) => item.dossierId === this.id));
+
+  /** Stepper 4 buoc o hero. */
+  readonly steps = computed(() => {
+    const status = this.dossier()?.status;
+    const keys = ['dossier.stepReceive', 'dossier.stepProcess', 'dossier.stepApprove', 'dossier.stepPublish'];
+    if (status === 'rejected') {
+      return keys.map((key, i) => ({ key, state: i === 0 ? 'rejected' : 'todo' }));
+    }
+    const stage: Record<string, number> = {
+      new: 0,
+      received: 1,
+      processing: 1,
+      'awaiting-clarification': 1,
+      'awaiting-collaboration': 1,
+      returned: 1,
+      'waiting-approval': 2,
+      approved: 3,
+      answered: 3,
+      published: 4,
+      closed: 4,
+    };
+    const current = status ? (stage[status] ?? 0) : 0;
+    return keys.map((key, i) => ({ key, state: i < current ? 'done' : i === current ? 'current' : 'todo' }));
+  });
+
+  priorityKey(priority: string | undefined): string {
+    return priority === 'urgent'
+      ? 'dossier.priorityUrgent'
+      : priority === 'high'
+        ? 'dossier.priorityHigh'
+        : 'dossier.priorityNormal';
+  }
+
+  /** Ngay hom nay (ISO) - min cho han gop y. */
+  readonly today = toIso(new Date());
 
   readonly specialistOptions = USERS.filter((user) => user.role === 'specialist').map((user) => ({
     label: `${user.name} · ${user.organization ?? ''}`,

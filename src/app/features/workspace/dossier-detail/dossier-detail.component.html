@@ -1,27 +1,41 @@
-<!-- W-02 Chi tiết hồ sơ — surface/hero bám W-01. -->
-<app-workspace-shell [title]="'dossier.title' | t">
+<!-- W-02 Dossier detail: hero + stepper + info tiles, light/dark tokens. -->
+<app-workspace-shell>
   <nav class="crumb" [attr.aria-label]="'dossier.crumbHome' | t">
-    <a routerLink="/workspace">{{ 'dossier.crumbHome' | t }}</a>
-    <span aria-hidden="true">›</span>
-    <span>{{ dossier()?.code }}</span>
+    <a routerLink="/workspace"><app-mof-icon name="arrow-left" [size]="14" /> {{ 'dossier.crumbHome' | t }}</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="page">{{ 'dossier.title' | t }}</span>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="cur" aria-current="page">{{ dossier()?.code }}</span>
   </nav>
 
   @if (dossier(); as item) {
     <header class="detail-head">
-      <div>
-        <div class="status-row">
-          <app-status-badge [status]="item.status" />
-          <span>{{ item.code }}</span>
+      <div class="head-top">
+        <div class="head-main">
+          <div class="status-row">
+            <span class="code-chip">{{ item.code }}</span>
+            <app-status-badge [status]="item.status" />
+            <span class="prio" [attr.data-prio]="item.priority">
+              <i aria-hidden="true"></i>{{ priorityKey(item.priority) | t }}
+            </span>
+          </div>
+          <h2>{{ item.question }}</h2>
+          <ul class="meta">
+            <li>
+              <app-mof-icon name="building" [size]="14" />
+              <span class="trunc" [mofTooltip]="item.organization" mofTooltipTruncated>{{ item.organization || '-' }}</span>
+            </li>
+            <li>
+              <app-mof-icon name="calendar" [size]="14" />
+              <span>{{ 'dossier.receivedAt' | t }} {{ item.receivedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </li>
+            <li class="due">
+              <app-mof-icon name="clock" [size]="14" />
+              <span>{{ 'dossier.dueAt' | t }} {{ item.dueAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </li>
+          </ul>
         </div>
-        <h2>{{ item.question }}</h2>
-        <p>
-          <app-mof-icon name="building" [size]="14" /> {{ item.organization }} ·
-          <app-mof-icon name="calendar" [size]="14" />
-          {{ 'dossier.receivedAt' | t }} {{ item.receivedAt | date: 'dd/MM/yyyy HH:mm' }}
-        </p>
-      </div>
-
-      <div class="actions" [formGroup]="draftForm" role="group" [attr.aria-label]="'dossier.title' | t">
+        <div class="actions" [formGroup]="draftForm" role="group" [attr.aria-label]="'dossier.title' | t">
         @if (canReceive()) {
           <app-mof-button [label]="'dossier.receive' | t" icon="inbox" [loading]="saving()" (click)="receive()" />
         }
@@ -92,7 +106,32 @@
             (click)="close()"
           />
         }
+        </div>
       </div>
+
+      <ol class="stepper" [attr.aria-label]="'dossier.progress' | t">
+        @for (step of steps(); track step.key; let i = $index) {
+          <li [attr.data-state]="step.state">
+            <span class="dot" aria-hidden="true">
+              @if (step.state === 'done') {
+                <app-mof-icon name="check" [size]="12" />
+              } @else if (step.state === 'rejected') {
+                <app-mof-icon name="close" [size]="12" />
+              } @else {
+                {{ i + 1 }}
+              }
+            </span>
+            <span class="lbl">{{ step.key | t }}</span>
+            <span class="sub">
+              @if (i === 0 && step.state === 'done') {
+                {{ item.receivedAt | date: 'dd/MM/yyyy' }}
+              } @else {
+                {{ 'dossier.step_' + step.state | t }}
+              }
+            </span>
+          </li>
+        }
+      </ol>
     </header>
 
     <div class="detail-grid">
@@ -106,23 +145,53 @@
           </header>
           <p class="question">{{ item.question }}</p>
           <div class="info-grid">
-            <div>
-              <small>{{ 'dossier.topic' | t }}</small>
-              <b>{{ topicName(item.topicId) }}</b>
+            <div class="tile">
+              <span class="ico" data-tone="blue"><app-mof-icon name="book" [size]="16" /></span>
+              <div>
+                <small>{{ 'dossier.topic' | t }}</small>
+                <b class="trunc" [mofTooltip]="topicName(item.topicId)" mofTooltipTruncated>{{ topicName(item.topicId) }}</b>
+              </div>
             </div>
-            <div>
-              <small>{{ 'dossier.dueAt' | t }}</small>
-              <b class="due"><app-mof-icon name="clock" [size]="14" /> {{ item.dueAt | date: 'dd/MM/yyyy HH:mm' }}</b>
+            <div class="tile">
+              <span class="ico" data-tone="violet"><app-mof-icon name="user" [size]="16" /></span>
+              <div>
+                <small>{{ 'dossier.metaSender' | t }}</small>
+                <b class="trunc" [mofTooltip]="item.sender" mofTooltipTruncated>{{ item.sender || '-' }}</b>
+              </div>
             </div>
-            <div>
-              <small>{{ 'dossier.assignee' | t }}</small>
-              <b>{{ item.assignedTo || ('dossier.unassigned' | t) }}</b>
+            <div class="tile">
+              <span class="ico" data-tone="teal"><app-mof-icon name="send" [size]="16" /></span>
+              <div>
+                <small>{{ 'dossier.metaEmail' | t }}</small>
+                <b class="trunc" [mofTooltip]="item.senderEmail" mofTooltipTruncated>{{ item.senderEmail || '-' }}</b>
+              </div>
+            </div>
+            <div class="tile">
+              <span class="ico" data-tone="slate"><app-mof-icon name="building" [size]="16" /></span>
+              <div>
+                <small>{{ 'dossier.metaOrg' | t }}</small>
+                <b class="trunc" [mofTooltip]="item.organization" mofTooltipTruncated>{{ item.organization || '-' }}</b>
+              </div>
+            </div>
+            <div class="tile">
+              <span class="ico" data-tone="amber"><app-mof-icon name="clock" [size]="16" /></span>
+              <div>
+                <small>{{ 'dossier.dueAt' | t }}</small>
+                <b class="due">{{ item.dueAt | date: 'dd/MM/yyyy HH:mm' }}</b>
+              </div>
+            </div>
+            <div class="tile">
+              <span class="ico" data-tone="green"><app-mof-icon name="briefcase" [size]="16" /></span>
+              <div>
+                <small>{{ 'dossier.assignee' | t }}</small>
+                <b class="trunc" [mofTooltip]="item.assignedTo || ''" mofTooltipTruncated>{{ item.assignedTo || ('dossier.unassigned' | t) }}</b>
+              </div>
             </div>
           </div>
         </section>
 
         @if (canAssign()) {
-          <section class="surface-card detail-card assign-card" [formGroup]="draftForm">
+          <section class="surface-card detail-card form-card assign-card" [formGroup]="draftForm">
             <header>
               <div>
                 <p class="eyebrow">{{ 'dossier.assign' | t }}</p>
@@ -141,7 +210,7 @@
         }
 
         @if (canRecall()) {
-          <section class="surface-card detail-card" [formGroup]="recallForm">
+          <section class="surface-card detail-card form-card" [formGroup]="recallForm">
             <header>
               <div>
                 <p class="eyebrow">{{ 'dossier.recallEyebrow' | t }}</p>
@@ -157,7 +226,7 @@
         }
 
         @if (canClarify()) {
-          <section class="surface-card detail-card" [formGroup]="clarifyForm">
+          <section class="surface-card detail-card form-card" [formGroup]="clarifyForm">
             <header>
               <div>
                 <p class="eyebrow">{{ 'dossier.clarifyEyebrow' | t }}</p>
@@ -173,7 +242,7 @@
         }
 
         @if (canCollaborate() || item.collaborations?.length) {
-          <section class="surface-card detail-card" [formGroup]="collabForm">
+          <section class="surface-card detail-card form-card" [formGroup]="collabForm">
             <header>
               <div>
                 <p class="eyebrow">{{ 'dossier.collabEyebrow' | t }}</p>
@@ -187,7 +256,7 @@
                   [options]="unitOptions()"
                   [placeholder]="'dossier.collabUnit' | t"
                 />
-                <app-mof-input formControlName="dueAt" [placeholder]="'dossier.collabDue' | t" />
+                <app-mof-date-picker formControlName="dueAt" [min]="today" [placeholder]="'dossier.collabDue' | t" />
               </div>
               <app-mof-textarea formControlName="note" [rows]="3" [placeholder]="'dossier.collabNote' | t" />
               <footer>
@@ -209,7 +278,7 @@
           </section>
         }
 
-        <section class="surface-card detail-card answer-editor" [formGroup]="draftForm">
+        <section class="surface-card detail-card form-card answer-editor" [formGroup]="draftForm">
           <header>
             <div>
               <p class="eyebrow">{{ 'dossier.draftEyebrow' | t }}</p>
@@ -314,11 +383,17 @@
           }
         </section>
         <section class="surface-card attachment">
-          <h3>{{ 'dossier.attachments' | t }}</h3>
+          <header>
+            <h3>{{ 'dossier.attachments' | t }}</h3>
+            <span class="count">{{ item.attachments.length }}</span>
+          </header>
           @for (file of item.attachments; track file) {
-            <a>{{ file }}</a>
+            <a class="file">
+              <app-mof-file-icon [fileName]="file" [size]="32" />
+              <span class="trunc" [mofTooltip]="file" mofTooltipTruncated>{{ file }}</span>
+            </a>
           } @empty {
-            <p>{{ 'dossier.noAttachments' | t }}</p>
+            <p class="empty">{{ 'dossier.noAttachments' | t }}</p>
           }
         </section>
 

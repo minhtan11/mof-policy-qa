@@ -109,15 +109,16 @@ h1 {
 }
 
 /* ---------- KPI ---------- */
+/* Filter bar: standard 44px controls (no size="sm"), equal columns, wraps on narrow screens. */
 .slice-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 0.75rem 1rem;
+  align-items: end;
   margin: 0 0 var(--ov-gap);
 
   app-mof-select {
-    flex: 1 1 12rem;
-    min-width: min(100%, 12rem);
+    min-width: 0;
   }
 }
 
@@ -220,27 +221,85 @@ h1 {
 }
 
 /* ---------- Lưới ---------- */
-.ov-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 21rem);
-  gap: var(--ov-gap);
-  align-items: start;
+.attention .empty + app-mof-pagination {
+  margin-top: 0.75rem;
 }
 
-.side {
+/* Summary cards in one row above the list: 3 cols wide, 2 then 1 narrower (orphan spans full).
+   Equal height per row (grid stretch). The list below takes the full width. Container query = real content width. */
+.ov-cards {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--ov-gap);
-  min-width: 0;
+  align-items: stretch;
+  margin-bottom: var(--ov-gap);
+  container-type: inline-size;
+
+  > .card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
 }
 
-@media (max-width: 1279.98px) {
-  .ov-grid {
+@media (max-width: 1199.98px) {
+  .ov-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    > .card:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .ov-cards {
     grid-template-columns: minmax(0, 1fr);
   }
+}
 
-  .side {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+/* Compact donut with legend beside it. */
+.prog-body {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 1rem;
+
+  .donut {
+    min-height: 0;
+    height: 9.5rem;
   }
+
+  .legend {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+    margin: 0;
+  }
+}
+
+@container (max-width: 20rem) {
+  .prog-body {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+
+    .donut {
+      width: 9.5rem;
+    }
+
+    .legend {
+      width: 100%;
+    }
+  }
+}
+
+.ov-cards .t-list {
+  gap: 0.625rem;
+}
+
+/* Pagination right under the last row. */
+.attention ::ng-deep .mof-dt__foot:has(*) {
+  margin-top: 0;
 }
 
 .card {
